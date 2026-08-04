@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #FAFAFA;
+    --card-bg: #FFFFFF;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --accent-blue: #2563EB;
+    --border-light: rgba(229, 231, 235, 0.8);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #FAFAFA;
+    color: #111827;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Linear-inspired custom utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.linear-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.linear-card:hover {
+  border-color: #D1D5DB;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+}
+
+.linear-card-interactive {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s ease-in-out;
+}
+
+.linear-card-interactive:hover {
+  border-color: #2563EB;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.08);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Printable PDF styles for DPDP Compliance Report */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}
