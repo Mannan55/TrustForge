@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Brand Theme Colors */
+    --brand-emerald: #0F2E22;
+    --brand-emerald-dark: #0B2319;
+    --brand-emerald-light: #164030;
+    --brand-beige: #E3CFAE;
+    --brand-beige-light: #F4EBDC;
+    --brand-bone: #F2EDE1;
+    --brand-canvas: #FAF8F5;
+
+    /* Text Hierarchy */
+    --text-primary: #0F2E22;
+    --text-secondary: #4A5750;
+    --text-muted: #7A8981;
+    --text-inverse: #F2EDE1;
+
+    /* Surfaces & Borders */
+    --surface-card: #FFFFFF;
+    --surface-subtle: #F5F1E8;
+    --surface-hover: #EFE9DC;
+    --border-subtle: #E3DDD0;
+    --border-medium: #CFC7B7;
+
+    /* Semantic Status Colors (Subordinate to Brand) */
+    --status-success: #166534;
+    --status-success-bg: #DCFCE7;
+    --status-success-border: #BBF7D0;
+
+    --status-warning: #9A3412;
+    --status-warning-bg: #FFEDD5;
+    --status-warning-border: #FED7AA;
+
+    --status-danger: #991B1B;
+    --status-danger-bg: #FEE2E2;
+    --status-danger-border: #FCA5A5;
+
+    --status-info: #0F2E22;
+    --status-info-bg: #E3CFAE;
+    --status-info-border: #D5BD97;
+  }
+
+  body {
+    font-family: 'General Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--brand-canvas);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D5CFBF;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B5AD9C;
+}
+
+/* Print Styles for DPDP Reports */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}
