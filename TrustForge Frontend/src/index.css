@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+/*
+  TrustForge design system
+  Locked brand palette (from brand guidelines):
+    Deep Emerald  #0F2E22
+    Warm Beige    #E3CFAE
+    Soft Bone     #F2EDE1
+  Typography: General Sans (primary) / IBM Plex Sans (secondary) / IBM Plex Mono (numerals)
+*/
+
+@theme {
+  /* Brand core */
+  --color-emerald-deep: #0f2e22;
+  --color-emerald-dark: #0b2319;
+  --color-emerald-mid: #164030;
+  --color-emerald-hover: #1c4d3a;
+  --color-emerald-light: #22634b;
+  --color-emerald-soft: #e6f0ea;
+
+  --color-beige: #e3cfae;
+  --color-beige-light: #f4ebdc;
+  --color-beige-deep: #d5bd97;
+
+  --color-bone: #f2ede1;
+  --color-canvas: #faf8f3;
+
+  /* Text */
+  --color-ink: #0f2e22;
+  --color-ink-soft: #4a5750;
+  --color-ink-muted: #7a8981;
+  --color-ink-inverse: #f2ede1;
+
+  /* Borders / surfaces */
+  --color-line: #e6ded0;
+  --color-line-strong: #cfc7b7;
+
+  /* Status (kept subordinate to brand) */
+  --color-success: #166534;
+  --color-success-soft: #dcfce7;
+  --color-success-line: #bbf7d0;
+  --color-warning: #9a3412;
+  --color-warning-soft: #ffedd5;
+  --color-warning-line: #fed7aa;
+  --color-danger: #991b1b;
+  --color-danger-soft: #fee2e2;
+  --color-danger-line: #fca5a5;
+  --color-info: #0f5c73;
+  --color-info-soft: #e0f2f7;
+  --color-info-line: #b6e0ea;
+
+  /* Fonts */
+  --font-sans: "General Sans", "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-body: "IBM Plex Sans", "General Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", "Menlo", monospace;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-feature-settings: "cv01", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-emerald-light);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-beige);
+    color: var(--color-emerald-deep);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-sans);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Numeric readouts (scores, CIN, tokens) line up cleanly */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+
+  /* Thin, on-brand scrollbar */
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  .scroll-slim::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 999px;
+  }
+  .scroll-slim::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion — restrained. Route fades, accordion, drawer, and the original
+   TrustForge processing visual (a technical scan sweep + progress arc).
+   No sparkle, no glow, no AI-magic.
+--------------------------------------------------------------------------- */
+
+@keyframes tf-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: tf-fade-in 0.28s var(--ease-out-soft) both;
+}
+
+@keyframes tf-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade {
+  animation: tf-fade 0.2s ease-out both;
+}
+
+@keyframes tf-drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-drawer-in {
+  animation: tf-drawer-in 0.32s var(--ease-out-soft) both;
+}
+
+@keyframes tf-slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: tf-slide-up 0.3s var(--ease-out-soft) both;
+}
+
+/* Processing visual: a horizontal scan line sweeping a document grid */
+@keyframes tf-scan-sweep {
+  0% { transform: translateY(-120%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(320%); opacity: 0; }
+}
+.animate-scan-sweep {
+  animation: tf-scan-sweep 2.4s var(--ease-out-soft) infinite;
+}
+
+/* A calm breathing pulse for the active processing stage marker */
+@keyframes tf-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(34, 99, 75, 0.35); }
+  70% { box-shadow: 0 0 0 8px rgba(34, 99, 75, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 99, 75, 0); }
+}
+.animate-pulse-ring {
+  animation: tf-pulse-ring 1.8s var(--ease-out-soft) infinite;
+}
+
+/* Indeterminate progress bar segment */
+@keyframes tf-indeterminate {
+  0% { left: -35%; right: 100%; }
+  60% { left: 100%; right: -90%; }
+  100% { left: 100%; right: -90%; }
+}
+.animate-indeterminate {
+  animation: tf-indeterminate 1.6s var(--ease-out-soft) infinite;
+}
+
+/* Skeleton shimmer */
+@keyframes tf-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-line) 25%,
+    var(--color-beige-light) 37%,
+    var(--color-line) 63%
+  );
+  background-size: 800px 100%;
+  animation: tf-shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Print styles for the Reports document */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}
