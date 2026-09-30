@@ -1,0 +1,13 @@
+{
+  "case_id": "CASE_003",
+  "description": "Partial compliance: HTTPS present, privacy policy found but no grievance contact, cookie banner with accept-only (no reject).",
+  "html_fixture_path": "./evaluation/fixtures/case_003.html",
+  "ground_truth": {
+    "privacy_policy_found": true,
+    "https_detected": true,
+    "consent_banner_detected": true,
+    "reject_button_detected": false,
+    "grievance_contact_detected": false
+  },
+  "notes": "Manually prepared reference labels. Tests partial compliance detection."
+}
