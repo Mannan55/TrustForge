@@ -1,0 +1,386 @@
+{
+  "c296acf5467d2aa4907369b4035d535722049079c6ff6eeae56cfb6ca7761f3e": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 required signals detected.",
+    "citations": []
+  },
+  "895737903b7c4923ef99a3184b5ddc02ae322d9ea421ad5911f3f1183df5ef4f": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Security Response Headers' \u2014 required signals detected.",
+    "citations": []
+  },
+  "42ebb0658d19e89638a72efd7f77a92b6a8488e99faccd67fb59f30d58d97321": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 some required signals not observed: hsts_header.",
+    "citations": []
+  },
+  "6735be936cff22dd25566e1cd0bf1196c502beb8f3488ed37e4516c23cbd3fe9": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Security Response Headers' \u2014 some required signals not observed: xcto_header, referrer_policy_header, csp_header.",
+    "citations": []
+  },
+  "e9eb04a8c0cfc241340af07f565cbf7df05a2b8b425eb12a774c12c6300bf1bf": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 required signals detected.",
+    "citations": []
+  },
+  "c4b9ec5431d8ae1fef0af37bbbead324cb731d47b6afef759a1ca62aa1bca75c": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Security Response Headers' \u2014 some required signals not observed: referrer_policy_header, csp_header.",
+    "citations": []
+  },
+  "282415e57924d42ea6183b276f1f0647ecb65eeb09eddd3c324eb507b946a1a0": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 some required signals not observed: hsts_header, https_enforced.",
+    "citations": []
+  },
+  "ec5bdb10dd3a90fb099dfdd067c420633a3732dd7c048084b728c28d170ccb9c": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Security Response Headers' \u2014 some required signals not observed: xcto_header, referrer_policy_header, csp_header.",
+    "citations": []
+  },
+  "f7725ad9c338658278eaf3f151ed46f7d9d697d28a72b9aedd1dddeb3d610241": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 required signals detected.",
+    "citations": []
+  },
+  "9993abaaa1ccf019060429df8d32a04546bb2b0410769bce236db699f8c1fbe2": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Security Response Headers' \u2014 required signals detected.",
+    "citations": []
+  },
+  "46560fbeb7546be543190b20bceb0529bc28334c5bfd7a67416d7bb0397ef151": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 required signals detected.",
+    "citations": []
+  },
+  "917377422a2000b53e2e143310231fd72accbf37b2d0b48822b3d3dc83cea835": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Security Response Headers' \u2014 some required signals not observed: xcto_header, referrer_policy_header, csp_header.",
+    "citations": []
+  },
+  "cb63c50e11a4ece4f8c12d37fd76c38f249a8428c6fa7fb69dc1d64dc15df20f": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 required signals detected.",
+    "citations": []
+  },
+  "7d5ea96070b42f3354e81e5f9dd192bcfecdad9f1f15b6f01cf933ddb4775754": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Security Response Headers' \u2014 required signals detected.",
+    "citations": []
+  },
+  "b7d839ba786ad66e82ed7c5bd95d8a1638f3fdff6d62a47096d558912ad6e08c": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 required signals detected.",
+    "citations": []
+  },
+  "15700baf7906a9f599da6fd4d92944f82e6e44501b38314b5d34cc742afc55b5": {
+    "status": "PASS",
+    "confidence": 0.95,
+    "finding": "'Security Response Headers' \u2014 required signals detected.",
+    "citations": []
+  },
+  "fe347b3d8691e2c940d808dbe550b12bac1c880c128f7c87f03b1df0d51254bd": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 some required signals not observed: hsts_header.",
+    "citations": []
+  },
+  "3d5aa9723ad3602e75eff7ed34055ec59da5e1aadf580eff6245a09bab702773": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Security Response Headers' \u2014 some required signals not observed: referrer_policy_header, csp_header.",
+    "citations": []
+  },
+  "0ce36312c9da655232116c21b1c5c17d41b56f434b2124dca0e06b650a0c7ee2": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Transport Security (HTTPS + HSTS)' \u2014 some required signals not observed: hsts_header.",
+    "citations": []
+  },
+  "497afa6bc7adab9bd708c8a685d1f569623ee520751f7f91b95188367603bc2a": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "'Security Response Headers' \u2014 some required signals not observed: xcto_header, referrer_policy_header, csp_header.",
+    "citations": []
+  },
+  "6ae8bcec4a33fd13c5f361cdcf52d468da164ae3f749398a2d49018e9ee5ceaa": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.6,
+    "finding": "While a privacy policy link is verified on the website, the specific content required by Section 5 (description of data, purpose, and contact details) is not independently verified.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-5-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 5"
+      }
+    ]
+  },
+  "1ced240f1eff0a20f0d979e94ab4ab335e35eeed9fec5af023528bb1af6218c6": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.4,
+    "finding": "The evidence confirms declared processing purposes and the presence of a consent banner, but does not provide specific documentation mapping each purpose to a distinct lawful basis under Section 6 or Section 7.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-7-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 7"
+      },
+      {
+        "chunk_id": "dpdp-act-2023-section-2-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 2"
+      }
+    ]
+  },
+  "c2b9be6ad6d5f6a7865e96ceff2510796f049c4f9ce67ce718ea5113687d3d46": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.2,
+    "finding": "The organisation declared two third-party data processors, but no evidence of valid contracts was provided or verified.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "5686c39cda3acacc0adb35d28fb6b915f5f97be719421ad42660655f92728296": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.6,
+    "finding": "The organisation self-reports an automated erasure process and a 12-month retention policy, but lacks independent verification of the technical implementation or third-party processor compliance.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-12-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 12"
+      }
+    ]
+  },
+  "bed13ca4722448af4ea0711bea1588b919106618766844d01a888f023489353c": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.9,
+    "finding": "The website scanner did not detect a privacy policy link, and the organisation has not reported a designated grievance officer or published contact details.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-5-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 5"
+      }
+    ]
+  },
+  "014765b4cfe969ed6e273ec3bd7dcc5a4f7967b742679c50faa9bebf55fcdf86": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.2,
+    "finding": "The organisation declared a processing purpose of 'service_delivery' but provided no evidence of a specific lawful basis (consent or legitimate use) for this purpose.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-7-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 7"
+      }
+    ]
+  },
+  "21d1dee56bcf91732143fed5bdfe255f29aee863c8dd2da8b39b3676228a03f9": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.1,
+    "finding": "No evidence regarding the existence or validity of contracts with Data Processors was provided in the observed data.",
+    "citations": []
+  },
+  "84722a63ec8110738089fd09e07c429331fec0a4cfd950110af20c90eff63f86": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.9,
+    "finding": "No evidence of a defined data retention period or automated erasure process was observed, despite the organisation processing personal data.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-12-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 12"
+      },
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "8cb75906831f19d5da80c1da0321e3fb605b9a12c8841686ae9e4af6d31b1d91": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.6,
+    "finding": "The privacy notice is publicly accessible, but evidence is insufficient to confirm it contains all mandatory elements required by Section 5 of the DPDP Act 2023.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-5-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 5"
+      }
+    ]
+  },
+  "0dd98659db222a35b9ead4cf067c095e874361ba6d94a2d19509ee770503af84": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.2,
+    "finding": "The organisation declared processing purposes (marketing, analytics) but provided no evidence of the specific lawful basis (consent or legitimate use) for each purpose.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-7-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 7"
+      }
+    ]
+  },
+  "4df55c6fb3a3ca2377c1c971691c0477a18f2f447a4ddedc55ed3daa04659711": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.2,
+    "finding": "The organisation declared a third-party processor (AnalyticsCo) but did not provide evidence of a valid contract, and the retrieved context does not contain the specific text of Section 8(7).",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "002587b9fab4ad2deb5e2ad8ca29455e260b28a9091dd000054d0fc648a42349": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "The organisation declares a 5-year retention period but does not report having an automated erasure process to handle data deletion when retention expires or upon request.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-12-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 12"
+      },
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "677c773c9c488f188d7148c9ec2e30f18b16c0ad07cf8f8f78bc8ef0915c974c": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "While a privacy policy link is verified on the website, the absence of a published grievance contact and the lack of independent verification for the notice's content create a potential gap in compliance with Section 5.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-5-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 5"
+      }
+    ]
+  },
+  "3ce8f75720ba9be3fe0fa35f911c183712a6653314e58f0856835bbc82d92963": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.2,
+    "finding": "The evidence confirms the declaration of processing purposes (e_commerce) and data categories, but does not provide specific documentation linking these purposes to a lawful basis under Section 6 or Section 7.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-7-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 7"
+      },
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "c441fc9c8de4305c79f9d86e7b7dfd73e619fdfa2ddf054212d1f292e5dae4a6": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.4,
+    "finding": "The organisation self-reports engaging two data processors, but no evidence of valid contracts was provided or verified.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "881dac376ae8beacd22fccab3959fa06bc94fbb8a7d8415a106d32c216e94750": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "The organisation declares support for the right to erasure and defined retention periods, but lacks observed evidence of an automated erasure process or a designated grievance officer to handle such requests.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-12-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 12"
+      },
+      {
+        "chunk_id": "dpdp-act-2023-section-13-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 13"
+      }
+    ]
+  },
+  "9c8e016063cd643bf395788b204cdc2c9da96b920099d47c5637461f1824c9a0": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "While a privacy policy link is present on the website, the absence of a published grievance contact and designated officer creates a potential gap in the completeness of the notice regarding rights exercise.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-5-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 5"
+      }
+    ]
+  },
+  "19828ce53c1b050a80ce7b692e27d3b5d7aa46d47783fbbce89447aefa00bc6c": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.4,
+    "finding": "The evidence confirms the declaration of a processing purpose (health_monitoring_service) but does not specify the lawful basis (consent or legitimate use) relied upon for this processing.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-7-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 7"
+      }
+    ]
+  },
+  "f16695a16e7e83f224636297d90a3065b48ec0edd739f3c2a6d098e37fc7c1dd": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "confidence": 0.2,
+    "finding": "The organisation declared a third-party data processor (AnalyticsCo) but provided no evidence of a valid contract.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  },
+  "df9a62cb215147657c05cf0b2f1a1b0803fd8c0edfb692585fa42b6afd895f5e": {
+    "status": "POTENTIAL_GAP",
+    "confidence": 0.85,
+    "finding": "The organisation self-reports a 3-year retention period but does not report an automated erasure process, creating a potential gap in fulfilling the right to erasure.",
+    "citations": [
+      {
+        "chunk_id": "dpdp-act-2023-section-12-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 12"
+      },
+      {
+        "chunk_id": "dpdp-act-2023-section-8-0",
+        "document_title": "The Digital Personal Data Protection Act, 2023",
+        "section": "Section 8"
+      }
+    ]
+  }
+}

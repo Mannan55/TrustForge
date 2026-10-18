@@ -17,6 +17,10 @@ export function ProcessingVisual({
   onComplete,
   title = "Running TrustForge analysis",
   subtitle = "Reviewing your responses and observed signals",
+  externalProgress,
+  externalStage,
+  isComplete,
+  statusLabel,
 }: {
   stages: string[];
   stageMs?: number;
@@ -24,12 +28,20 @@ export function ProcessingVisual({
   onComplete?: () => void;
   title?: string;
   subtitle?: string;
+  externalProgress?: number;
+  externalStage?: number;
+  isComplete?: boolean;
+  statusLabel?: string;
 }) {
-  const { stage, progress, done } = useStagedProgress(stages.length, {
+  const staged = useStagedProgress(stages.length, {
     stageMs,
-    run,
+    run: run && externalProgress === undefined,
     onDone: onComplete,
   });
+
+  const stage = externalStage !== undefined ? externalStage : staged.stage;
+  const progress = externalProgress !== undefined ? externalProgress : staged.progress;
+  const done = isComplete !== undefined ? isComplete : staged.done;
 
   return (
     <div className="rounded-2xl border border-emerald-mid bg-emerald-deep text-bone overflow-hidden">
@@ -75,7 +87,7 @@ export function ProcessingVisual({
 
           <div className="mt-6">
             <div className="flex items-center justify-between text-xs text-bone/70 mb-2">
-              <span>{done ? "Analysis complete" : "Working"}</span>
+              <span>{statusLabel || (done ? "Analysis complete" : "Working")}</span>
               <span className="tabular">{progress}%</span>
             </div>
             <div className="h-1.5 w-full rounded-full bg-emerald-dark overflow-hidden">

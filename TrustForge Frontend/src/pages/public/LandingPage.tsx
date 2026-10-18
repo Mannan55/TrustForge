@@ -10,8 +10,6 @@ import {
   Languages,
   Lock,
   Building2,
-  CircleCheck,
-  CircleAlert,
 } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
@@ -261,20 +259,4 @@ function MiniStat({ label, value }: { label: string; value: string }) {
 
 function Divider() {
   return <span className="hidden h-4 w-px bg-line-strong sm:block" aria-hidden />;
-}
-
-function Distinction({ good, bad, note }: { good: string; bad: string; note: string }) {
-  return (
-    <div className="rounded-xl border border-line bg-white p-4">
-      <div className="flex flex-wrap items-center gap-3 text-sm">
-        <span className="inline-flex items-center gap-1.5 font-medium text-success">
-          <CircleCheck className="h-4 w-4" /> {good}
-        </span>
-        <span className="inline-flex items-center gap-1.5 text-ink-muted line-through">
-          <CircleAlert className="h-4 w-4" /> {bad}
-        </span>
-      </div>
-      <p className="mt-2 text-sm text-ink-soft">{note}</p>
-    </div>
-  );
 }

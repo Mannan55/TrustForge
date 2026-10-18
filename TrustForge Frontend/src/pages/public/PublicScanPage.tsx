@@ -43,6 +43,7 @@ export function PublicScanPage() {
   const [url, setUrl] = useState("");
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState<PublicScanResult | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
   const [visualDone, setVisualDone] = useState(false);
 
   useEffect(() => {
@@ -52,13 +53,24 @@ export function PublicScanPage() {
   const runScan = () => {
     setPhase("scanning");
     setResult(null);
+    setScanError(null);
     setVisualDone(false);
-    scanService.runPublicScan(url.trim() || "https://www.technova.in").then(setResult);
+    scanService
+      .runPublicScan(url.trim() || "https://example.com")
+      .then((res) => {
+        setResult(res);
+      })
+      .catch((err) => {
+        console.error("Public scan error:", err);
+        setScanError(err?.detail || err?.message || "Failed to scan website. Please verify the URL is valid and publicly reachable.");
+        setPhase("idle");
+      });
   };
 
   const reset = () => {
     setPhase("idle");
     setResult(null);
+    setScanError(null);
     setVisualDone(false);
   };
 
@@ -76,6 +88,18 @@ export function PublicScanPage() {
           preliminary posture. No account needed, and nothing is stored.
         </p>
       </div>
+
+      {scanError && (
+        <Card className="mx-auto mt-6 max-w-xl border-danger/30 bg-danger/5">
+          <div className="flex items-start gap-3">
+            <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-danger" />
+            <div>
+              <p className="font-semibold text-danger">Website Scan Incomplete</p>
+              <p className="mt-1 text-sm text-ink-soft">{scanError}</p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {phase === "idle" && (
         <Card className="mx-auto mt-10 max-w-xl">

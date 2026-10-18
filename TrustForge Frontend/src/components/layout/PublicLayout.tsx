@@ -92,16 +92,30 @@ function PublicHeader() {
       {open && (
         <div className="border-t border-line bg-canvas px-4 py-3 md:hidden">
           <div className="flex flex-col gap-1">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-beige-light"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) =>
+              item.to ? (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-beige-light"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    setOpen(false);
+                    const el = document.getElementById(item.hash!);
+                    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="rounded-lg px-3 py-2 text-left text-sm font-medium text-ink-soft hover:bg-beige-light"
+                >
+                  {item.label}
+                </button>
+              )
+            )}
             <div className="mt-2 flex gap-2">
               <Link to="/login" onClick={() => setOpen(false)} className="flex-1">
                 <Button variant="outline" size="sm" className="w-full">

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Search,
   ScanLine,
@@ -10,16 +11,19 @@ import {
   Lock,
   ClipboardCheck,
   ChevronDown,
+  ArrowRight,
 } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card } from "@/components/common/Card";
+import { Badge } from "@/components/common/Badge";
 import { Button } from "@/components/common/Button";
 import { Input } from "@/components/common/Input";
+import { ScoreRing } from "@/components/common/ScoreRing";
 import { ProcessingVisual } from "@/components/scanner/ProcessingVisual";
 import { useOrg } from "@/context/OrgContext";
-import { useAsync } from "@/hooks/useAsync";
 import { scanService } from "@/services";
 import { ANALYSIS_STAGES } from "@/data/dpdpFramework";
+import { postureTone } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { ScanCheck, ScanResultState, ScanSignalKind } from "@/types";
 
@@ -37,20 +41,44 @@ const kindMeta: Record<ScanSignalKind, { label: string; icon: typeof CircleCheck
 
 type Phase = "idle" | "scanning" | "result";
 
+interface ScanData {
+  score: number;
+  posture: string;
+  url: string;
+  checks: ScanCheck[];
+}
+
 export function WebsiteScanPage() {
   const { org } = useOrg();
-  const [domain, setDomain] = useState(org.primaryDomain);
+  const [domain, setDomain] = useState(org.primaryDomain || "example.com");
   const [phase, setPhase] = useState<Phase>("idle");
+  const [scanData, setScanData] = useState<ScanData | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
   const [visualDone, setVisualDone] = useState(false);
-  const { data: checks } = useAsync(() => scanService.runOrgScan(org.id), [phase === "scanning" ? "run" : "idle"]);
+
+  const targetUrl = domain.startsWith("http://") || domain.startsWith("https://") ? domain : `https://${domain}`;
 
   useEffect(() => {
-    if (visualDone && checks) setPhase("result");
-  }, [visualDone, checks]);
+    if (visualDone && scanData) {
+      setPhase("result");
+    }
+  }, [visualDone, scanData]);
 
-  const run = () => {
+  const run = async () => {
     setPhase("scanning");
     setVisualDone(false);
+    setScanData(null);
+    setScanError(null);
+
+    try {
+      const res = await scanService.runOrgScanFull(org.id, targetUrl);
+      setScanData(res);
+      // If network finishes, we can let visual finish naturally or snap
+    } catch (err: any) {
+      console.error("Scan failed:", err);
+      setScanError(err?.detail || err?.message || "Failed to complete website scan. Verify the URL is publicly reachable.");
+      setPhase("idle");
+    }
   };
 
   return (
@@ -67,6 +95,21 @@ export function WebsiteScanPage() {
           ) : undefined
         }
       />
+
+      {scanError && (
+        <Card className="border-danger/30 bg-danger/5">
+          <div className="flex items-start gap-3">
+            <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-danger" />
+            <div>
+              <p className="font-semibold text-danger">Website Scan Incomplete</p>
+              <p className="mt-1 text-sm text-ink-soft">{scanError}</p>
+              <Button size="sm" variant="outline" className="mt-3" onClick={run}>
+                Try again
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {phase === "idle" && (
         <Card>
@@ -103,12 +146,13 @@ export function WebsiteScanPage() {
         />
       )}
 
-      {phase === "result" && checks && <ScanResults checks={checks} domain={domain} />}
+      {phase === "result" && scanData && <ScanResults scanData={scanData} domain={domain} />}
     </div>
   );
 }
 
-function ScanResults({ checks, domain }: { checks: ScanCheck[]; domain: string }) {
+function ScanResults({ scanData, domain }: { scanData: ScanData; domain: string }) {
+  const { checks, score, posture } = scanData;
   const counts = useMemo(
     () => ({
       pass: checks.filter((c) => c.state === "pass").length,
@@ -122,16 +166,41 @@ function ScanResults({ checks, domain }: { checks: ScanCheck[]; domain: string }
   return (
     <div className="animate-fade-in space-y-6">
       <Card>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="eyebrow">Scan complete</p>
-            <p className="mt-1 font-display text-lg font-semibold text-ink">{domain}</p>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-5">
+            <ScoreRing score={score} size={100} label="preliminary" />
+            <div>
+              <p className="eyebrow">Preliminary Website Technical Readiness</p>
+              <p className="mt-1 font-display text-xl font-semibold text-ink">{domain}</p>
+              <div className="mt-2">
+                <Badge tone={postureTone(posture as any)}>{posture}</Badge>
+              </div>
+            </div>
           </div>
           <div className="flex gap-3">
             <CountPill icon={CircleCheck} color="text-success" label="Passed" value={counts.pass} />
             <CountPill icon={TriangleAlert} color="text-warning" label="Attention" value={counts.attention} />
             <CountPill icon={CircleAlert} color="text-danger" label="Gaps" value={counts.gap} />
           </div>
+        </div>
+      </Card>
+
+      {/* Scope distinction & Gate to Full Assessment Wizard */}
+      <Card className="border-emerald-light/40 bg-emerald-soft/50">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <p className="font-display font-semibold text-ink">
+              Ready to evaluate complete DPDP compliance?
+            </p>
+            <p className="text-sm text-ink-soft">
+              This score measures observable technical signals (transport security, public headers, notice availability). It is preliminary and does not replace the full organizational assessment.
+            </p>
+          </div>
+          <Link to="/assessment" className="shrink-0">
+            <Button size="sm">
+              Continue into Assessment Wizard <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </Card>
 

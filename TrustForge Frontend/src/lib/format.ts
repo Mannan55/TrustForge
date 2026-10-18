@@ -9,7 +9,7 @@ export function postureForScore(score: number): PostureLevel {
 }
 
 /** Tailwind tone key for a posture band, used by badges and pills. */
-export function postureTone(posture: PostureLevel): "success" | "warning" | "info" | "danger" {
+export function postureTone(posture: PostureLevel): "success" | "warning" | "info" | "danger" | "neutral" {
   switch (posture) {
     case "Strong Alignment":
       return "success";
@@ -19,6 +19,10 @@ export function postureTone(posture: PostureLevel): "success" | "warning" | "inf
       return "info";
     case "Critical":
       return "danger";
+    case "Not Scorable":
+    case "Not Assessed":
+    default:
+      return "neutral";
   }
 }
 

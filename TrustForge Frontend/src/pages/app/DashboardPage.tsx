@@ -44,12 +44,19 @@ function OrgDashboard() {
   const { data: findings, loading: fl } = useAsync(() => findingsService.list(), []);
   const { data: tasks, loading: tl } = useAsync(() => remediationService.list(), []);
 
-  if (pl || fl || tl || !pillars || !findings || !tasks) return <PageSkeleton />;
+  if (pl || fl || tl) return <PageSkeleton />;
 
-  const open = findings.filter((f) => f.status !== "REMEDIATED" && f.status !== "DISMISSED");
+  const safePillars = pillars ?? [];
+  const safeFindings = findings ?? [];
+  const safeTasks = tasks ?? [];
+
+  const hasAssessment = safeFindings.length > 0 || (org.trustScore != null && org.trustScore > 0);
+  const open = safeFindings.filter((f) => f.status !== "REMEDIATED" && f.status !== "DISMISSED");
   const priority = [...open].sort((a, b) => severityRank[a.severity] - severityRank[b.severity]).slice(0, 3);
-  const coverage = Math.round(pillars.reduce((s, p) => s + p.evidenceCoverage, 0) / pillars.length);
-  const doneTasks = tasks.filter((t) => t.status === "COMPLETED").length;
+  const coverage = safePillars.length > 0
+    ? Math.round(safePillars.reduce((s, p) => s + p.evidenceCoverage, 0) / safePillars.length)
+    : 0;
+  const doneTasks = safeTasks.filter((t) => t.status === "COMPLETED").length;
   const firstName = user?.name.split(" ")[0] ?? "there";
 
   return (
@@ -59,20 +66,45 @@ function OrgDashboard() {
         title={`Good to see you, ${firstName}`}
         subtitle={`${org.displayName} was last assessed on ${org.lastAssessed}.`}
         actions={
-          <Link to="/website-scan">
-            <Button variant="outline" size="sm">
-              <ScanLine className="h-4 w-4" /> Run website scan
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/assessment">
+              <Button size="sm">
+                <ClipboardCheck className="h-4 w-4" /> Start Assessment
+              </Button>
+            </Link>
+            <Link to="/website-scan">
+              <Button variant="outline" size="sm">
+                <ScanLine className="h-4 w-4" /> Run website scan
+              </Button>
+            </Link>
+          </div>
         }
       />
+
+      {!hasAssessment && (
+        <Card className="border-emerald-light/40 bg-emerald-soft/40 p-6 text-center">
+          <ShieldCheck className="mx-auto h-8 w-8 text-emerald-light" />
+          <p className="mt-2 font-display text-lg font-semibold text-ink">No Completed Assessment Yet</p>
+          <p className="mx-auto mt-1 max-w-md text-sm text-ink-soft">
+            TrustForge has not evaluated an assessment for this organization yet. Run the Assessment Wizard to generate your verified Trust Score, pillar breakdown, and DPDP gap analysis.
+          </p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Link to="/assessment">
+              <Button size="sm">Start Assessment Wizard</Button>
+            </Link>
+            <Link to="/website-scan">
+              <Button variant="outline" size="sm">Run Website Scan</Button>
+            </Link>
+          </div>
+        </Card>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Trust Score"
-          value={org.trustScore}
+          value={org.trustScore != null && org.trustScore > 0 ? org.trustScore : "—"}
           icon={<Gauge className="h-4.5 w-4.5" />}
-          hint={org.posture}
+          hint={org.posture || "Not Assessed"}
         />
         <StatCard label="Open findings" value={open.length} icon={<ListChecks className="h-4.5 w-4.5" />} hint="Across 6 pillars" />
         <StatCard label="Evidence coverage" value={`${coverage}%`} icon={<FolderCheck className="h-4.5 w-4.5" />} hint="Backed by scan or document" />
@@ -99,7 +131,7 @@ function OrgDashboard() {
               <Badge tone={postureTone(org.posture)}>{org.posture}</Badge>
             </div>
             <div className="flex-1 space-y-3">
-              {pillars.map((p) => (
+              {safePillars.map((p) => (
                 <ProgressBar key={p.id} value={p.score} label={p.name} showValue />
               ))}
             </div>
@@ -110,16 +142,20 @@ function OrgDashboard() {
         <Card>
           <CardHeader eyebrow="Remediation" title="Fix progress" />
           <div className="mt-5 flex items-center gap-4">
-            <ScoreRing score={Math.round((doneTasks / tasks.length) * 100)} size={92} label="complete" />
+            <ScoreRing
+              score={safeTasks.length > 0 ? Math.round((doneTasks / safeTasks.length) * 100) : 0}
+              size={92}
+              label="complete"
+            />
             <div>
               <p className="tabular font-display text-2xl font-semibold text-ink">
-                {doneTasks}/{tasks.length}
+                {doneTasks}/{safeTasks.length}
               </p>
               <p className="text-sm text-ink-muted">tasks resolved</p>
             </div>
           </div>
           <div className="mt-5 space-y-2">
-            {tasks.slice(0, 3).map((t) => (
+            {safeTasks.slice(0, 3).map((t) => (
               <div key={t.id} className="flex items-center gap-2 text-sm">
                 <span
                   className={`h-2 w-2 shrink-0 rounded-full ${t.status === "COMPLETED" ? "bg-success" : t.status === "IN_PROGRESS" ? "bg-info" : "bg-line-strong"}`}

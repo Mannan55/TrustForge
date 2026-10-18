@@ -19,6 +19,9 @@ export function TrustScorePage() {
 
   const coverage = Math.round(pillars.reduce((s, p) => s + p.evidenceCoverage, 0) / pillars.length);
 
+  const isUnassessed = !org.trustScore && org.posture === "Not Assessed";
+  const isNotScorable = org.posture === "Not Scorable";
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -26,38 +29,59 @@ export function TrustScorePage() {
         title="How your posture is scored"
         subtitle="A weighted read across six pillars of the TrustForge Evaluation Framework, each mapped to DPDP obligations."
         actions={
-          <Link to="/reports">
-            <Button variant="outline" size="sm">
-              Export report <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/assessment">
+              <Button size="sm">New assessment</Button>
+            </Link>
+            <Link to="/reports">
+              <Button variant="outline" size="sm">
+                Export report <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         }
       />
 
-      {/* Summary band */}
-      <Card className="bg-emerald-deep text-bone" padded={false}>
-        <div className="flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
-          <div className="flex items-center gap-6">
-            <div className="rounded-2xl bg-emerald-dark/40 p-4">
-              <ScoreRingDark score={org.trustScore} />
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-beige/80">Current score</p>
-              <p className="mt-1 font-display text-4xl font-semibold text-bone tabular">{org.trustScore}</p>
-              <div className="mt-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-beige px-2.5 py-0.5 text-xs font-medium text-emerald-deep">
-                  {org.posture}
-                </span>
+      {isUnassessed ? (
+        <Card className="border-emerald-light/40 bg-emerald-soft/40 p-8 text-center">
+          <p className="font-display text-lg font-semibold text-ink">No Completed Assessment Available</p>
+          <p className="mx-auto mt-2 max-w-lg text-sm text-ink-soft">
+            The Trust Score is a deterministic calculation computed exclusively from completed, evidence-backed DPDP assessments. Complete an assessment to see your organization's score and pillar breakdown.
+          </p>
+          <div className="mt-5">
+            <Link to="/assessment">
+              <Button size="sm">Start Assessment Wizard</Button>
+            </Link>
+          </div>
+        </Card>
+      ) : (
+        /* Summary band */
+        <Card className="bg-emerald-deep text-bone" padded={false}>
+          <div className="flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
+            <div className="flex items-center gap-6">
+              <div className="rounded-2xl bg-emerald-dark/40 p-4">
+                <ScoreRingDark score={isNotScorable ? 0 : org.trustScore} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-beige/80">Current score</p>
+                <p className="mt-1 font-display text-4xl font-semibold text-bone tabular">
+                  {isNotScorable ? "N/A" : org.trustScore}
+                </p>
+                <div className="mt-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-beige px-2.5 py-0.5 text-xs font-medium text-emerald-deep">
+                    {org.posture}
+                  </span>
+                </div>
               </div>
             </div>
+            <div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-3">
+              <DarkStat label="Evidence coverage" value={`${coverage}%`} />
+              <DarkStat label="Pillars assessed" value={`${pillars.length}`} />
+              <DarkStat label="Framework" value="TrustForge TEF" />
+            </div>
           </div>
-          <div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-3">
-            <DarkStat label="Evidence coverage" value={`${coverage}%`} />
-            <DarkStat label="Pillars assessed" value={`${pillars.length}`} />
-            <DarkStat label="Framework" value="TrustForge TEF" />
-          </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* How it is calculated */}
       <Card>

@@ -7,21 +7,30 @@ import { useEffect, useState } from "react";
 export function useAsync<T>(fn: () => Promise<T>, deps: unknown[] = []) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    fn().then((d) => {
-      if (active) {
-        setData(d);
-        setLoading(false);
-      }
-    });
+    setError(null);
+    fn()
+      .then((d) => {
+        if (active) {
+          setData(d);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (active) {
+          setError(err instanceof Error ? err : new Error(String(err)));
+          setLoading(false);
+        }
+      });
     return () => {
       active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
-  return { data, loading };
+  return { data, loading, error };
 }

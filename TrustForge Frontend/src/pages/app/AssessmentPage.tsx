@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Check,
@@ -22,7 +22,6 @@ import {
   Info,
   Paperclip,
   Trash2,
-  Eye,
 } from "lucide-react";
 import { Card } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
@@ -43,7 +42,10 @@ import {
   SECURITY_CONTROLS,
   ANALYSIS_STAGES,
 } from "@/data/dpdpFramework";
-import { PILLARS, FINDINGS, UPLOADED_DOCUMENTS } from "@/data/assessmentData";
+import { UPLOADED_DOCUMENTS } from "@/data/assessmentData";
+import { assessmentService, storeLatestAssessmentId } from "@/services";
+import type { ApiAssessmentResult } from "@/services/api";
+import * as apiClient from "@/services/api";
 import { cn } from "@/lib/cn";
 import type { AssessmentStepMeta } from "@/types";
 
@@ -99,6 +101,8 @@ export function AssessmentPage() {
   const [state, setState] = useState<WizardState>(initialState);
   const [running, setRunning] = useState(false);
   const [resultReady, setResultReady] = useState(false);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const step = ASSESSMENT_STEPS[index - 1];
   const isFirst = index === 1;
@@ -117,6 +121,27 @@ export function AssessmentPage() {
       setIndex(ASSESSMENT_STEPS.length);
       setRunning(true);
       setResultReady(false);
+      setSubmitError(null);
+      // Submit to real backend
+      assessmentService.submit({
+        org_id: org.id ?? "demo-org",
+        categories: state.categories,
+        purposes: state.purposes,
+        languages: state.languages,
+        rights: state.rights,
+        processors: state.processors,
+        retention: state.retention,
+        erasure_automated: state.erasureAutomated,
+        breach_plan: state.breachPlan,
+        grievance_officer_named: Boolean(org.grievanceOfficer),
+        grievance_contact_published: Boolean(org.grievanceEmail),
+      }).then((resp) => {
+        setAssessmentId(resp.assessment_id);
+        storeLatestAssessmentId(resp.assessment_id);
+      }).catch((err) => {
+        setSubmitError(String(err));
+        notify("Assessment submission failed. Check backend connection.", "warning");
+      });
       return;
     }
     setIndex((i) => Math.min(ASSESSMENT_STEPS.length, i + 1));
@@ -194,6 +219,8 @@ export function AssessmentPage() {
             <ResultStep
               running={running}
               resultReady={resultReady}
+              assessmentId={assessmentId}
+              submitError={submitError}
               onComplete={() => {
                 setRunning(false);
                 setResultReady(true);
@@ -203,6 +230,19 @@ export function AssessmentPage() {
                 navigate("/dashboard");
               }}
               onViewFindings={() => navigate("/findings")}
+              onRetry={() => {
+                setRunning(true);
+                setResultReady(false);
+                setSubmitError(null);
+                setAssessmentId(null);
+                goNext();
+              }}
+              onBackToReview={() => {
+                setRunning(false);
+                setResultReady(false);
+                setSubmitError(null);
+                setIndex(ASSESSMENT_STEPS.length - 1);
+              }}
             />
           ) : (
             <>
@@ -667,46 +707,185 @@ function ReviewStep({ state, org }: { state: WizardState; org: ReturnType<typeof
 function ResultStep({
   running,
   resultReady,
+  assessmentId,
+  submitError,
   onComplete,
   onFinish,
   onViewFindings,
+  onRetry,
+  onBackToReview,
 }: {
   running: boolean;
   resultReady: boolean;
+  assessmentId: string | null;
+  submitError: string | null;
   onComplete: () => void;
   onFinish: () => void;
   onViewFindings: () => void;
+  onRetry: () => void;
+  onBackToReview: () => void;
 }) {
-  const { org } = useOrg();
-  const priorities = useMemo(
-    () =>
-      [...FINDINGS]
-        .filter((f) => f.status !== "REMEDIATED")
-        .sort((a, b) => severityRank(b.severity) - severityRank(a.severity))
-        .slice(0, 3),
-    [],
-  );
+  const { org, updateOrg, reloadOrg } = useOrg();
+  const navigate = useNavigate();
+  const [result, setResult] = useState<ApiAssessmentResult | null>(null);
+  const [pollError, setPollError] = useState<string | null>(null);
+  const [pollCount, setPollCount] = useState<number>(0);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
-  if (running && !resultReady) {
+  // Poll the backend until complete when we have an assessmentId
+  useEffect(() => {
+    if (!assessmentId || resultReady) return;
+    let cancelled = false;
+    let navTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const poll = async () => {
+      let count = 0;
+      while (!cancelled && count < 90) {
+        count++;
+        setPollCount(count);
+        try {
+          const r = await apiClient.getAssessmentResult(assessmentId);
+          if (cancelled) break;
+          if (r.status === "complete") {
+            storeLatestAssessmentId(assessmentId);
+            setResult(r);
+            setIsComplete(true);
+            if (r.trust_score != null && r.posture != null) {
+              updateOrg({
+                trustScore: Math.round(r.trust_score),
+                posture: r.posture as any,
+                lastAssessed: "Just now",
+              });
+            }
+            try {
+              await reloadOrg();
+            } catch {
+              /* ignore */
+            }
+            onCompleteRef.current?.();
+
+            // Automatically navigate to Trust Score page so user sees real results
+            navTimer = setTimeout(() => {
+              navigate("/trust-score");
+            }, 800);
+            break;
+          }
+          if (r.status === "error") {
+            setPollError(r.error || "Assessment evaluation encountered an error. Check backend logs.");
+            break;
+          }
+        } catch (err: any) {
+          if (!cancelled && count > 10) {
+            setPollError(err?.message || "Failed to communicate with assessment backend.");
+            break;
+          }
+        }
+        await new Promise((resolve) => setTimeout(resolve, count <= 2 ? 1000 : 2000));
+      }
+    };
+
+    poll();
+    return () => {
+      cancelled = true;
+      if (navTimer) clearTimeout(navTimer);
+    };
+  }, [assessmentId, resultReady, navigate, updateOrg, reloadOrg]);
+
+  // If there's an error from submission or evaluation, show actionable error card with retry
+  if (submitError || pollError) {
     return (
-      <ProcessingVisual
-        stages={ANALYSIS_STAGES}
-        stageMs={620}
-        onComplete={onComplete}
-        title="Analysing your responses"
-        subtitle="Combining your answers with observed signals"
-      />
+      <div className="space-y-4">
+        <Card className="border-danger/30 bg-danger/5 p-6">
+          <div className="flex items-start gap-3">
+            <Info className="mt-0.5 h-5 w-5 shrink-0 text-danger" />
+            <div>
+              <h3 className="font-semibold text-danger">Assessment Evaluation Failed</h3>
+              <p className="mt-1 text-sm text-ink-soft">
+                {submitError || pollError}
+              </p>
+            </div>
+          </div>
+          <div className="mt-5 flex items-center gap-3">
+            <Button onClick={onRetry}>Retry evaluation</Button>
+            <Button variant="outline" onClick={onBackToReview}>Back to review</Button>
+          </div>
+        </Card>
+      </div>
     );
   }
 
+  // Show processing animation while polling or completing
+  if (running && !resultReady) {
+    const currentStage = isComplete ? 4 : Math.min(3, Math.floor(pollCount / 2));
+    const currentProgress = isComplete ? 100 : Math.min(92, 10 + pollCount * 12);
+    const statusLabel = isComplete
+      ? "Analysis complete"
+      : pollCount === 0
+      ? "Submitting responses…"
+      : `Evaluating 20 DPDP controls (${pollCount * 2}s)`;
+
+    return (
+      <div className="space-y-4">
+        <ProcessingVisual
+          stages={ANALYSIS_STAGES}
+          externalProgress={currentProgress}
+          externalStage={currentStage}
+          isComplete={isComplete}
+          statusLabel={statusLabel}
+          title={isComplete ? "Analysis complete" : "Analysing your responses"}
+          subtitle={
+            isComplete
+              ? "Trust Score synthesized. Redirecting to your Trust Score…"
+              : "Evaluating 20 statutory DPDP controls against observed signals"
+          }
+        />
+        {!assessmentId && (
+          <p className="text-center text-xs text-ink-muted">Connecting to backend…</p>
+        )}
+        {assessmentId && (
+          <p className="text-center text-xs text-ink-muted">
+            Assessment in progress · ID: {assessmentId.slice(0, 8)}…
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Use real result if available, else fall back to org mock data
+  const trustScore = result?.trust_score ?? org.trustScore;
+  const posture = result?.posture ?? org.posture;
+  const displayPillars = result?.pillar_scores?.length
+    ? result.pillar_scores.slice(0, 3).map((ps) => ({
+        id: ps.pillar,
+        name: ps.pillar.replace(/_/g, " "),
+        score: Math.round(ps.score),
+        evidenceCoverage: ps.evidence_coverage > 1
+          ? Math.min(100, Math.round(ps.evidence_coverage))
+          : Math.min(100, Math.round(ps.evidence_coverage * 100)),
+      }))
+    : [];
+  const priorities = result?.findings
+    ? [...result.findings]
+        .filter((f) => f.status !== "PASS")
+        .sort((a, b) => severityRank(b.severity) - severityRank(a.severity))
+        .slice(0, 3)
+    : [];
+
   return (
     <div className="animate-fade-in space-y-6">
+      {pollError && (
+        <div className="rounded-xl border border-warning/30 bg-warning/5 p-4 text-sm text-warning">
+          <strong>Evaluation note:</strong> {pollError}
+        </div>
+      )}
       <Card className="bg-emerald-deep text-bone" padded={false}>
         <div className="flex flex-col items-center gap-6 p-8 text-center sm:flex-row sm:text-left">
-          <ScoreRing score={org.trustScore} size={128} label="Trust Score" darkTheme stroke={10} />
+          <ScoreRing score={trustScore} size={128} label="Trust Score" darkTheme stroke={10} />
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-beige/80">Assessment complete</p>
-            <p className="mt-1 font-display text-2xl font-semibold text-bone">{org.posture}</p>
+            <p className="mt-1 font-display text-2xl font-semibold text-bone">{posture}</p>
             <p className="mt-2 max-w-md text-sm text-bone/80">
               Your baseline is set. This reflects your responses combined with what we observed. It is a working
               posture you can improve, not a compliance certificate.
@@ -718,59 +897,67 @@ function ResultStep({
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-mid/50 px-3 py-1 text-xs font-medium text-beige">
                 <ShieldCheck className="h-3 w-3" /> Evidence Backed
               </span>
+              {result && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-mid/50 px-3 py-1 text-xs font-medium text-beige">
+                  {result.total_controls} controls · {result.pass_count} pass
+                </span>
+              )}
             </div>
           </div>
         </div>
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        {PILLARS.slice(0, 3).map((p) => {
-          const tone = p.score >= 80 ? "success" : p.score >= 65 ? "warning" : "danger";
-          const subLabel = p.score >= 80 ? "All key checks passed" : p.score >= 65 ? "Minor gaps detected" : "Needs attention";
-          const toneColor = p.score >= 80 ? "text-success" : p.score >= 65 ? "text-warning" : "text-danger";
-          return (
-            <Card key={p.id} className="relative overflow-hidden">
-              <div className="flex items-start justify-between">
-                <p className="text-sm font-medium text-ink-soft">{p.name}</p>
-                <span className={cn("text-[10px] font-semibold uppercase tracking-wide", toneColor)}>
-                  {p.score >= 80 ? "Good" : p.score >= 65 ? "Fair" : "Low"}
-                </span>
-              </div>
-              <p className="tabular mt-2 font-display text-3xl font-bold text-ink">
-                {p.score}
-                <span className="ml-1 text-base font-normal text-ink-muted">/100</span>
-              </p>
-              <ProgressBar
-                className="mt-3"
-                value={p.score}
-                tone={tone}
-              />
-              <p className={cn("mt-2 text-xs font-medium", toneColor)}>{subLabel}</p>
-              <p className="mt-0.5 text-[11px] text-ink-muted">{p.evidenceCoverage ?? Math.round(p.score * 0.9)}% evidence coverage</p>
-            </Card>
-          );
-        })}
-      </div>
-
-      <Card>
-        <p className="font-display font-semibold text-ink">What to fix first</p>
-        <div className="mt-3 space-y-2.5">
-          {priorities.map((f) => (
-            <div key={f.id} className="flex items-center gap-3 rounded-xl border border-line bg-canvas px-4 py-3">
-              <span
-                className={cn(
-                  "h-2 w-2 shrink-0 rounded-full",
-                  f.severity === "HIGH" ? "bg-danger" : f.severity === "MEDIUM" ? "bg-warning" : "bg-info",
-                )}
-              />
-              <span className="flex-1 text-sm text-ink">{f.title}</span>
-              <Badge tone="neutral">{f.pillar}</Badge>
-            </div>
-          ))}
+      {displayPillars.length > 0 && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {displayPillars.map((p) => {
+            const tone = p.score >= 80 ? "success" : p.score >= 65 ? "warning" : "danger";
+            const subLabel = p.score >= 80 ? "All key checks passed" : p.score >= 65 ? "Minor gaps detected" : "Needs attention";
+            const toneColor = p.score >= 80 ? "text-success" : p.score >= 65 ? "text-warning" : "text-danger";
+            return (
+              <Card key={p.id} className="relative overflow-hidden">
+                <div className="flex items-start justify-between">
+                  <p className="text-sm font-medium text-ink-soft">{p.name}</p>
+                  <span className={cn("text-[10px] font-semibold uppercase tracking-wide", toneColor)}>
+                    {p.score >= 80 ? "Good" : p.score >= 65 ? "Fair" : "Low"}
+                  </span>
+                </div>
+                <p className="tabular mt-2 font-display text-3xl font-bold text-ink">
+                  {p.score}
+                  <span className="ml-1 text-base font-normal text-ink-muted">/100</span>
+                </p>
+                <ProgressBar className="mt-3" value={p.score} tone={tone} />
+                <p className={cn("mt-2 text-xs font-medium", toneColor)}>{subLabel}</p>
+                <p className="mt-0.5 text-[11px] text-ink-muted">{p.evidenceCoverage}% evidence coverage</p>
+              </Card>
+            );
+          })}
         </div>
-      </Card>
+      )}
+
+      {priorities.length > 0 && (
+        <Card>
+          <p className="font-display font-semibold text-ink">What to fix first</p>
+          <div className="mt-3 space-y-2.5">
+            {priorities.map((f) => (
+              <div key={f.control_id} className="flex items-center gap-3 rounded-xl border border-line bg-canvas px-4 py-3">
+                <span
+                  className={cn(
+                    "h-2 w-2 shrink-0 rounded-full",
+                    f.severity === "HIGH" ? "bg-danger" : f.severity === "MEDIUM" ? "bg-warning" : "bg-info",
+                  )}
+                />
+                <span className="flex-1 text-sm text-ink">{f.finding}</span>
+                <Badge tone="neutral">{f.control_id}</Badge>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <Button variant="outline" onClick={() => navigate("/trust-score")}>
+          View Trust Score
+        </Button>
         <Button variant="outline" onClick={onViewFindings}>
           View all findings
         </Button>
