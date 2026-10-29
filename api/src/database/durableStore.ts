@@ -10,87 +10,27 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Candidate paths for data dir (searches relative to module location and CWD)
-const candidateDataDirs = [
-  path.resolve(__dirname, '../../data'),
-  path.resolve(process.cwd(), 'TrustForge/api/data'),
-  path.resolve(process.cwd(), 'api/data'),
-  path.resolve(process.cwd(), 'data'),
-];
-
-let DATA_DIR = candidateDataDirs[0];
-for (const dir of candidateDataDirs) {
-  if (fs.existsSync(dir) && fs.existsSync(path.join(dir, 'assessments.json'))) {
-    DATA_DIR = dir;
-    break;
+// Candidate paths for default data dir (searches relative to module location and CWD)
+function resolveDefaultDataDir(): string {
+  if (process.env.TRUSTFORGE_DATA_DIR) {
+    return path.resolve(process.env.TRUSTFORGE_DATA_DIR);
   }
-}
-
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  try {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch (err) {
-    console.warn('Could not create data dir:', err);
-  }
-}
-
-function loadJsonFile<T>(filename: string, defaultValue: T): T {
-  const filepath = path.join(DATA_DIR, filename);
-  if (!fs.existsSync(filepath)) return defaultValue;
-  try {
-    const raw = fs.readFileSync(filepath, 'utf-8');
-    return JSON.parse(raw) as T;
-  } catch (err) {
-    console.warn(`Error reading ${filename}, using default:`, err);
-    return defaultValue;
-  }
-}
-
-function saveJsonFile(filename: string, data: any): void {
-  const filepath = path.join(DATA_DIR, filename);
-  const tmpPath = `${filepath}.tmp.${process.pid}.${Date.now()}.${Math.random().toString(36).substring(2, 7)}`;
-  try {
-    fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
-    let renamed = false;
-    let lastErr: any = null;
-    for (let attempt = 0; attempt < 5; attempt++) {
-      try {
-        fs.renameSync(tmpPath, filepath);
-        renamed = true;
-        break;
-      } catch (err: any) {
-        lastErr = err;
-        if (err.code === 'EPERM' || err.code === 'EBUSY') {
-          try {
-            fs.copyFileSync(tmpPath, filepath);
-            fs.unlinkSync(tmpPath);
-            renamed = true;
-            break;
-          } catch {
-            const start = Date.now();
-            while (Date.now() - start < 15) {}
-          }
-        } else {
-          throw err;
-        }
-      }
+  const candidateDataDirs = [
+    path.resolve(__dirname, '../../data'),
+    path.resolve(process.cwd(), 'TrustForge/api/data'),
+    path.resolve(process.cwd(), 'api/data'),
+    path.resolve(process.cwd(), 'data'),
+  ];
+  for (const dir of candidateDataDirs) {
+    if (fs.existsSync(dir) && fs.existsSync(path.join(dir, 'assessments.json'))) {
+      return dir;
     }
-    if (!renamed && lastErr) {
-      throw lastErr;
-    }
-  } catch (err) {
-    console.error(`[DurableStore] Error saving ${filename}:`, err);
-    try {
-      if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
-    } catch {
-      // ignore cleanup failure
-    }
-    throw err;
   }
+  return candidateDataDirs[0];
 }
 
 export class DurableStore {
+  private dataDir: string;
   private assessments: Map<string, any>;
   private scans: Map<string, any>;
   private findings: Map<string, any[]>;
@@ -103,18 +43,51 @@ export class DurableStore {
   private organizations: Map<string, any>;
   private domainChallenges: Map<string, any>;
 
-  constructor() {
-    const loadedAssessments = loadJsonFile<Record<string, any>>('assessments.json', {});
-    const loadedScans = loadJsonFile<Record<string, any>>('scans.json', {});
-    const loadedFindings = loadJsonFile<Record<string, any[]>>('findings.json', {});
-    const loadedScores = loadJsonFile<Record<string, any>>('scores.json', {});
-    const loadedBenchmarks = loadJsonFile<Record<string, any>>('benchmarks.json', {});
-    const loadedTopsisRuns = loadJsonFile<Record<string, any>>('topsis_runs.json', {});
-    const loadedEvaluationRuns = loadJsonFile<Record<string, any>>('evaluation_runs.json', {});
-    const loadedUsers = loadJsonFile<Record<string, any>>('users.json', {});
-    const loadedRevoked = loadJsonFile<string[]>('revoked_tokens.json', []);
-    const loadedOrgs = loadJsonFile<Record<string, any>>('organizations.json', {});
-    const loadedChallenges = loadJsonFile<Record<string, any>>('domain_challenges.json', {});
+  constructor(customDataDir?: string) {
+    this.dataDir = customDataDir ? path.resolve(customDataDir) : resolveDefaultDataDir();
+
+    if (!fs.existsSync(this.dataDir)) {
+      try {
+        fs.mkdirSync(this.dataDir, { recursive: true });
+      } catch (err) {
+        console.warn('Could not create data dir:', err);
+      }
+    }
+
+    this.assessments = new Map();
+    this.scans = new Map();
+    this.findings = new Map();
+    this.scores = new Map();
+    this.benchmarks = new Map();
+    this.topsisRuns = new Map();
+    this.evaluationRuns = new Map();
+    this.users = new Map();
+    this.revokedTokens = new Set();
+    this.organizations = new Map();
+    this.domainChallenges = new Map();
+
+    this.reload();
+  }
+
+  public getDataDir(): string {
+    return this.dataDir;
+  }
+
+  /**
+   * Reloads all entity maps from the durable disk directory.
+   */
+  public reload(): void {
+    const loadedAssessments = this.loadJsonFile<Record<string, any>>('assessments.json', {});
+    const loadedScans = this.loadJsonFile<Record<string, any>>('scans.json', {});
+    const loadedFindings = this.loadJsonFile<Record<string, any[]>>('findings.json', {});
+    const loadedScores = this.loadJsonFile<Record<string, any>>('scores.json', {});
+    const loadedBenchmarks = this.loadJsonFile<Record<string, any>>('benchmarks.json', {});
+    const loadedTopsisRuns = this.loadJsonFile<Record<string, any>>('topsis_runs.json', {});
+    const loadedEvaluationRuns = this.loadJsonFile<Record<string, any>>('evaluation_runs.json', {});
+    const loadedUsers = this.loadJsonFile<Record<string, any>>('users.json', {});
+    const loadedRevoked = this.loadJsonFile<string[]>('revoked_tokens.json', []);
+    const loadedOrgs = this.loadJsonFile<Record<string, any>>('organizations.json', {});
+    const loadedChallenges = this.loadJsonFile<Record<string, any>>('domain_challenges.json', {});
 
     this.assessments = new Map(Object.entries(loadedAssessments));
     this.scans = new Map(Object.entries(loadedScans));
@@ -129,6 +102,60 @@ export class DurableStore {
     this.domainChallenges = new Map(Object.entries(loadedChallenges));
 
     console.log(`[DurableStore] Initialized. Loaded ${this.assessments.size} assessments, ${this.scores.size} scores, ${this.benchmarks.size} benchmarks, ${this.topsisRuns.size} topsis runs, ${this.evaluationRuns.size} evaluation runs, ${this.users.size} users, ${this.organizations.size} orgs, ${this.revokedTokens.size} revoked tokens from disk.`);
+  }
+
+  private loadJsonFile<T>(filename: string, defaultValue: T): T {
+    const filepath = path.join(this.dataDir, filename);
+    if (!fs.existsSync(filepath)) return defaultValue;
+    try {
+      const raw = fs.readFileSync(filepath, 'utf-8');
+      return JSON.parse(raw) as T;
+    } catch (err) {
+      console.warn(`Error reading ${filename}, using default:`, err);
+      return defaultValue;
+    }
+  }
+
+  /**
+   * Strictly atomic persistence via temporary file and atomic rename with bounded retry.
+   * Never falls back to non-atomic in-place copy to prevent reader corruption or truncated writes.
+   */
+  private saveJsonFile(filename: string, data: any): void {
+    const filepath = path.join(this.dataDir, filename);
+    const tmpPath = `${filepath}.tmp.${process.pid}.${Date.now()}.${Math.random().toString(36).substring(2, 7)}`;
+    try {
+      fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
+      let renamed = false;
+      let lastErr: any = null;
+      for (let attempt = 0; attempt < 10; attempt++) {
+        try {
+          fs.renameSync(tmpPath, filepath);
+          renamed = true;
+          break;
+        } catch (err: any) {
+          lastErr = err;
+          if (err.code === 'EPERM' || err.code === 'EBUSY') {
+            // Windows file-lock contention: backoff and retry atomic rename without in-place copy
+            const delayMs = 10 * (attempt + 1);
+            const start = Date.now();
+            while (Date.now() - start < delayMs) {}
+          } else {
+            throw err;
+          }
+        }
+      }
+      if (!renamed && lastErr) {
+        throw lastErr;
+      }
+    } catch (err) {
+      console.error(`[DurableStore] Error saving ${filename}:`, err);
+      try {
+        if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
+      } catch {
+        // ignore cleanup failure
+      }
+      throw err;
+    }
   }
 
   // --- Assessments ---
@@ -152,13 +179,13 @@ export class DurableStore {
 
   private persistAssessments(): void {
     const obj = Object.fromEntries(this.assessments);
-    saveJsonFile('assessments.json', obj);
+    this.saveJsonFile('assessments.json', obj);
   }
 
   // --- Scans ---
   public setScan(id: string, scan: any): void {
     this.scans.set(id, scan);
-    saveJsonFile('scans.json', Object.fromEntries(this.scans));
+    this.saveJsonFile('scans.json', Object.fromEntries(this.scans));
   }
 
   public getScan(id: string): any | undefined {
@@ -168,7 +195,7 @@ export class DurableStore {
   // --- Findings ---
   public setFindings(key: string, findings: any[]): void {
     this.findings.set(key, findings);
-    saveJsonFile('findings.json', Object.fromEntries(this.findings));
+    this.saveJsonFile('findings.json', Object.fromEntries(this.findings));
   }
 
   public getFindings(scanId: string, modelId?: string): any[] {
@@ -186,7 +213,7 @@ export class DurableStore {
   public setScore(scanId: string, modelId: string, score: any): void {
     this.scores.set(scanId, score);
     this.scores.set(`${scanId}_${modelId}`, score);
-    saveJsonFile('scores.json', Object.fromEntries(this.scores));
+    this.saveJsonFile('scores.json', Object.fromEntries(this.scores));
   }
 
   public getScore(scanId: string, modelId?: string): any | undefined {
@@ -199,7 +226,7 @@ export class DurableStore {
   // --- Benchmarks ---
   public setBenchmark(id: string, benchmark: any): void {
     this.benchmarks.set(id, benchmark);
-    saveJsonFile('benchmarks.json', Object.fromEntries(this.benchmarks));
+    this.saveJsonFile('benchmarks.json', Object.fromEntries(this.benchmarks));
   }
 
   public getBenchmark(id: string, orgId?: string): any | undefined {
@@ -229,7 +256,7 @@ export class DurableStore {
   // --- TOPSIS Runs ---
   public setTOPSISRun(id: string, run: any): void {
     this.topsisRuns.set(id, run);
-    saveJsonFile('topsis_runs.json', Object.fromEntries(this.topsisRuns));
+    this.saveJsonFile('topsis_runs.json', Object.fromEntries(this.topsisRuns));
   }
 
   public getTOPSISRun(id: string, orgId?: string): any | undefined {
@@ -259,7 +286,7 @@ export class DurableStore {
   // --- Phase 6 Evaluation Runs ---
   public setEvaluationRun(id: string, run: any): void {
     this.evaluationRuns.set(id, run);
-    saveJsonFile('evaluation_runs.json', Object.fromEntries(this.evaluationRuns));
+    this.saveJsonFile('evaluation_runs.json', Object.fromEntries(this.evaluationRuns));
   }
 
   public getEvaluationRun(id: string, orgId?: string): any | undefined {
@@ -289,7 +316,7 @@ export class DurableStore {
   // --- Users ---
   public setUser(id: string, user: any): void {
     this.users.set(id, user);
-    saveJsonFile('users.json', Object.fromEntries(this.users));
+    this.saveJsonFile('users.json', Object.fromEntries(this.users));
   }
 
   public getUser(id: string): any | undefined {
@@ -312,7 +339,7 @@ export class DurableStore {
   public revokeToken(token: string): void {
     if (!token) return;
     this.revokedTokens.add(token);
-    saveJsonFile('revoked_tokens.json', Array.from(this.revokedTokens));
+    this.saveJsonFile('revoked_tokens.json', Array.from(this.revokedTokens));
   }
 
   public isTokenRevoked(token: string): boolean {
@@ -323,7 +350,7 @@ export class DurableStore {
   // --- Organizations ---
   public setOrganization(id: string, org: any): void {
     this.organizations.set(id, org);
-    saveJsonFile('organizations.json', Object.fromEntries(this.organizations));
+    this.saveJsonFile('organizations.json', Object.fromEntries(this.organizations));
   }
 
   public getOrganization(id: string): any | undefined {
@@ -338,7 +365,7 @@ export class DurableStore {
   public setDomainChallenge(domain: string, challenge: any, orgId?: string): void {
     const key = orgId ? `${orgId.toLowerCase().trim()}:${domain.toLowerCase().trim()}` : domain.toLowerCase().trim();
     this.domainChallenges.set(key, challenge);
-    saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
+    this.saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
   }
 
   public getDomainChallenge(domain: string, orgId?: string): any | undefined {
@@ -359,7 +386,7 @@ export class DurableStore {
     }
     const legacyKey = domain.toLowerCase().trim();
     this.domainChallenges.delete(legacyKey);
-    saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
+    this.saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
   }
 }
 

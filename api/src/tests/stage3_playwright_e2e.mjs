@@ -16,15 +16,30 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const SCREENSHOT_DIR = path.resolve('C:/TF new V1/TrustDocumentation/stage3_screenshots');
-if (!fs.existsSync(SCREENSHOT_DIR)) {
-  fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+// Store screenshots inside the repository so they are tracked, committed and verifiable in PRs
+const repoScreenshotDir = path.resolve(import.meta.dirname, '../../../TrustDocumentation/stage3_screenshots');
+const externalScreenshotDir = path.resolve('C:/TF new V1/TrustDocumentation/stage3_screenshots');
+
+if (!fs.existsSync(repoScreenshotDir)) {
+  fs.mkdirSync(repoScreenshotDir, { recursive: true });
+}
+if (!fs.existsSync(externalScreenshotDir)) {
+  fs.mkdirSync(externalScreenshotDir, { recursive: true });
+}
+
+async function takeScreenshot(targetPage, filename) {
+  const p1 = path.join(repoScreenshotDir, filename);
+  const p2 = path.join(externalScreenshotDir, filename);
+  await targetPage.screenshot({ path: p1 });
+  try {
+    fs.copyFileSync(p1, p2);
+  } catch {}
 }
 
 async function runPlaywrightGates() {
   console.log('================================================================');
   console.log('Starting Stage 3 Playwright End-to-End Verification Harness');
-  console.log(`Screenshots will be saved to: ${SCREENSHOT_DIR}`);
+  console.log(`Screenshots will be saved to: ${repoScreenshotDir}`);
   console.log('================================================================');
 
   const browser = await chromium.launch({
@@ -68,7 +83,7 @@ async function runPlaywrightGates() {
     const adminUrl = page.url();
     assert.ok(adminUrl.includes('/admin/login'), 'Invalid login must not redirect to authenticated area');
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '01_invalid_login_rejected.png') });
+    await takeScreenshot(page, '01_invalid_login_rejected.png');
     console.log('✓ [Test 1 Passed] Invalid credentials rejected, stayed on login page.');
 
     // ------------------------------------------------------------------------
@@ -90,7 +105,7 @@ async function runPlaywrightGates() {
     alphaAuthToken = await page.evaluate(() => localStorage.getItem('trustforge.auth_token') || localStorage.getItem('tf_auth_token'));
     assert.ok(alphaAuthToken && alphaAuthToken.length > 20, 'Authentic JWT session token must be stored in localStorage');
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02_authenticated_dashboard.png') });
+    await takeScreenshot(page, '02_authenticated_dashboard.png');
     console.log('✓ [Test 2 Passed] User successfully authenticated; token stored; dashboard loaded.');
 
     // ------------------------------------------------------------------------
@@ -129,7 +144,7 @@ async function runPlaywrightGates() {
     assert.equal(reloadedOfficerVal, testOfficerName, 'Grievance officer name must be persisted in durable store and reloaded');
     assert.equal(reloadedEmailVal, testOfficerEmail, 'Grievance email must be persisted in durable store and reloaded');
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '03_settings_persisted.png') });
+    await takeScreenshot(page, '03_settings_persisted.png');
     console.log('✓ [Test 3 Passed] Settings saved, reloaded and verified from server.');
 
     // ------------------------------------------------------------------------
@@ -145,7 +160,7 @@ async function runPlaywrightGates() {
     assert.ok(pageText.includes('trustforge-verification='), 'DNS TXT challenge record must be generated and displayed');
     assert.ok(pageText.includes('Technical DNS control confirms domain routing control; it does not substitute for corporate registration verification'), 'Statutory legal disclaimer on corporate authority must be prominently displayed');
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '04_dns_challenge_generated.png') });
+    await takeScreenshot(page, '04_dns_challenge_generated.png');
     console.log('✓ [Test 4 Passed] DNS challenge section verified with legal disclaimers.');
 
     // ------------------------------------------------------------------------
@@ -195,17 +210,37 @@ async function runPlaywrightGates() {
       'Assessment results page must render evaluation summary and posture'
     );
 
-    // Capture the generated assessment ID from latest assessment
-    const activeAssessmentRes = await page.request.get('http://127.0.0.1:8000/api/assessments/active', {
+    // Hard Assertion 1: Query API for latest assessment completed by Tenant Alpha
+    const latestAssessRes = await page.request.get('http://127.0.0.1:8000/api/assessments/latest', {
       headers: { Authorization: `Bearer ${alphaAuthToken}` },
     });
-    if (activeAssessmentRes.ok()) {
-      const activeData = await activeAssessmentRes.json();
-      alphaAssessmentId = activeData.assessment_id || activeData.id || '';
-    }
+    assert.equal(latestAssessRes.status(), 200, 'GET /api/assessments/latest must return HTTP 200');
+    const latestData = await latestAssessRes.json();
+    alphaAssessmentId = latestData.assessment_id || latestData.id;
+    assert.ok(alphaAssessmentId && alphaAssessmentId.length > 5, 'Assessment ID must be captured and non-empty');
+    assert.equal(latestData.org_id, 'org_technova', 'Assessment org_id must match Tenant Alpha');
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05_assessment_nondefault_result.png') });
-    console.log('✓ [Test 5 Passed] Assessment wizard completed with non-default answers; score and findings rendered.');
+    // Hard Assertion 2: Verify C1-C10 control findings exist for this assessment
+    const findingsRes = await page.request.get(`http://127.0.0.1:8000/api/findings/${alphaAssessmentId}`, {
+      headers: { Authorization: `Bearer ${alphaAuthToken}` },
+    });
+    assert.equal(findingsRes.status(), 200, 'GET /api/findings/:id must return HTTP 200');
+    const findingsData = await findingsRes.json();
+    const findingsList = Array.isArray(findingsData) ? findingsData : findingsData.findings || [];
+    assert.ok(findingsList.length >= 10, 'Must have at least 10 C1-C10 control findings returned');
+    console.log(`Verified ${findingsList.length} C1-C10 findings for assessment ${alphaAssessmentId}`);
+
+    // Hard Assertion 3: Verify Trust Score calculation is present and valid
+    const scoreRes = await page.request.get(`http://127.0.0.1:8000/api/trust-score/${alphaAssessmentId}`, {
+      headers: { Authorization: `Bearer ${alphaAuthToken}` },
+    });
+    assert.equal(scoreRes.status(), 200, 'GET /api/trust-score/:id must return HTTP 200');
+    const scoreData = await scoreRes.json();
+    assert.ok(typeof scoreData.trust_score === 'number', 'Trust score must be a valid numeric value');
+    console.log(`Verified Trust Score: ${scoreData.trust_score}/100, Posture: ${scoreData.posture}`);
+
+    await takeScreenshot(page, '05_assessment_nondefault_result.png');
+    console.log('✓ [Test 5 Passed] Assessment wizard completed with non-default answers; score, findings and ID verified.');
 
     // ------------------------------------------------------------------------
     // Step 6: Live RAG Framework Monitor & Evidence Inspection
@@ -219,8 +254,18 @@ async function runPlaywrightGates() {
       'RAG Monitor must display hybrid retrieval events and statutory context'
     );
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '06_rag_evidence_inspection.png') });
-    console.log('✓ [Test 6 Passed] Live RAG Framework monitor loaded and verified.');
+    // Hard Assertion 4: Query RAG execution trace endpoint directly for the active assessment
+    const ragTraceRes = await page.request.get(`http://127.0.0.1:8000/api/assessments/${alphaAssessmentId}/rag-trace`, {
+      headers: { Authorization: `Bearer ${alphaAuthToken}` },
+    });
+    assert.equal(ragTraceRes.status(), 200, 'GET /api/assessments/:id/rag-trace must return HTTP 200');
+    const ragTraceData = await ragTraceRes.json();
+    assert.equal(ragTraceData.assessment_id, alphaAssessmentId, 'RAG trace must match the active assessment ID');
+    assert.ok(ragTraceData.rag_execution_trace, 'rag_execution_trace must be present on the active assessment');
+    console.log(`Verified live RAG trace for assessment ${alphaAssessmentId} (status: ${ragTraceData.rag_execution_trace.status || 'OK'})`);
+
+    await takeScreenshot(page, '06_rag_evidence_inspection.png');
+    console.log('✓ [Test 6 Passed] Live RAG Framework monitor loaded and verified against active assessment trace.');
 
     // ------------------------------------------------------------------------
     // Step 7: Reports Page & Benchmark RFC 4180 CSV Download (Assert HTTP 200)
@@ -231,10 +276,10 @@ async function runPlaywrightGates() {
         Authorization: `Bearer ${alphaAuthToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        selected_models: ['M01', 'M02', 'M03'],
+      data: {
+        selected_models: ['M01', 'M02', 'M06', 'M07'],
         target_url: 'https://technova.in',
-      }),
+      },
     });
     assert.equal(benchTriggerRes.status(), 200, 'Benchmark trigger must return 200');
     const benchData = await benchTriggerRes.json();
@@ -257,8 +302,14 @@ async function runPlaywrightGates() {
     assert.ok(csvContent.includes('M01'), 'CSV must contain M01 candidate model row');
     assert.ok(csvContent.includes('M02'), 'CSV must contain M02 candidate model row');
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '07_reports_and_benchmark_csv.png') });
-    console.log('✓ [Test 7 Passed] Reports and RFC 4180 CSV export validated with HTTP 200.');
+    // Hard Assertion 5: Research Provenance Check on CSV Export (Blocker 7)
+    assert.ok(csvContent.includes('Execution Status'), 'CSV must contain Execution Status column');
+    assert.ok(csvContent.includes('M06') && csvContent.includes('BLOCKED_PAID_MODEL'), 'Commercial model M06 must be marked BLOCKED_PAID_MODEL');
+    assert.ok(csvContent.includes('M07') && csvContent.includes('BLOCKED_PAID_MODEL'), 'Commercial model M07 must be marked BLOCKED_PAID_MODEL');
+    assert.ok(csvContent.includes('$0.000000'), 'Blocked commercial models must have $0.000000 cost');
+
+    await takeScreenshot(page, '07_reports_and_benchmark_csv.png');
+    console.log('✓ [Test 7 Passed] Reports and RFC 4180 CSV export validated with HTTP 200 & proven research metrics.');
 
     // ------------------------------------------------------------------------
     // Step 8: Multi-Tenant Isolation Across Two Organizations (Alpha vs Beta)
@@ -289,7 +340,11 @@ async function runPlaywrightGates() {
 
     assert.ok(betaToken, 'Tenant Beta token must be acquired');
 
-    // Tenant Beta attempts to access Tenant Alpha's benchmark by ID
+    // Blocker 4: Hard Unconditional Cross-Tenant Assertions (No Skipping Permitted)
+    assert.ok(alphaAssessmentId, 'Tenant Alpha assessment ID must be non-empty');
+    assert.ok(alphaBenchmarkId, 'Tenant Alpha benchmark ID must be non-empty');
+
+    // 1. Tenant Beta attempts to access Tenant Alpha's benchmark by ID
     console.log(`Tenant Beta querying Tenant Alpha benchmark '${alphaBenchmarkId}'...`);
     const crossBenchRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/benchmark/${alphaBenchmarkId}`, {
       headers: { Authorization: `Bearer ${betaToken}` },
@@ -298,36 +353,48 @@ async function runPlaywrightGates() {
     const crossBenchData = await crossBenchRes.json();
     assert.equal(crossBenchData.code, 'CROSS_ORGANISATION_ACCESS_DENIED');
 
-    // Tenant Beta attempts to download Tenant Alpha's benchmark CSV
+    // 2. Tenant Beta attempts to download Tenant Alpha's benchmark CSV
     console.log(`Tenant Beta querying Tenant Alpha benchmark CSV '${alphaBenchmarkId}/csv'...`);
     const crossCsvRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/benchmark/${alphaBenchmarkId}/csv`, {
       headers: { Authorization: `Bearer ${betaToken}` },
     });
     assert.equal(crossCsvRes.status(), 403, 'Cross-tenant CSV export must be strictly denied with HTTP 403');
 
-    // If assessment ID is available, test cross-tenant assessment report access
-    if (alphaAssessmentId) {
-      console.log(`Tenant Beta querying Tenant Alpha assessment '${alphaAssessmentId}'...`);
-      const crossAssessRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/reports/${alphaAssessmentId}`, {
-        headers: { Authorization: `Bearer ${betaToken}` },
-      });
-      assert.equal(crossAssessRes.status(), 403, 'Cross-tenant assessment report must be denied with HTTP 403');
+    // 3. Tenant Beta attempts to query Tenant Alpha's assessment directly
+    console.log(`Tenant Beta querying Tenant Alpha assessment '${alphaAssessmentId}'...`);
+    const crossAssessRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/assessments/${alphaAssessmentId}`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossAssessRes.status(), 403, 'Cross-tenant assessment record must be denied with HTTP 403');
 
-      const crossFindingsRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/findings/${alphaAssessmentId}`, {
-        headers: { Authorization: `Bearer ${betaToken}` },
-      });
-      assert.equal(crossFindingsRes.status(), 403, 'Cross-tenant findings must be denied with HTTP 403');
+    // 4. Tenant Beta attempts to query Tenant Alpha's assessment RAG trace
+    const crossTraceRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/assessments/${alphaAssessmentId}/rag-trace`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossTraceRes.status(), 403, 'Cross-tenant assessment RAG trace must be denied with HTTP 403');
 
-      const crossScoreRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/trust-score/${alphaAssessmentId}`, {
-        headers: { Authorization: `Bearer ${betaToken}` },
-      });
-      assert.equal(crossScoreRes.status(), 403, 'Cross-tenant trust score must be denied with HTTP 403');
-    }
+    // 5. Tenant Beta attempts to access Tenant Alpha's report
+    const crossReportRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/reports/${alphaAssessmentId}`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossReportRes.status(), 403, 'Cross-tenant assessment report must be denied with HTTP 403');
+
+    // 6. Tenant Beta attempts to access Tenant Alpha's findings
+    const crossFindingsRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/findings/${alphaAssessmentId}`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossFindingsRes.status(), 403, 'Cross-tenant findings must be denied with HTTP 403');
+
+    // 7. Tenant Beta attempts to access Tenant Alpha's trust score
+    const crossScoreRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/trust-score/${alphaAssessmentId}`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossScoreRes.status(), 403, 'Cross-tenant trust score must be denied with HTTP 403');
 
     await pageBeta.goto('http://127.0.0.1:5173/login', { waitUntil: 'networkidle', timeout: 15000 });
-    await pageBeta.screenshot({ path: path.join(SCREENSHOT_DIR, '08_tenant_isolation_verified.png') });
+    await takeScreenshot(pageBeta, '08_tenant_isolation_verified.png');
     await contextBeta.close();
-    console.log('✓ [Test 8 Passed] Cross-tenant boundaries verified; private records fail closed with HTTP 403.');
+    console.log('✓ [Test 8 Passed] Cross-tenant boundaries verified across all private resources; fail closed with HTTP 403.');
 
     // ------------------------------------------------------------------------
     // Step 9: Assert Zero Unexpected 5xx Server Errors
@@ -342,15 +409,15 @@ async function runPlaywrightGates() {
 
     console.log('================================================================');
     console.log('ALL PLAYWRIGHT ASSERTIONS PASSED SUCCESSFULLY!');
-    console.log('Screenshots saved to TrustDocumentation/stage3_screenshots:');
-    for (const f of fs.readdirSync(SCREENSHOT_DIR)) {
+    console.log(`Screenshots saved to: ${repoScreenshotDir}`);
+    for (const f of fs.readdirSync(repoScreenshotDir)) {
       console.log(` - ${f}`);
     }
     console.log('================================================================');
 
   } catch (err) {
     console.error('Playwright verification error:', err);
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'error_failure.png') }).catch(() => {});
+    await takeScreenshot(page, 'error_failure.png').catch(() => {});
     throw err;
   } finally {
     await browser.close();

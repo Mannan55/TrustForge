@@ -731,7 +731,11 @@ test('Wire HTTP - Acceptance Test 6: Zero paid inference gate prevents dispatchP
   );
 });
 
-test('Wire HTTP - Acceptance Test 7: Backend restart persistence verifies disk store survives and reloads', async () => {
+test('Wire HTTP - Acceptance Test 7: Backend restart persistence verifies disk store survives and reloads across child process', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const path = await import('node:path');
+  const fs = await import('node:fs');
+
   const testOrgId = `org_persist_test_${Date.now()}`;
   const testOrgData = {
     id: testOrgId,
@@ -741,9 +745,67 @@ test('Wire HTTP - Acceptance Test 7: Backend restart persistence verifies disk s
   };
   durableStore.setOrganization(testOrgId, testOrgData);
 
-  // Read from store instance
+  // 1. Verify parent in-memory state
   const fetchedOrg = durableStore.getOrganization(testOrgId);
   assert.ok(fetchedOrg, 'Organization must be retrieved from durable store');
   assert.equal(fetchedOrg.legalName, 'Persisted Enterprise Solutions');
-  assert.equal(fetchedOrg.primaryDomain, 'persisted-enterprise.in');
+
+  // 2. Spawn a separate, independent Node.js process to verify actual disk reload and restart persistence
+  const childOrgId = `org_child_proc_${Date.now()}`;
+  const childScript = `
+    import { DurableStore } from './dist/database/durableStore.js';
+    import assert from 'node:assert/strict';
+
+    const store = new DurableStore();
+    const org = store.getOrganization('${testOrgId}');
+    assert.ok(org, 'Child process must load parent-persisted organization from disk');
+    assert.equal(org.legalName, 'Persisted Enterprise Solutions');
+
+    // Child writes a new record to verify dual-process persistence
+    store.setOrganization('${childOrgId}', {
+      id: '${childOrgId}',
+      legalName: 'Child Process Enterprises',
+      primaryDomain: 'child-process.in',
+      gstin: '27AAACP5678B1Z2',
+    });
+    process.exit(0);
+  `;
+
+  const apiRootDir = fs.existsSync(path.resolve(process.cwd(), 'package.json'))
+    ? process.cwd()
+    : path.resolve(process.cwd(), 'TrustForge/api');
+
+  const childRun = spawnSync(process.execPath, ['--input-type=module', '-e', childScript], {
+    cwd: apiRootDir,
+    encoding: 'utf-8',
+    env: { ...process.env },
+  });
+
+  if (childRun.status !== 0 || childRun.error) {
+    console.error('Child persistence process error:', childRun.error);
+    console.error('Child persistence process stderr:', childRun.stderr);
+    console.error('Child persistence process stdout:', childRun.stdout);
+  }
+  assert.equal(childRun.status, 0, 'Child process verifying disk restart must exit with code 0');
+
+  // 3. Reload parent durableStore to confirm child process writes survived and loaded cleanly
+  durableStore.reload();
+  const fetchedChildOrg = durableStore.getOrganization(childOrgId);
+  assert.ok(fetchedChildOrg, 'Parent store after reload must see child process written record');
+  assert.equal(fetchedChildOrg.legalName, 'Child Process Enterprises');
+
+  // 4. Verify parameterized isolated data root (DurableStore constructor isolation)
+  const tempTestDir = path.resolve(apiRootDir, 'data_isolated_test_' + Date.now());
+  try {
+    const { DurableStore } = await import('../database/durableStore.js');
+    const isolatedStore = new DurableStore(tempTestDir);
+    assert.equal(isolatedStore.getDataDir(), tempTestDir);
+    isolatedStore.setOrganization('org_isolated_1', { id: 'org_isolated_1', legalName: 'Isolated Root Org' });
+    assert.ok(fs.existsSync(path.join(tempTestDir, 'organizations.json')), 'Isolated directory must contain persisted file');
+    assert.equal(isolatedStore.getOrganization('org_isolated_1')?.legalName, 'Isolated Root Org');
+  } finally {
+    if (fs.existsSync(tempTestDir)) {
+      fs.rmSync(tempTestDir, { recursive: true, force: true });
+    }
+  }
 });
