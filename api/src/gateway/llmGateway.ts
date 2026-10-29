@@ -485,25 +485,22 @@ export class LLMGateway {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`[LLMGateway] evaluateSingleModel fallback for ${model.id} on ${payload.controlId}: ${msg}`);
 
-      const hasEvidence = payload.observedEvidence && payload.observedEvidence.length > 0;
-      const verdict = hasEvidence ? 'SUPPORTED' : 'INSUFFICIENT_EVIDENCE';
-
+      // Provider failure cannot be converted into a passing compliance verdict.
+      // Evidence presence alone is not independent verification or legal grounding.
       return {
         model_id: model.id,
         control_id: payload.controlId,
-        verdict,
-        confidence: hasEvidence ? 0.8 : 0.4,
-        legal_citations: [{
-          source_document: 'dpdp-act-2023',
-          section: payload.statutoryRef || 'Section 5',
-          verbatim_quote: `Statutory Mandate: ${payload.statutoryRef}`,
-        }],
-        evidence_ids: payload.observedEvidence.map(e => e.id),
-        reasoning_summary: hasEvidence
-          ? `Grounded evaluation: Self-reported / crawl evidence verified for ${payload.controlName}.`
-          : `Grounded evaluation: Insufficient evidence observed for ${payload.controlName}.`,
-        identified_gaps: hasEvidence ? [] : [`No affirmative evidence observed for ${payload.controlName}`],
-        remediation_steps: hasEvidence ? [] : [`Publish clear adherence documentation for ${payload.controlName}`],
+        verdict: 'INSUFFICIENT_EVIDENCE',
+        confidence: 0,
+        legal_citations: [],
+        evidence_ids: (payload.observedEvidence || []).map(e => e.id),
+        reasoning_summary: `Model inference did not complete for ${payload.controlName}; no compliance determination was made.`,
+        identified_gaps: ['MODEL_INFERENCE_UNAVAILABLE'],
+        remediation_steps: ['Retry the evaluation when the selected model provider is available.'],
+        raw_verdict: 'PROVIDER_ERROR',
+        rejection_reason: 'MODEL_INFERENCE_FAILED',
+        is_grounded: false,
+        grounding_score: 0,
         latency_ms: durationMs,
       };
     }
