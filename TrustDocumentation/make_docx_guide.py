@@ -1,5 +1,7 @@
 """
-Generate comprehensive Word (.docx) and PDF screenshot guides for TrustForge.
+Generate comprehensive Word (.docx) screenshot guide for TrustForge.
+Fully reconciled with actual codebase implementation (PBKDF2, HMAC-SHA256 tokens,
+6 Trust Score pillars, 10 model benchmark slots M01-M10, and 7 primary TOPSIS criteria).
 """
 
 import os
@@ -8,8 +10,6 @@ from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.oxml import OxmlElement, parse_xml
-from docx.oxml.ns import nsdecls, qn
 
 CATALOG = [
     {
@@ -20,9 +20,9 @@ CATALOG = [
         "role": "Public Visitor",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "The landing page provides the primary entry point for enterprises seeking autonomous DPDP Act 2023 compliance auditing. "
-            "It showcases the core value propositions: deterministic RAG analysis, empirical model benchmarking, and automated evidence management. "
-            "Visitors can immediately trigger an unauthenticated preliminary website scan or proceed to secure enterprise onboarding."
+            "The landing page provides the primary interface for organizations seeking automated self-assessment against the DPDP Act 2023. "
+            "It highlights the platform's core architectural components: hybrid RAG retrieval, multi-model benchmarking, and evidence management. "
+            "Visitors can initiate a non-authenticated preliminary domain scan or proceed to create an enterprise account."
         )
     },
     {
@@ -33,22 +33,22 @@ CATALOG = [
         "role": "Public Visitor",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Provides an instant non-invasive perimeter privacy scan for any corporate domain without requiring upfront registration. "
-            "It tests cookie consent banners, privacy policy accessibility, SSL/TLS transport security, and public trackers. "
-            "The resulting scorecard generates immediate actionable findings and invites the user to create an account for full remediation."
+            "Executes an unauthenticated, non-invasive perimeter scan of a target web domain to check public privacy configurations. "
+            "It checks for the presence of cookie banners, privacy policy links, SSL/TLS transport availability, and detectable third-party scripts. "
+            "The resulting summary identifies observable perimeter issues and provides recommendations for full compliance auditing."
         )
     },
     {
         "id": "fig_03",
         "file": "fig_03_customer_login_page.png",
-        "title": "Figure 3: Secure Customer Authentication Portal",
+        "title": "Figure 3: Customer Authentication Portal",
         "route": "/login (Public/Client)",
-        "role": "Client User / Data Protection Officer",
+        "role": "Client User / Compliance Lead",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Implements multi-tenant credential authentication with bcrypt hashing, strict rate-limiting, and timing-safe password validation. "
-            "Customer credentials are strictly segmented to prevent cross-tenant identity leaks or privilege escalation. "
-            "Upon successful authentication, the backend issues an HMAC-signed JWT token enforcing organization boundary filters."
+            "Implements multi-tenant credential authentication using standard PBKDF2 password hashing (SHA-512, 10,000 iterations) with unique salt. "
+            "Upon successful authentication, the backend issues an HMAC-SHA256 session token with tenant organization claims. "
+            "Tenant-scoped route middleware ensures users cannot access or view data belonging to other registered organizations."
         )
     },
     {
@@ -59,9 +59,9 @@ CATALOG = [
         "role": "Prospective Client",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Allows new enterprise compliance teams and Data Protection Officers to register a dedicated tenant account. "
-            "Validates organizational email domains, enforces strong password complexity criteria, and provisions isolated database records. "
-            "New signups are automatically transitioned into the tenant onboarding wizard to establish baseline organization parameters."
+            "Allows new enterprise compliance personnel to register a tenant account with email validation and password complexity checks. "
+            "Generates a dedicated organization identifier and provisions initial tenant records in the durable application store. "
+            "Upon registration, the user is transitioned into the onboarding workflow to configure initial organizational parameters."
         )
     },
     {
@@ -72,9 +72,9 @@ CATALOG = [
         "role": "Organization Administrator",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Captures essential corporate metadata including legal corporate name, industry sector, registered domain, and data fiduciary tier. "
-            "Determines whether the entity qualifies as a Significant Data Fiduciary (SDF) under DPDP Act Section 10 obligations. "
-            "Initializes default compliance posture baselines and prepares the organization workspace for domain ownership verification."
+            "Collects organizational metadata including corporate entity name, industry sector, primary website domain, and designated DPO details. "
+            "Determines whether the entity self-classifies as a Significant Data Fiduciary (SDF) under DPDP Act Section 10 obligations. "
+            "Initializes default assessment baselines and generates domain verification tokens for ownership validation."
         )
     },
     {
@@ -85,9 +85,9 @@ CATALOG = [
         "role": "Compliance Officer / DPO",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Delivers an executive overview of the tenant's real-time Trust Score, assessment status, active findings, and evidence metrics. "
-            "Visual cards highlight critical compliance vulnerabilities, pending remediation tasks, and upcoming statutory filing deadlines. "
-            "Provides one-click navigation to the 14-step assessment, website scanner, evidence vault, and formal statutory export suites."
+            "Displays the tenant's current Trust Score, assessment completion progress, active findings count, and evidence metrics. "
+            "Summary cards categorize compliance observations across the six statutory pillars and highlight open remediation items. "
+            "Provides direct links to start or resume the 14-step assessment, trigger perimeter scans, and export summary reports."
         )
     },
     {
@@ -98,9 +98,9 @@ CATALOG = [
         "role": "Organization Administrator",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Enables configuration of tenant legal metadata, Data Protection Officer contact details, and corporate headquarters location. "
-            "Allows administrators to designate enterprise data processing sectors and review data fiduciary classification status. "
-            "Changes are immediately audited and tied to the organization's immutable audit log trail for governance compliance."
+            "Allows administrators to update organizational records, designated Data Protection Officer contact details, and corporate headquarters. "
+            "Enables maintenance of corporate sector classifications and review of applicable DPDP Act statutory requirements. "
+            "All profile updates are recorded in the organization audit history with timestamps and user identifiers."
         )
     },
     {
@@ -111,9 +111,9 @@ CATALOG = [
         "role": "Organization Administrator",
         "category": "Customer Platform & Identity Workflows",
         "desc": (
-            "Generates a cryptographically unique DNS TXT challenge token (`trustforge-site-verification=...`) to prove enterprise domain ownership. "
-            "The backend performs asynchronous DNS lookups against authorative name servers to validate the token before enabling active domain scanning. "
-            "Prevents unauthorized third parties from scanning, scraping, or claiming corporate domains without explicit DNS administrative authority."
+            "Generates a unique DNS TXT challenge token formatted as `trustforge-site-verification=<token>` to verify domain ownership. "
+            "The backend performs asynchronous DNS lookups against public nameservers to confirm token propagation prior to active scanning. "
+            "Ensures website scans and compliance scoring are only initiated for domains legitimately managed by the tenant organization."
         )
     },
     {
@@ -124,9 +124,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Evaluates organizational data governance structure, Data Protection Officer appointment, and internal compliance charters. "
-            "Maps directly to DPDP Act Section 8(1) and Section 10(2)(a) requirements for accountable privacy governance frameworks. "
-            "Assesses formal documentation, reporting lines, and board-level oversight for organizational data processing activities."
+            "Evaluates organizational data governance mechanisms, internal compliance reporting hierarchies, and DPO appointments. "
+            "Maps directly to DPDP Act Section 8(1) and Section 10(2)(a) obligations for responsible data fiduciary governance. "
+            "Audits formal documentation, board-level oversight policies, and designated privacy officer operational roles."
         )
     },
     {
@@ -137,9 +137,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Inspects affirmative, freely given, specific, informed, unconditional, and unambiguous consent mechanisms under DPDP Act Section 6(1). "
-            "Verifies that opt-in checkboxes are unchecked by default, dark patterns are prohibited, and consent records are auditable. "
-            "Ensures data fiduciaries capture explicit consent timestamps and itemized processing purpose declarations."
+            "Audits affirmative, freely given, specific, informed, and unambiguous consent mechanisms under DPDP Act Section 6(1). "
+            "Checks that opt-in selections are unchecked by default, bundled terms are avoided, and withdrawal procedures are accessible. "
+            "Verifies timestamped consent recordkeeping and specific purpose declarations for each data processing activity."
         )
     },
     {
@@ -150,9 +150,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Audits statutory privacy notice clarity, itemization of collected personal data, and DPO contact transparency under Section 5. "
-            "Validates availability of notice in English and all 22 languages specified in the Eighth Schedule to the Constitution of India. "
-            "Checks that notices describe data principal rights and the explicit procedure for withdrawing consent or lodging complaints."
+            "Evaluates statutory privacy notice completeness, itemization of collected personal data, and DPO contact details under Section 5. "
+            "Checks support for notice availability in English and the 22 languages specified in the Eighth Schedule of the Constitution of India. "
+            "Verifies clear instructions on how data principals may exercise rights or lodge grievances with the fiduciary."
         )
     },
     {
@@ -163,9 +163,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Verifies interoperability with Data Protection Board-registered Consent Managers as mandated under Section 6(7)-(9). "
-            "Assesses API endpoints and protocols that allow data principals to view, manage, and revoke consent through unified portals. "
-            "Ensures consent lifecycle events (grant, modification, revocation) trigger immediate downstream data processing halts."
+            "Assesses technical readiness for integrating with Data Protection Board-registered Consent Managers under Section 6(7)-(9). "
+            "Evaluates API interfaces and workflows enabling data principals to view, manage, and withdraw consent through unified mechanisms. "
+            "Audits procedures for propagating consent revocation across internal databases and third-party data processors."
         )
     },
     {
@@ -176,9 +176,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Examines adherence to DPDP Act Section 4 and Section 7 processing boundaries, verifying that only strictly necessary data is collected. "
-            "Flags excessive data collection practices, collateral data gathering, and purpose creep across corporate systems. "
-            "Validates that personal data collected for a specified transaction is not reused for profiling or automated marketing without separate consent."
+            "Assesses adherence to statutory collection boundaries under DPDP Act Section 4 and Section 7, ensuring only necessary data is collected. "
+            "Identifies potential collection creep, collateral data gathering, and secondary use beyond the consented purpose. "
+            "Checks safeguards preventing personal data collected for transactional purposes from being reused for unauthorized profiling."
         )
     },
     {
@@ -189,9 +189,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Audits data retention schedules, automated archival policies, and cryptographic erasure protocols under Section 8(7). "
-            "Verifies that personal data is deleted as soon as the specified purpose is fulfilled or consent is formally withdrawn. "
-            "Assesses corporate tombstone tracking, shredding verification logs, and legal hold override safeguards."
+            "Evaluates defined data retention schedules, automated archival triggers, and secure deletion protocols under Section 8(7). "
+            "Verifies that personal data is deleted once the specified processing purpose is accomplished or consent is formally revoked. "
+            "Audits tombstone tracking records, deletion verification logs, and legal hold override controls."
         )
     },
     {
@@ -202,9 +202,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Inspects data lifecycle integrity mechanisms to ensure personal data used to make decisions affecting data principals is accurate. "
-            "Maps directly to DPDP Act Section 8(3) obligations requiring reasonable efforts to maintain completeness and consistency. "
-            "Evaluates self-service data correction interfaces, synchronization pipelines, and third-party data processor propagation."
+            "Assesses mechanisms for maintaining data accuracy and completeness when personal data is used to make decisions affecting data principals. "
+            "Maps directly to DPDP Act Section 8(3) obligations requiring reasonable measures to ensure data consistency. "
+            "Reviews user self-service correction interfaces, synchronization processes, and downstream processor notification workflows."
         )
     },
     {
@@ -215,9 +215,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Verifies mandatory technical security controls including AES-256 encryption at rest, TLS 1.3 in transit, and role-based access. "
-            "Audits compliance with DPDP Act Section 8(5) requiring reasonable security safeguards to prevent personal data breaches. "
-            "Checks penetration testing cadences, vulnerability management programs, and multi-factor authentication enforcement."
+            "Audits technical security controls including TLS encryption in transit, role-based access control, and credential safeguards. "
+            "Evaluates organizational adherence to DPDP Act Section 8(5) requiring reasonable security safeguards to prevent data breaches. "
+            "Reviews vulnerability review cadences, system patching policies, and multi-factor authentication enforcement."
         )
     },
     {
@@ -228,9 +228,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Audits incident response playbooks and formal breach notification workflows under DPDP Act Section 8(6). "
-            "Verifies that protocols exist to inform both the Data Protection Board of India and affected data principals without delay. "
-            "Evaluates containment timelines, forensic logging procedures, and CERT-In coordination mechanisms."
+            "Reviews incident response procedures and formal breach reporting plans as required under DPDP Act Section 8(6). "
+            "Evaluates playbooks for notifying the Data Protection Board of India and affected data principals upon discovering a personal data breach. "
+            "Checks incident containment steps, forensic audit logging mechanisms, and statutory reporting escalation timelines."
         )
     },
     {
@@ -241,9 +241,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Evaluates verifiable parental consent mechanisms and strict prohibitions against tracking, profiling, or targeted advertising. "
-            "Enforces strict adherence to DPDP Act Section 9 mandates safeguarding minors and individuals under legal guardianship. "
-            "Checks age assurance systems, neutral age gating, and absence of harmful behavioral monitoring algorithms."
+            "Evaluates parental consent verification protocols and strict prohibitions against tracking, profiling, or targeted advertising to minors. "
+            "Enforces compliance with DPDP Act Section 9 mandates protecting children and persons under legal guardianship. "
+            "Reviews age-verification workflows, neutral gating methods, and absence of harmful behavioral monitoring practices."
         )
     },
     {
@@ -254,9 +254,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Inspects automated self-service workflows for the right to access (Sec 11), right to correction (Sec 12), and right to erasure. "
-            "Verifies data export portability formats (JSON/CSV), identity verification checks, and 30-day statutory fulfillment timers. "
-            "Evaluates the right of nomination framework enabling designated representatives in event of death or incapacity."
+            "Audits self-service procedures for processing data principal requests: right to access (Sec 11), correction (Sec 12), and erasure. "
+            "Evaluates identity verification methods, data export formats, and response tracking against statutory fulfillment windows. "
+            "Reviews mechanisms supporting the right of nomination in the event of death or legal incapacity under Section 14."
         )
     },
     {
@@ -267,9 +267,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Audits the organizational grievance redressal hierarchy and Data Protection Officer escalation paths under Section 13. "
-            "Verifies that ticket tracking systems record citizen complaints and enforce statutory resolution turnaround times. "
-            "Ensures data principals are clearly advised of their right to appeal unresolved grievances to the Data Protection Board."
+            "Evaluates internal grievance redressal procedures and Data Protection Officer escalation channels under Section 13. "
+            "Verifies ticket logging systems that record complaints and track resolution turnaround times. "
+            "Checks that communications inform data principals of their right to appeal unresolved grievances to the Data Protection Board."
         )
     },
     {
@@ -280,9 +280,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Audits specialized institutional requirements for designated Significant Data Fiduciaries under DPDP Act Section 10. "
-            "Validates periodic Data Protection Impact Assessments (DPIA), independent statutory audits, and resident DPO appointments. "
-            "Assesses algorithmic impact audits, systemic risk monitoring, and executive compliance reporting frameworks."
+            "Audits higher-tier obligations applicable to designated Significant Data Fiduciaries under DPDP Act Section 10. "
+            "Assesses periodic Data Protection Impact Assessment (DPIA) frameworks, independent audit readiness, and resident DPO appointments. "
+            "Reviews algorithmic risk monitoring procedures and board reporting cadences for systemic privacy impacts."
         )
     },
     {
@@ -293,9 +293,9 @@ CATALOG = [
         "role": "Compliance Assessor",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Aggregates all 14 statutory control sections into a unified pre-submission audit summary matrix with completeness indicators. "
-            "Allows compliance auditors to inspect response consistency, link supplementary documentary evidence, and confirm accuracy. "
-            "Submitting this step freezes the assessment snapshot and triggers real-time RAG scoring and multi-criteria TOPSIS evaluation."
+            "Consolidates responses from all 14 statutory control sections into a pre-submission review matrix with completeness indicators. "
+            "Allows the compliance assessor to inspect consistency, attach supplementary documentation, and confirm submission accuracy. "
+            "Final submission locks the assessment version and initiates deterministic scoring and RAG citation validation."
         )
     },
     {
@@ -306,9 +306,9 @@ CATALOG = [
         "role": "Compliance Officer / DPO",
         "category": "14-Step Statutory Assessment Wizard",
         "desc": (
-            "Presents the finalized audit scorecard, percentage compliance ratings across each of the 14 statutory sections, and gap analysis. "
-            "Identifies specific non-compliance risks categorized by high, medium, and low statutory exposure thresholds. "
-            "Generates immediate remediation recommendations and allows one-click export of formal audit certificates."
+            "Presents the completed audit scorecard, section-by-section compliance percentages, and identified statutory gap summaries. "
+            "Categorizes compliance gaps by severity (High, Medium, Low) based on statutory obligations and potential exposure tiers. "
+            "Generates actionable remediation recommendations and provides access to printable summary reports."
         )
     },
     {
@@ -319,9 +319,9 @@ CATALOG = [
         "role": "Executive / Auditor",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Displays the multi-dimensional composite Trust Score computed from assessment completeness, technical scan results, and evidence. "
-            "Features visual radar charts breaking down scores across Governance, Transparency, Security, Rights, and Incident Response. "
-            "Provides historical score progression curves and industry benchmark comparisons to quantify compliance improvement over time."
+            "Displays the deterministic Trust Score computed across six statutory pillars: Privacy, Security, Transparency, Governance, Lifecycle, Rights. "
+            "Incorporates faculty C1–C10 compliance mappings, dual weighting schemes (W1 Penalty-Proportional, W2 Equal), and posture bands. "
+            "Enforces critical gating caps (capping scores at 40 if HTTPS or privacy notices are missing) and provides pillar radar visualizations."
         )
     },
     {
@@ -332,9 +332,9 @@ CATALOG = [
         "role": "Security Engineer / Auditor",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Executes active automated crawling of corporate web properties to detect non-compliant third-party tracking scripts and cookies. "
-            "Evaluates SSL/TLS cipher suites, HTTP security response headers (HSTS, CSP), and accessibility of privacy notices. "
-            "Discovered issues are automatically converted into remediation tickets linked directly to the findings dashboard."
+            "Executes automated analysis of verified enterprise web properties to identify tracking cookies and missing security headers. "
+            "Evaluates SSL/TLS transport availability, defensive HTTP headers (HSTS, CSP), and accessibility of privacy notices. "
+            "Observed perimeter findings are automatically linked into the findings vault for remediation tracking."
         )
     },
     {
@@ -345,9 +345,9 @@ CATALOG = [
         "role": "Compliance Manager",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Centralizes all detected statutory gaps and perimeter scan vulnerabilities in a filterable compliance issue tracker. "
-            "Each finding links to its violated DPDP Act legal citation, maximum statutory financial penalty, and severity classification. "
-            "Enables compliance managers to assign remediation owners, track resolution status, and attach corrective proof."
+            "Centralizes compliance gaps and perimeter scan findings in a searchable issue tracker categorized by statutory section and severity. "
+            "Links each item to relevant DPDP Act provisions, descriptive remediation notes, and current resolution status. "
+            "Allows compliance managers to assign remediation owners and update remediation progress."
         )
     },
     {
@@ -358,9 +358,9 @@ CATALOG = [
         "role": "Compliance Officer",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Provides an auditable evidence locker where organizations upload policy documents, DPIA reports, and technical architecture schemas. "
-            "Each uploaded file is hashed (SHA-256) upon ingestion to ensure tamper-evident chain of custody and forensic integrity. "
-            "Files are automatically indexed into the RAG vector store for retrieval during automated compliance citation verification."
+            "Provides an auditable evidence locker where organizations upload policy documents, consent logs, and architecture documentation. "
+            "Each uploaded file is hashed using SHA-256 upon ingestion to establish a tamper-evident chain of custody and file verification record. "
+            "Stored evidence is indexed for retrieval to support citation grounding during automated compliance assessments."
         )
     },
     {
@@ -371,9 +371,9 @@ CATALOG = [
         "role": "Remediation Lead / Engineer",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Transforms audit findings into an interactive step-by-step engineering and legal remediation roadmap. "
-            "Features progress tracking bars, projected Trust Score gains upon resolution, and statutory deadline countdowns. "
-            "Includes pre-configured legal templates and technical implementation guides for rapid compliance closing."
+            "Translates compliance findings into an interactive task-based engineering and policy remediation roadmap. "
+            "Tracks implementation progress across technical controls, policy updates, and operational procedure revisions. "
+            "Provides contextual guidance and statutory references to assist internal teams in closing identified gaps."
         )
     },
     {
@@ -384,9 +384,9 @@ CATALOG = [
         "role": "Auditor / Executive",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Enables one-click generation of court-ready PDF audit reports, Board executive summaries, and raw JSON data dumps. "
-            "Reports incorporate statutory legal citations, full RRF-fused evidence excerpts, and verifiable cryptographic verification stamps. "
-            "Allows filtering by assessment period, business unit, or specific regulatory scope for external auditor submissions."
+            "Enables export of internal compliance assessment reports in PDF and structured JSON data formats for governance review. "
+            "Includes executive summaries, pillar score breakdowns, statutory section citations, and open finding inventories. "
+            "Allows filtering reports by assessment date and scope for internal stakeholder review and audit preparation."
         )
     },
     {
@@ -397,9 +397,9 @@ CATALOG = [
         "role": "AI Research / DPO",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Displays empirical performance metrics across evaluated language models (M01-M09) spanning accuracy, latency, and cost efficiency. "
-            "Implements the Technique for Order of Preference by Similarity to Ideal Solution (TOPSIS) to rank models algorithmically. "
-            "Demonstrates the zero-paid-inference boundary policy by showing commercial models gated while local open models achieve top ranks."
+            "Presents empirical benchmark metrics across 10 designated candidate model slots (M01–M10) evaluated against DPDP Act controls. "
+            "Applies the TOPSIS multi-criteria decision algorithm using 7 primary criteria (Macro-F1, Citations, Evidence, Consistency, Latency, Cost, Feasibility). "
+            "Maintains zero-paid commercial API spend ($0.00) by utilizing local models and free tiers, gating billable providers M06–M09."
         )
     },
     {
@@ -410,9 +410,9 @@ CATALOG = [
         "role": "Data Engineer / Auditor",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Provides real-time visibility into the hybrid vector and keyword retrieval pipeline executing Reciprocal Rank Fusion (RRF, k=60). "
-            "Inspects cosine similarity scores, BM25 keyword rankings, and exact legal chunk boundaries retrieved from the DPDP Act corpus. "
-            "Guarantees that every compliance assertion made by the platform is backed by verifiable, retrieved statutory text."
+            "Provides real-time visibility into the hybrid dense/sparse retrieval pipeline combining vector search with lexical BM25. "
+            "Monitors Reciprocal Rank Fusion (RRF, k=60), cosine similarity thresholds, and statutory corpus chunk boundaries. "
+            "Enables engineers to verify that model findings are grounded in retrieved excerpts from the DPDP Act 2023 legal corpus."
         )
     },
     {
@@ -423,9 +423,9 @@ CATALOG = [
         "role": "Privacy Operations Lead",
         "category": "Compliance Engines & Analytics",
         "desc": (
-            "Manages incoming citizen privacy requests including Access, Correction, Erasure, and Grievance redressal under DPDP Act Chapter III. "
-            "Enforces strict 30-day statutory response SLAs with visual color-coded urgency countdown badges. "
-            "Logs every operational touchpoint, verification check, and fulfillment action to maintain a complete audit defense file."
+            "Manages incoming data principal privacy requests including Access, Correction, Erasure, and Grievance submissions. "
+            "Tracks operational turnaround times against statutory 30-day response targets with visual status badges. "
+            "Records request processing milestones and documentation to maintain a complete internal fulfillment history."
         )
     },
     {
@@ -436,9 +436,9 @@ CATALOG = [
         "role": "System Administrator",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Enforces an isolated administrative authentication gate with explicit platform-level role verification on the server backend. "
-            "Customer credentials and non-admin tokens are strictly rejected to prevent unauthorized console access. "
-            "Guarantees that only cryptographically verified superusers and compliance auditors can access administrative features."
+            "Enforces an isolated administrative authentication gate requiring explicit server-verified platform administrator roles. "
+            "Client customer credentials submitted here are rejected by the backend to prevent unauthorized console access. "
+            "Requires a non-empty password and verifies the user profile dynamically against database authority before granting access."
         )
     },
     {
@@ -449,9 +449,9 @@ CATALOG = [
         "role": "Unauthorized User",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Demonstrates the active security rejection boundary when invalid or non-administrative credentials attempt console access. "
-            "Displays a clear, non-leaking authentication error message while logging the failed attempt in the tamper-evident security audit log. "
-            "Prevents brute force attacks through progressive rate-limiting and session termination upon repeated failures."
+            "Demonstrates the active access control rejection boundary when invalid or non-administrative credentials attempt console login. "
+            "Displays a clear, non-leaking authentication error message while recording the unauthorized attempt in the security audit log. "
+            "Prevents privilege escalation and enforces strict separation between client tenant roles and platform administrators."
         )
     },
     {
@@ -462,9 +462,9 @@ CATALOG = [
         "role": "Platform Superadmin",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Aggregates platform-wide telemetry, cross-tenant compliance indices, active scan worker queues, and aggregate assessment counts. "
-            "Provides superadministrators with immediate situational awareness regarding overall platform operational health. "
-            "Features real-time charts monitoring system throughput, API latency percentiles, and critical compliance vulnerability spikes."
+            "Aggregates platform-wide telemetry, cross-tenant compliance indices, active scan queues, and aggregate assessment totals. "
+            "Provides platform administrators with operational situational awareness regarding system activity and workload distribution. "
+            "Displays overview charts of system throughput, scan processing times, and aggregate finding categories."
         )
     },
     {
@@ -475,9 +475,9 @@ CATALOG = [
         "role": "Compliance Analyst",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Presents aggregated cross-sector compliance trends, common statutory failure modes, and benchmark comparisons. "
-            "Visualizes the distribution of Trust Scores across industry verticals (Healthcare, Finance, SaaS, Retail). "
-            "Enables regulatory researchers and platform operators to pinpoint national compliance bottlenecks under the DPDP Act."
+            "Presents aggregated cross-organization compliance trends, common statutory gap areas, and cross-sector comparisons. "
+            "Visualizes the distribution of Trust Scores across industry categories (Healthcare, Finance, SaaS, Retail). "
+            "Enables platform analysts to identify recurring compliance bottlenecks under the DPDP Act across registered tenants."
         )
     },
     {
@@ -488,9 +488,9 @@ CATALOG = [
         "role": "Platform Superadmin",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Manages all registered enterprise tenant organizations, subscription tiers, domain verification statuses, and compliance postures. "
-            "Provides granular administrative controls to suspend, activate, or adjust tenant quotas and data retention policies. "
-            "Supports quick searching and filtering across legal entity names, verification flags, and Significant Data Fiduciary badges."
+            "Manages registered tenant organizations, subscription tier settings, domain verification statuses, and compliance postures. "
+            "Provides administrative controls to update tenant status, configure resource allocations, and inspect organization profiles. "
+            "Supports searching and filtering across registered legal entities, verification flags, and Significant Data Fiduciary designations."
         )
     },
     {
@@ -501,9 +501,9 @@ CATALOG = [
         "role": "Platform Superadmin",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Allows deep administrative inspection of a specific tenant's settings, assigned DPO details, DNS challenge records, and audit history. "
-            "Enables manual domain verification overrides for enterprise deployments with air-gapped or internal DNS infrastructure. "
-            "Displays tenant-specific resource consumption metrics, active member rosters, and recent compliance milestones."
+            "Provides detailed inspection of a specific tenant's settings, assigned DPO details, DNS challenge records, and audit history. "
+            "Enables manual domain verification controls for authorized enterprise testing or air-gapped organizational environments. "
+            "Displays tenant-specific assessment history, registered members, and recent compliance milestones."
         )
     },
     {
@@ -514,9 +514,9 @@ CATALOG = [
         "role": "Security Administrator",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Centralizes enterprise user directory management across all tenants, displaying user roles, MFA statuses, and last login timestamps. "
-            "Enables security administrators to provision new accounts, initiate password resets, or adjust role assignments (Admin, DPO, Assessor). "
-            "Enforces strict separation of duties and logs all administrative identity modifications."
+            "Centralizes platform user management across registered tenants, displaying assigned roles and account creation dates. "
+            "Enables administrators to create user accounts, trigger password resets, and adjust role assignments (Admin, DPO, Auditor). "
+            "Enforces role-based separation of responsibilities and records all administrative account changes in the audit ledger."
         )
     },
     {
@@ -527,9 +527,9 @@ CATALOG = [
         "role": "Security Administrator",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Provides granular inspection of individual user accounts, including linked tenant organizations, assigned scopes, and activity logs. "
-            "Allows administrators to revoke active JWT sessions immediately in the event of compromised credentials or employee offboarding. "
-            "Audits user authorization events, failed login attempts, and password reset histories."
+            "Provides detailed view of individual user accounts, including associated tenant organizations, role scopes, and recent activity. "
+            "Allows administrators to revoke active sessions in the event of credential rotation or employee offboarding. "
+            "Audits user authentication events, account status modifications, and session lifetimes."
         )
     },
     {
@@ -540,9 +540,9 @@ CATALOG = [
         "role": "Supervisory Auditor",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Aggregates all statutory compliance assessments completed across the platform, showing completion dates, scores, and review statuses. "
-            "Allows supervisory auditors to review assessment submissions, verify supporting documentation, and flag anomalies. "
-            "Enables cross-organization compliance comparisons and provides drill-down access into individual assessment answers."
+            "Displays all statutory compliance assessments completed across the platform, including completion dates, scores, and review status. "
+            "Enables supervisory auditors to review submitted assessment questionnaires, inspect attached evidence, and leave review notes. "
+            "Allows cross-tenant compliance comparisons and drill-down into specific assessment responses."
         )
     },
     {
@@ -553,9 +553,9 @@ CATALOG = [
         "role": "Systems Administrator",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Monitors the background scan dispatcher queue, displaying active website crawl jobs, completion latencies, and failure rates. "
-            "Provides administrative controls to re-queue stalled scans, purge orphaned jobs, or configure worker concurrency limits. "
-            "Logs detailed HTTP response codes, SSL handshake details, and tracker extraction statistics for each scan."
+            "Monitors the background scan processing queue, showing active domain crawl tasks, completion times, and error rates. "
+            "Provides administrative controls to re-run failed scan jobs and inspect scanner worker status. "
+            "Logs HTTP status codes, SSL certificate parameters, and detected tracker counts for each completed scan."
         )
     },
     {
@@ -566,9 +566,9 @@ CATALOG = [
         "role": "Chief Compliance Officer",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Consolidates all statutory non-compliance findings detected across every registered organization in a single administrative view. "
-            "Allows filtering by severity (Critical, High, Medium, Low), DPDP Act section, and remediation status. "
-            "Helps regulatory bodies and compliance leaders identify systemic industry vulnerabilities and measure mean time to remediation (MTTR)."
+            "Consolidates statutory non-compliance observations and perimeter findings across all registered organizations into one view. "
+            "Allows filtering by severity level (Critical, High, Medium, Low), DPDP Act section, and current resolution status. "
+            "Assists compliance leads in identifying recurring systemic issues and monitoring remediation turnaround across tenants."
         )
     },
     {
@@ -579,9 +579,9 @@ CATALOG = [
         "role": "Forensic Auditor",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Enables platform forensic auditors to verify the cryptographic SHA-256 integrity of all uploaded compliance evidence documents. "
+            "Enables platform auditors to review evidence files uploaded by tenants along with their SHA-256 cryptographic hashes. "
             "Displays file metadata, uploading tenant identity, ingestion timestamps, and linked statutory assessment sections. "
-            "Guarantees that evidence files have not been modified, corrupted, or replaced post-upload."
+            "Verifies that uploaded documentary evidence maintains data integrity without modification post-submission."
         )
     },
     {
@@ -592,9 +592,9 @@ CATALOG = [
         "role": "Senior Certification Officer",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Provides a formalized review interface where senior compliance officers inspect and certify tenant assessment submissions. "
-            "Allows the reviewer to accept, request revisions on, or reject submitted assessments with itemized auditor commentary. "
-            "Approved certifications digitally sign the official compliance certificate and record the decision in the permanent audit trail."
+            "Provides an administrative interface where compliance reviewers evaluate and certify completed tenant assessment submissions. "
+            "Allows the reviewer to approve, request revisions on, or reject submitted assessments with itemized feedback. "
+            "Approved reviews record an administrative certification timestamp and update the organization's official audit record."
         )
     },
     {
@@ -605,9 +605,9 @@ CATALOG = [
         "role": "Legal / Rule Engineer",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Allows legal engineers to configure compliance scoring formulas, penalty multipliers, and statutory section weights in real time. "
-            "Enables dynamic updates to DPDP Act rules as subordinate regulations and Data Protection Board notifications are gazetted. "
-            "Changes are versioned and can be simulated against historical assessment data before being deployed to production."
+            "Allows authorized administrators to adjust statutory scoring formulas, section weights, and penalty parameters. "
+            "Enables updates to assessment rule configurations as official notifications and subordinate rules are issued under the DPDP Act. "
+            "Maintains versioned rule profiles to ensure audit assessments remain aligned with prevailing regulatory guidance."
         )
     },
     {
@@ -618,9 +618,9 @@ CATALOG = [
         "role": "Supervisory Auditor",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Maintains an archive of all generated statutory compliance certificates, board decks, and regulatory disclosure reports. "
-            "Enables administrators to re-download historical reports or verify the cryptographic signatures embedded in distributed PDFs. "
-            "Provides audit log tracking for who generated, viewed, or exported sensitive compliance documentation."
+            "Maintains an archive of generated assessment summary reports, audit extracts, and regulatory disclosure packages. "
+            "Enables administrators to view previously generated reports and review document generation timestamps. "
+            "Maintains an audit record of report generation and download events for accountability purposes."
         )
     },
     {
@@ -631,9 +631,9 @@ CATALOG = [
         "role": "DevOps / Infrastructure Lead",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Monitors real-time infrastructure operational status including Express API uptime, Python RAG worker responsiveness, and SQLite DB size. "
-            "Tracks memory utilization, CPU load, active database connections, and cache hit ratios. "
-            "Provides instant diagnostic alerts if background worker queues or vector search latency exceed healthy operating thresholds."
+            "Monitors application service availability including Express API responsiveness, Python RAG worker status, and database state. "
+            "Tracks memory usage, process uptime, active database connections, and background worker queue health. "
+            "Provides diagnostic indicators to ensure system components operate within normal performance tolerances."
         )
     },
     {
@@ -644,9 +644,9 @@ CATALOG = [
         "role": "Forensic / Security Auditor",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Maintains an append-only, tamper-evident audit trail recording every authentication event, permission change, and data export. "
-            "Each log entry captures UTC timestamp, actor IP address, action performed, resource targeted, and status code. "
-            "Provides compliance auditors with indisputable forensic evidence for regulatory accountability and breach investigations."
+            "Maintains an append-only audit trail recording user logins, role changes, assessment submissions, and administrative updates. "
+            "Each log entry records UTC timestamp, actor IP address, action performed, target resource, and result status. "
+            "Provides an unalterable activity history for internal accountability and compliance verification."
         )
     },
     {
@@ -657,9 +657,9 @@ CATALOG = [
         "role": "Platform Superadmin",
         "category": "Administrative Governance & Platform Audit",
         "desc": (
-            "Configures global platform security policies including password expiry intervals, session idle timeouts, and CORS origins. "
-            "Manages automated backup cadences, telemetry collection switches, and zero-paid-inference boundary enforcement flags. "
-            "Ensures platform-wide consistency in security postures and compliance operational rules."
+            "Configures platform security parameters including session timeout durations, CORS origin restrictions, and password policies. "
+            "Manages automated maintenance schedules, logging verbosity, and zero-paid inference enforcement policies. "
+            "Ensures consistent operational policies and security boundaries across the entire application deployment."
         )
     }
 ]
@@ -695,14 +695,15 @@ def generate_docx():
     sub_run.font.color.rgb = RGBColor(0x4B, 0x55, 0x63)
 
     # Metadata Table
-    table = doc.add_table(rows=5, cols=2)
+    table = doc.add_table(rows=6, cols=2)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     meta_data = [
         ("Platform Version:", "TrustForge v1.0.0-release (Production Golden Master)"),
-        ("Verified Commit SHA:", "729d512b9676df9a22677f3b402da9406a8da17f"),
-        ("Statutory Framework:", "Digital Personal Data Protection (DPDP) Act 2023 [India]"),
-        ("Verification Methodology:", "Deterministic Playwright Headless Automation on Chromium"),
-        ("Total Figures Documented:", "50 Comprehensive Figures (Full User, System & Admin Coverage)")
+        ("Verified Release Commit:", "035429f6c76d7ab6d14f2053b3e9d2050f493672"),
+        ("Statutory Foundation:", "Digital Personal Data Protection (DPDP) Act 2023 [Act No. 22 of 2023, India]"),
+        ("Authentication & Security:", "PBKDF2 Password Hashing (SHA-512, 10k iter), HMAC-SHA256 Session Tokens, SHA-256 Evidence Hashes"),
+        ("Trust Score Architecture:", "6 Canonical Pillars, C1–C10 Compliance Taxonomy, W1/W2 Weights, Gating Caps (min(TS, 40))"),
+        ("Benchmarking & TOPSIS:", "10 Model Slots (M01–M10), 7 Primary TOPSIS Criteria, Zero-Paid Inference Policy ($0.00 spend)"),
     ]
     for i, (k, v) in enumerate(meta_data):
         row = table.rows[i]
@@ -710,17 +711,17 @@ def generate_docx():
         c0.text = k
         c1.text = v
         c0.paragraphs[0].runs[0].font.bold = True
-        c0.paragraphs[0].runs[0].font.size = Pt(10)
-        c1.paragraphs[0].runs[0].font.size = Pt(10)
+        c0.paragraphs[0].runs[0].font.size = Pt(9.5)
+        c1.paragraphs[0].runs[0].font.size = Pt(9.5)
 
     doc.add_paragraph()  # spacing
 
     intro = doc.add_paragraph(
         "This document provides the definitive, figure-by-figure photographic and architectural record of the TrustForge "
-        "autonomous compliance assurance platform. Every screen, form, wizard step, analytics dashboard, and administrative "
-        "governance console has been rendered from live application execution and captured in headless automation. "
-        "Each figure is paired with an itemized explanation describing its user-facing role, statutory DPDP Act grounding, "
-        "and technical verification status."
+        "compliance auditing and benchmarking platform. Every screen, form, wizard step, analytics dashboard, and administrative "
+        "governance console has been rendered from active application execution and captured in deterministic headless automation. "
+        "Each figure is paired with a verified explanation describing its user-facing role, statutory DPDP Act grounding, "
+        "and technical implementation status in accordance with the released source code."
     )
     intro.runs[0].font.size = Pt(10.5)
 

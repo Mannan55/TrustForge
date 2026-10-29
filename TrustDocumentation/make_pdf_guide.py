@@ -7,7 +7,6 @@ from make_docx_guide import CATALOG
 def generate_html_and_render_pdf():
     screenshots_dir = Path("TrustForge/TrustDocumentation/complete_documentation_screenshots").resolve()
     html_out = Path("TrustForge/TrustDocumentation/screenshots_guide.html").resolve()
-    pdf_out = Path("TrustForge/TrustDocumentation/TrustForge_Complete_System_Screenshots_Guide.pdf").resolve()
 
     items_html = []
     current_cat = None
@@ -25,7 +24,6 @@ def generate_html_and_render_pdf():
         img_file = screenshots_dir / item["file"]
         img_src = ""
         if img_file.exists():
-            # Use relative or file path
             img_src = img_file.as_uri()
 
         items_html.append(f"""
@@ -95,7 +93,7 @@ def generate_html_and_render_pdf():
         border-radius: 8px;
         padding: 16px 24px;
         margin-bottom: 30px;
-        max-width: 600px;
+        max-width: 650px;
         width: 100%;
     }}
     .metadata-row {{
@@ -103,7 +101,7 @@ def generate_html_and_render_pdf():
         justify-content: space-between;
         padding: 6px 0;
         border-bottom: 1px solid #e2e8f0;
-        font-size: 10pt;
+        font-size: 9.5pt;
     }}
     .metadata-row:last-child {{
         border-bottom: none;
@@ -115,12 +113,15 @@ def generate_html_and_render_pdf():
     .metadata-value {{
         color: #0f172a;
         font-family: monospace;
+        font-size: 9pt;
+        text-align: right;
+        max-width: 400px;
     }}
     .executive-summary {{
         text-align: justify;
         max-width: 680px;
         margin: 0 auto;
-        font-size: 10.5pt;
+        font-size: 10pt;
         color: #334155;
         line-height: 1.6;
     }}
@@ -212,28 +213,32 @@ def generate_html_and_render_pdf():
         </div>
         <div class="metadata-row">
             <span class="metadata-label">Verified Commit SHA:</span>
-            <span class="metadata-value">729d512b9676df9a22677f3b402da9406a8da17f</span>
+            <span class="metadata-value">035429f6c76d7ab6d14f2053b3e9d2050f493672</span>
         </div>
         <div class="metadata-row">
             <span class="metadata-label">Statutory Foundation:</span>
             <span class="metadata-value">DPDP Act 2023 (Act No. 22 of 2023, India)</span>
         </div>
         <div class="metadata-row">
-            <span class="metadata-label">Verification Mode:</span>
-            <span class="metadata-value">Deterministic Playwright Automation (Chromium)</span>
+            <span class="metadata-label">Authentication &amp; Tokens:</span>
+            <span class="metadata-value">PBKDF2 (SHA-512, 10k iter), HMAC-SHA256 (tf_tok_)</span>
         </div>
         <div class="metadata-row">
-            <span class="metadata-label">Coverage Extent:</span>
-            <span class="metadata-value">50 Live Verification Figures (100% Coverage)</span>
+            <span class="metadata-label">Trust Score Structure:</span>
+            <span class="metadata-value">6 Canonical Pillars (C1-C10 Mappings, min(TS, 40) Caps)</span>
+        </div>
+        <div class="metadata-row">
+            <span class="metadata-label">Benchmarking &amp; TOPSIS:</span>
+            <span class="metadata-value">10 Candidate Slots (M01-M10), 7 Primary Criteria, $0 Spend</span>
         </div>
     </div>
     <div class="executive-summary">
         <p>
-            <strong>Executive Architecture Summary:</strong> TrustForge is an autonomous compliance engineering platform 
-            built to audit, benchmark, and certify enterprise compliance under India's Digital Personal Data Protection (DPDP) Act 2023. 
-            This document delivers complete, verifiable visual evidence of all customer-facing workflows, the complete 14-step statutory 
-            assessment wizard, algorithmic analytics suites (RRF RAG and TOPSIS MCDM), and the isolated Administrative Governance Console. 
-            Every figure represents active execution verified under strict continuous integration and zero-paid-inference boundary enforcement.
+            <strong>Executive Architecture Summary:</strong> TrustForge is an automated compliance auditing and model benchmarking platform 
+            designed to evaluate enterprise data privacy posture against India's Digital Personal Data Protection (DPDP) Act 2023. 
+            This document delivers complete visual evidence of all customer-facing workflows, the complete 14-step statutory 
+            assessment wizard, empirical analytics suites (hybrid RAG with Reciprocal Rank Fusion and TOPSIS MCDM), and the isolated Administrative Governance Console. 
+            Every figure represents active application execution verified under strict continuous integration and zero-paid commercial inference boundary enforcement.
         </p>
     </div>
 </div>
