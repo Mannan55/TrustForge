@@ -1,4 +1,4 @@
-# TrustForge™ — Autonomous DPDP Compliance & Privacy Assurance Platform
+# TrustForge™ - Autonomous DPDP Compliance & Privacy Assurance Platform
 
 [![CI Verification](https://github.com/Mannan55/TrustForge/actions/workflows/ci.yml/badge.svg)](https://github.com/Mannan55/TrustForge/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/Mannan55/TrustForge/releases/tag/v1.0.0-release)
