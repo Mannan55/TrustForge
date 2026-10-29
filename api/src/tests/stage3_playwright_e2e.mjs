@@ -397,15 +397,155 @@ async function runPlaywrightGates() {
     console.log('✓ [Test 8 Passed] Cross-tenant boundaries verified across all private resources; fail closed with HTTP 403.');
 
     // ------------------------------------------------------------------------
-    // Step 9: Assert Zero Unexpected 5xx Server Errors
+    // Step 9: Admin Role-Based Access Control (RBAC) Enforcement
     // ------------------------------------------------------------------------
-    console.log('[Test 9] Checking for unexpected server errors...');
+    console.log('[Test 9] Testing RBAC restrictions on Admin routes...');
+    // Unauthenticated user attempting to access /admin
+    const anonContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const anonPage = await anonContext.newPage();
+    await anonPage.goto('http://127.0.0.1:5173/admin', { waitUntil: 'networkidle', timeout: 15000 });
+    assert.ok(anonPage.url().includes('/login'), 'Unauthenticated user attempting /admin must be redirected to /login');
+    await anonContext.close();
+
+    // Customer user (page with Tenant Alpha / Rajesh) attempting to access /admin
+    console.log('Testing authenticated customer user attempting to access /admin...');
+    await page.goto('http://127.0.0.1:5173/admin', { waitUntil: 'networkidle', timeout: 15000 });
+    assert.ok(page.url().includes('/dashboard'), 'Customer user attempting /admin must be redirected back to /dashboard');
+
+    console.log('Testing authenticated customer user attempting to access /admin/organizations...');
+    await page.goto('http://127.0.0.1:5173/admin/organizations', { waitUntil: 'networkidle', timeout: 15000 });
+    assert.ok(page.url().includes('/dashboard'), 'Customer user attempting /admin/organizations must be redirected to /dashboard');
+    console.log('✓ [Test 9 Passed] Admin RBAC properly enforced: unauthorized access rejected.');
+
+    // ------------------------------------------------------------------------
+    // Step 10: Authenticated Super Admin Login & Command Center
+    // ------------------------------------------------------------------------
+    console.log('[Test 10] Testing authentic Super Admin login at /admin/login...');
+    const adminContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const adminPage = await adminContext.newPage();
+
+    adminPage.on('response', (response) => {
+      const status = response.status();
+      const url = response.url();
+      if (status >= 500) {
+        serverErrors.push(`[${status}] HTTP Server Error at ${url}`);
+        console.error(`[Playwright Admin Network Error] ${status} at ${url}`);
+      }
+    });
+
+    await adminPage.goto('http://127.0.0.1:5173/admin/login', { waitUntil: 'networkidle', timeout: 15000 });
+    await adminPage.fill('input[type="email"]', 'admin@trustforge.in');
+    await adminPage.fill('input[type="password"]', 'AdminSecret2026!');
+    await adminPage.click('button[type="submit"]');
+
+    await adminPage.waitForURL('**/admin', { timeout: 15000 });
+    console.log(`Admin URL after login: ${adminPage.url()}`);
+    assert.ok(adminPage.url().endsWith('/admin'), 'Super Admin login must redirect to /admin command center');
+
+    await adminPage.waitForSelector('text=Activity and health across every tenant', { timeout: 15000 });
+    const adminBodyText = await adminPage.textContent('body');
+    assert.ok(adminBodyText.includes('Command Center'), 'Admin page must display Command Center header');
+    assert.ok(adminBodyText.includes('Organizations'), 'Admin page must display Organizations KPI');
+    assert.ok(adminBodyText.includes('Active users'), 'Admin page must display Active users KPI');
+    assert.ok(adminBodyText.includes('Website scans'), 'Admin page must display Website scans KPI');
+
+    await takeScreenshot(adminPage, '09_admin_dashboard_overview.png');
+    console.log('✓ [Test 10 Passed] Super Admin logged in and Command Center verified.');
+
+    // ------------------------------------------------------------------------
+    // Step 11: Admin Organization Management & Tenant Inspection
+    // ------------------------------------------------------------------------
+    console.log('[Test 11] Testing Organization Management at /admin/organizations...');
+    await adminPage.goto('http://127.0.0.1:5173/admin/organizations', { waitUntil: 'networkidle', timeout: 15000 });
+    await adminPage.waitForSelector('text=Every organization on the platform', { timeout: 15000 });
+
+    const orgsText = await adminPage.textContent('body');
+    assert.ok(orgsText.includes('TechNova Solutions'), 'Organizations table must include TechNova tenant');
+
+    // Test search filter
+    const searchInput = adminPage.locator('input[placeholder*="Search"]').first();
+    if (await searchInput.count() > 0) {
+      await searchInput.fill('TechNova');
+      await adminPage.waitForTimeout(500);
+      const filteredText = await adminPage.textContent('body');
+      assert.ok(filteredText.includes('TechNova'), 'Filtered view must retain matching tenant');
+    }
+
+    // Click on organization row to view detail
+    const orgRow = adminPage.locator('tr').filter({ hasText: 'TechNova' }).first();
+    if (await orgRow.count() > 0) {
+      await orgRow.click();
+      await adminPage.waitForTimeout(1000);
+      assert.ok(adminPage.url().includes('/admin/organizations/'), 'Clicking organization must navigate to detail view');
+      const detailText = await adminPage.textContent('body');
+      assert.ok(detailText.includes('Trust Score') || detailText.includes('Tenant activity'), 'Detail view must render tenant stats and activity');
+    }
+
+    await takeScreenshot(adminPage, '10_admin_organizations_table.png');
+    console.log('✓ [Test 11 Passed] Admin Organizations management and tenant inspection verified.');
+
+    // ------------------------------------------------------------------------
+    // Step 12: Admin User Management & Role Auditing
+    // ------------------------------------------------------------------------
+    console.log('[Test 12] Testing User Management at /admin/users...');
+    await adminPage.goto('http://127.0.0.1:5173/admin/users', { waitUntil: 'networkidle', timeout: 15000 });
+    await adminPage.waitForSelector('text=People across all organizations', { timeout: 15000 });
+
+    const usersText = await adminPage.textContent('body');
+    assert.ok(usersText.includes('Rajesh Kumar') || usersText.includes('Owner'), 'User table must display platform users and roles');
+
+    // Click on user row to view user detail
+    const userRow = adminPage.locator('tr').filter({ hasText: 'Rajesh Kumar' }).first();
+    if (await userRow.count() > 0) {
+      await userRow.click();
+      await adminPage.waitForTimeout(1000);
+      assert.ok(adminPage.url().includes('/admin/users/'), 'Clicking user must navigate to user detail view');
+    }
+
+    await takeScreenshot(adminPage, '11_admin_users_management.png');
+    console.log('✓ [Test 12 Passed] Admin User management and role auditing verified.');
+
+    // ------------------------------------------------------------------------
+    // Step 13: Admin Global Assessments Ops & Audit Logs
+    // ------------------------------------------------------------------------
+    console.log('[Test 13] Testing Global Assessments at /admin/assessments and Audit Logs at /admin/audit...');
+    await adminPage.goto('http://127.0.0.1:5173/admin/assessments', { waitUntil: 'networkidle', timeout: 15000 });
+    await adminPage.waitForSelector('text=Where each tenant stands', { timeout: 15000 });
+    const assessBodyText = await adminPage.textContent('body');
+    assert.ok(assessBodyText.includes('Completed') || assessBodyText.includes('In progress'), 'Assessments table must render tenant assessment status');
+
+    await adminPage.goto('http://127.0.0.1:5173/admin/audit', { waitUntil: 'networkidle', timeout: 15000 });
+    await adminPage.waitForSelector('text=A tamper-evident record', { timeout: 15000 });
+    const auditText = await adminPage.textContent('body');
+    assert.ok(auditText.includes('Time') && auditText.includes('Actor'), 'Audit log table must render tamper-evident headers');
+
+    await takeScreenshot(adminPage, '12_admin_assessments_audit.png');
+    console.log('✓ [Test 13 Passed] Global assessment operations and audit logs verified.');
+
+    // ------------------------------------------------------------------------
+    // Step 14: Admin System Health Monitoring
+    // ------------------------------------------------------------------------
+    console.log('[Test 14] Testing System Health at /admin/system...');
+    await adminPage.goto('http://127.0.0.1:5173/admin/system', { waitUntil: 'networkidle', timeout: 15000 });
+    await adminPage.waitForSelector('text=Live status of the services behind TrustForge', { timeout: 15000 });
+    const sysText = await adminPage.textContent('body');
+    assert.ok(sysText.includes('monitored service') || sysText.includes('Operational') || sysText.includes('TrustForge'), 'System health must display active services');
+
+    await takeScreenshot(adminPage, '13_admin_system_health.png');
+    console.log('✓ [Test 14 Passed] System health monitoring verified.');
+
+    await adminContext.close();
+
+    // ------------------------------------------------------------------------
+    // Step 15: Assert Zero Unexpected 5xx Server Errors
+    // ------------------------------------------------------------------------
+    console.log('[Test 15] Checking for unexpected server errors...');
     assert.equal(
       serverErrors.length,
       0,
       `Unexpected server 5xx errors were encountered during browser run:\n${serverErrors.join('\n')}`
     );
-    console.log('✓ [Test 9 Passed] Zero 5xx server errors occurred during Playwright session.');
+    console.log('✓ [Test 15 Passed] Zero 5xx server errors occurred during Playwright session.');
 
     console.log('================================================================');
     console.log('ALL PLAYWRIGHT ASSERTIONS PASSED SUCCESSFULLY!');

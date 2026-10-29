@@ -15,7 +15,7 @@ interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   login: (mode: AccountMode, email?: string, password?: string) => Promise<User>;
-  loginAsAdmin: (password?: string) => Promise<User>;
+  loginAsAdmin: (password?: string, email?: string) => Promise<User>;
   signup: (mode: AccountMode, name: string, email: string, password?: string) => Promise<User>;
   logout: () => void;
 }
@@ -97,9 +97,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const loginAsAdmin = useCallback<AuthContextValue["loginAsAdmin"]>(
-    async (password) => {
+    async (password, email) => {
       // P0-5 FIX: No automatic admin fallback on incorrect password or API offline
-      const res = await loginApi("admin@trustforge.in", password || "AdminSecret2026!");
+      const targetEmail = email && email.trim() ? email.trim() : "admin@trustforge.in";
+      const res = await loginApi(targetEmail, password || "AdminSecret2026!");
       setAuthToken(res.token);
       persist(ADMIN_USER);
       return ADMIN_USER;
