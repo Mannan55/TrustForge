@@ -16,6 +16,14 @@ export function AdminLoginPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) {
+      setError("Administrator work email is required.");
+      return;
+    }
+    if (!password || !password.trim()) {
+      setError("Administrator password is required.");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {

@@ -69,22 +69,48 @@ async function runPlaywrightGates() {
 
   try {
     // ------------------------------------------------------------------------
-    // Step 1: Admin Login Rejection on Invalid Credentials
+    // Step 1: Admin Authentication Gate Security Rejections
     // ------------------------------------------------------------------------
-    console.log('[Test 1] Testing invalid credential rejection on Admin Login...');
+    console.log('[Test 1] Testing Admin Login Security Gate...');
     await page.goto('http://127.0.0.1:5173/admin/login', { waitUntil: 'networkidle', timeout: 15000 });
 
-    await page.fill('input[type="email"]', 'wrong-user@unauthorized.in');
+    // 1a. Test empty email / empty password rejection (no hardcoded fallback)
+    console.log('Testing empty credentials rejection at /admin/login...');
+    await page.fill('input[type="email"]', '');
+    await page.fill('input[type="password"]', '');
+    await page.click('button[type="submit"]');
+    await page.waitForTimeout(500);
+    assert.ok(page.url().includes('/admin/login'), 'Empty credentials submission must remain on /admin/login');
+    let pageContent = await page.textContent('body');
+    assert.ok(pageContent.includes('required'), 'Empty submission must display validation requirement');
+
+    // 1b. Test customer credentials (rajesh@technova.in / Owner role) submitted at /admin/login
+    console.log('Testing customer credentials (rajesh@technova.in) submitted at /admin/login...');
+    await page.fill('input[type="email"]', 'rajesh@technova.in');
+    await page.fill('input[type="password"]', 'DemoPassword123!');
+    await page.click('button[type="submit"]');
+    await page.waitForTimeout(1000);
+    assert.ok(page.url().includes('/admin/login'), 'Customer credentials must never redirect to /admin');
+    pageContent = await page.textContent('body');
+    assert.ok(
+      pageContent.includes('Access denied') || pageContent.includes('platform administrator'),
+      'Customer login at /admin/login must be rejected with access denied error'
+    );
+
+    // Verify localStorage has no admin session or token
+    const tokenAfterCustomerAttempt = await page.evaluate(() => localStorage.getItem('trustforge.session') || localStorage.getItem('trustforge.auth_token'));
+    assert.ok(!tokenAfterCustomerAttempt || !tokenAfterCustomerAttempt.includes('Super Admin'), 'No admin session must be stored after rejected attempt');
+
+    // 1c. Test invalid admin password
+    console.log('Testing invalid admin password rejection at /admin/login...');
+    await page.fill('input[type="email"]', 'admin@trustforge.in');
     await page.fill('input[type="password"]', 'TotallyWrongPassword123!');
     await page.click('button[type="submit"]');
-
-    // Wait for rejection feedback
     await page.waitForTimeout(1000);
-    const adminUrl = page.url();
-    assert.ok(adminUrl.includes('/admin/login'), 'Invalid login must not redirect to authenticated area');
+    assert.ok(page.url().includes('/admin/login'), 'Invalid admin password must stay on /admin/login');
 
     await takeScreenshot(page, '01_invalid_login_rejected.png');
-    console.log('✓ [Test 1 Passed] Invalid credentials rejected, stayed on login page.');
+    console.log('✓ [Test 1 Passed] Admin Authentication Gate properly rejects empty inputs, customer credentials, and wrong passwords.');
 
     // ------------------------------------------------------------------------
     // Step 2: Customer / Workspace Login with Seeded Credentials (Tenant Alpha)
@@ -391,7 +417,7 @@ async function runPlaywrightGates() {
     });
     assert.equal(crossScoreRes.status(), 403, 'Cross-tenant trust score must be denied with HTTP 403');
 
-    await pageBeta.goto('http://127.0.0.1:5173/login', { waitUntil: 'networkidle', timeout: 15000 });
+    await pageBeta.goto('http://127.0.0.1:5173/login', { waitUntil: 'domcontentloaded', timeout: 25000 });
     await takeScreenshot(pageBeta, '08_tenant_isolation_verified.png');
     await contextBeta.close();
     console.log('✓ [Test 8 Passed] Cross-tenant boundaries verified across all private resources; fail closed with HTTP 403.');
@@ -449,8 +475,21 @@ async function runPlaywrightGates() {
     assert.ok(adminBodyText.includes('Active users'), 'Admin page must display Active users KPI');
     assert.ok(adminBodyText.includes('Website scans'), 'Admin page must display Website scans KPI');
 
+    // Verify user profile is built from server data, not hardcoded ADMIN_USER
+    const storedAdminSession = await adminPage.evaluate(() => localStorage.getItem('trustforge.session'));
+    assert.ok(storedAdminSession, 'Admin session must be persisted');
+    const parsedAdminSession = JSON.parse(storedAdminSession);
+    assert.equal(parsedAdminSession.role, 'Super Admin', 'Stored session role must be authentic Super Admin');
+    assert.equal(parsedAdminSession.email, 'admin@trustforge.in', 'Stored session email must match authenticated user');
+
+    // Test session refresh on /admin: reload page and assert session is validated via /api/auth/me
+    console.log('Testing Admin session refresh on /admin...');
+    await adminPage.reload({ waitUntil: 'networkidle' });
+    await adminPage.waitForSelector('text=Activity and health across every tenant', { timeout: 15000 });
+    assert.ok(adminPage.url().endsWith('/admin'), 'Session refresh must keep admin on /admin without redirect to login');
+
     await takeScreenshot(adminPage, '09_admin_dashboard_overview.png');
-    console.log('✓ [Test 10 Passed] Super Admin logged in and Command Center verified.');
+    console.log('✓ [Test 10 Passed] Super Admin logged in, server-built profile verified, and session refresh succeeded.');
 
     // ------------------------------------------------------------------------
     // Step 11: Admin Organization Management & Tenant Inspection
@@ -533,6 +572,19 @@ async function runPlaywrightGates() {
 
     await takeScreenshot(adminPage, '13_admin_system_health.png');
     console.log('✓ [Test 14 Passed] System health monitoring verified.');
+
+    // Test Admin Logout and post-logout direct route rejection
+    console.log('Testing Admin Logout...');
+    const signOutBtn = adminPage.getByRole('button', { name: /Sign out/i }).first();
+    if (await signOutBtn.count() > 0) {
+      await signOutBtn.click();
+      await adminPage.waitForTimeout(1000);
+      console.log(`URL after clicking sign out: ${adminPage.url()}`);
+      // Now attempt direct navigation to /admin
+      await adminPage.goto('http://127.0.0.1:5173/admin', { waitUntil: 'networkidle', timeout: 15000 });
+      assert.ok(adminPage.url().includes('/login'), 'Direct navigation to /admin after logout must redirect to /login');
+      console.log('✓ Admin sign out and post-logout direct access rejection verified.');
+    }
 
     await adminContext.close();
 
