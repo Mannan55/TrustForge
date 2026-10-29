@@ -159,6 +159,8 @@ const NON_NORMATIVE_CHUNKS: Record<string, { bm25Multiplier: number; note: strin
 export class HybridRAGRetriever {
   private corpus: any[] = [];
   private isLoaded = false;
+  private corpusHash = '';
+  private corpusVersion = '83-chunk-authoritative-v2';
   private idf: Map<string, number> = new Map();
   private docLengths: number[] = [];
   private docFreqMaps: Map<string, number>[] = [];
@@ -186,9 +188,10 @@ export class HybridRAGRetriever {
         try {
           const raw = fs.readFileSync(p, 'utf-8');
           this.corpus = JSON.parse(raw);
+          this.corpusHash = crypto.createHash('sha256').update(raw, 'utf-8').digest('hex');
           this.isLoaded = true;
           this.buildBM25Index();
-          console.log(`[HybridRAGRetriever] Loaded authoritative legal corpus (${this.corpus.length} chunks) & built BM25 index from ${p}`);
+          console.log(`[HybridRAGRetriever] Loaded authoritative legal corpus (${this.corpus.length} chunks, SHA-256: ${this.corpusHash.substring(0, 16)}...) & built BM25 index from ${p}`);
           return;
         } catch (err) {
           console.warn(`[HybridRAGRetriever] Failed parsing corpus at ${p}:`, err);
@@ -584,6 +587,17 @@ export class HybridRAGRetriever {
 
   public getCorpusSize(): number {
     return this.corpus.length;
+  }
+
+  public getCorpusHash(): string {
+    if (!this.corpusHash && this.corpus.length > 0) {
+      this.corpusHash = crypto.createHash('sha256').update(JSON.stringify(this.corpus), 'utf-8').digest('hex');
+    }
+    return this.corpusHash || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+  }
+
+  public getCorpusVersion(): string {
+    return this.corpusVersion;
   }
 }
 

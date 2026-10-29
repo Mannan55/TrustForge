@@ -8,16 +8,20 @@ import { useAuth } from "@/context/AuthContext";
 export function AdminLoginPage() {
   const { loginAsAdmin } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("ops@trustforge.in");
-  const [password, setPassword] = useState("demo-console");
+  const [email, setEmail] = useState("admin@trustforge.in");
+  const [password, setPassword] = useState("AdminSecret2026!");
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    loginAsAdmin();
-    setTimeout(() => navigate("/admin"), 250);
+    try {
+      await loginAsAdmin(password);
+      navigate("/admin");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (

@@ -62,6 +62,8 @@ export interface ScanRecord {
 
 export interface BenchmarkRecord {
   benchmark_id: string;
+  org_id?: string;
+  organisation_id?: string;
   scan_id?: string;
   assessment_id?: string;
   target_url: string;
@@ -95,7 +97,7 @@ export class AssessmentRepository {
       try {
         await this.client.from('assessments').insert({
           id: job.assessment_id,
-          organisation_id: job.org_id || 'org_technova',
+          organisation_id: job.org_id || null,
           website_url: job.website_url,
           status: job.status,
           progress: job.progress,
@@ -168,7 +170,7 @@ export class AssessmentRepository {
             website_url: d.website_url,
             status: d.status,
             progress: d.progress,
-            trust_score: d.trust_score ? parseFloat(d.trust_score) : null,
+            trust_score: d.trust_score !== null && d.trust_score !== undefined ? parseFloat(d.trust_score) : null,
             posture: d.posture,
             created_at: d.created_at,
             completed_at: d.completed_at,
@@ -195,7 +197,7 @@ export class ScanRepository {
       try {
         await this.client.from('website_scans').upsert({
           id: scan.scanId || scan.id,
-          organisation_id: scan.org_id || 'org_technova',
+          organisation_id: scan.org_id || scan.organisation_id || null,
           target_url: scan.url || scan.target_url,
           status: scan.status || 'completed',
           scan_checks: scan.checks || scan.scan_checks || [],
@@ -230,15 +232,20 @@ export class ScanRepository {
 export class FindingRepository {
   constructor(private client: SupabaseClient | null, private mode: 'supabase' | 'local') {}
 
-  async saveFindings(scanId: string, modelId: string, findings: ModelFinding[]): Promise<void> {
+  async saveFindings(scanId: string, modelId: string, findings: ModelFinding[], explicitOrgId?: string): Promise<void> {
     durableStore.setFindings(`${scanId}_${modelId}`, findings);
 
     if (this.mode === 'supabase' && this.client) {
       try {
+        const resolvedOrgId = explicitOrgId ||
+          (scanId.startsWith('ASM_') ? durableStore.getAssessment(scanId)?.org_id : null) ||
+          (scanId.startsWith('SCAN_') ? durableStore.getScan(scanId)?.org_id : null) ||
+          null;
+
         const rows = findings.map(f => ({
           assessment_id: scanId.startsWith('ASM_') ? scanId : null,
           scan_id: scanId.startsWith('SCAN_') ? scanId : null,
-          organisation_id: 'org_technova',
+          organisation_id: resolvedOrgId,
           control_id: f.control_id,
           model_id: modelId,
           verdict: f.verdict,
@@ -304,10 +311,15 @@ export class TrustScoreRepository {
 
     if (this.mode === 'supabase' && this.client) {
       try {
+        const resolvedOrgId = score.org_id ||
+          (scanId.startsWith('ASM_') ? durableStore.getAssessment(scanId)?.org_id : null) ||
+          (scanId.startsWith('SCAN_') ? durableStore.getScan(scanId)?.org_id : null) ||
+          null;
+
         await this.client.from('trust_scores').insert({
           assessment_id: scanId.startsWith('ASM_') ? scanId : null,
           scan_id: scanId.startsWith('SCAN_') ? scanId : null,
-          organisation_id: 'org_technova',
+          organisation_id: resolvedOrgId,
           model_id: score.model_id,
           trust_score: score.trust_score,
           posture: score.posture,
@@ -359,10 +371,14 @@ export class BenchmarkRepository {
 
     if (this.mode === 'supabase' && this.client) {
       try {
+        const resolvedOrgId = benchmark.org_id || benchmark.organisation_id ||
+          (benchmark.assessment_id ? durableStore.getAssessment(benchmark.assessment_id)?.org_id : null) ||
+          null;
+
         await this.client.from('benchmark_runs').upsert({
           id: benchmark.benchmark_id,
           assessment_id: benchmark.assessment_id,
-          organisation_id: 'org_technova',
+          organisation_id: resolvedOrgId,
           target_url: benchmark.target_url,
           status: benchmark.status,
           total_models_evaluated: benchmark.total_models_evaluated,

@@ -93,8 +93,8 @@ export class SupabaseDataService {
     return this.scans.getScan(scanId);
   }
 
-  public async saveFindings(scanId: string, modelId: string, findings: ModelFinding[]): Promise<void> {
-    await this.findings.saveFindings(scanId, modelId, findings);
+  public async saveFindings(scanId: string, modelId: string, findings: ModelFinding[], orgId?: string): Promise<void> {
+    await this.findings.saveFindings(scanId, modelId, findings, orgId);
   }
 
   public async getFindings(scanId: string, modelId?: string): Promise<ModelFinding[]> {

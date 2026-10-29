@@ -25,13 +25,34 @@ export class ApiError extends Error {
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "";
 
+export function getAuthToken(): string | null {
+  try {
+    return localStorage.getItem("trustforge.auth_token");
+  } catch {
+    return null;
+  }
+}
+
+export function setAuthToken(token: string | null): void {
+  try {
+    if (token) localStorage.setItem("trustforge.auth_token", token);
+    else localStorage.removeItem("trustforge.auth_token");
+  } catch {
+    // ignore storage error
+  }
+}
+
 async function _request<T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   path: string,
   body?: unknown,
 ): Promise<T> {
   const url = `${BASE_URL}${path}`;
-  const headers: HeadersInit = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = getAuthToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   const res = await fetch(url, {
     method,
@@ -43,7 +64,7 @@ async function _request<T>(
     let detail = res.statusText;
     try {
       const json = await res.json();
-      detail = json.detail ?? JSON.stringify(json);
+      detail = json.detail ?? json.error ?? JSON.stringify(json);
     } catch {
       // ignore JSON parse failure
     }
@@ -51,6 +72,44 @@ async function _request<T>(
   }
 
   return res.json() as Promise<T>;
+}
+
+// ── Authentication ────────────────────────────────────────────────────────────
+
+export interface AuthUserResponse {
+  id: string;
+  email: string;
+  name: string;
+  orgId: string;
+  orgName?: string;
+  role: string;
+}
+
+export interface AuthLoginResponse {
+  token: string;
+  user: AuthUserResponse;
+}
+
+export async function loginApi(email: string, password: string): Promise<AuthLoginResponse> {
+  return _request<AuthLoginResponse>("POST", "/api/auth/login", { email, password });
+}
+
+export async function signupApi(
+  email: string,
+  password: string,
+  name: string,
+  orgName?: string,
+  role?: string
+): Promise<AuthLoginResponse> {
+  return _request<AuthLoginResponse>("POST", "/api/auth/signup", { email, password, name, orgName, role });
+}
+
+export async function getMeApi(): Promise<{ user: AuthUserResponse }> {
+  return _request<{ user: AuthUserResponse }>("GET", "/api/auth/me");
+}
+
+export async function logoutApi(): Promise<{ success: boolean }> {
+  return _request<{ success: boolean }>("POST", "/api/auth/logout");
 }
 
 // ── Health ───────────────────────────────────────────────────────────────────
@@ -371,8 +430,15 @@ export async function uploadEvidenceFile(
   const formData = new FormData();
   formData.append("file", file);
 
+  const headers: Record<string, string> = {};
+  const token = getAuthToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     method: "POST",
+    headers,
     body: formData,
   });
 

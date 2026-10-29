@@ -12,9 +12,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
+    "@types/multer": "^2.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "multer": "^2.5.0",
     "pdfkit": "^0.16.0",
     "playwright": "^1.51.0"
   },

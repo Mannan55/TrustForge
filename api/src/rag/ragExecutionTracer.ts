@@ -5,7 +5,7 @@
  * Vector, and RRF scores), and builds evidence-to-verdict traceability chains.
  */
 import crypto from 'node:crypto';
-import { HybridLegalContext, HybridRetrievedChunk } from './hybridRAG.js';
+import { hybridRAG, HybridLegalContext, HybridRetrievedChunk } from './hybridRAG.js';
 import { CANONICAL_CONTROLS } from '../scoring/trustScoreEngine.js';
 import { CANONICAL_CONTROL_TO_C10 } from '../scoring/pillarMappingAdapter.js';
 import { getCategoryName, ComplianceCategoryCode } from '../scoring/c10Taxonomy.js';
@@ -147,8 +147,8 @@ export class RAGExecutionTracer {
       status: 'IN_PROGRESS',
       started_at: now,
       total_duration_ms: 0,
-      corpus_version: '83-chunk-authoritative-v2',
-      corpus_hash: 'sha256-dpdp2023-83chunks-manifest-v2',
+      corpus_version: hybridRAG.getCorpusVersion(),
+      corpus_hash: hybridRAG.getCorpusHash(),
       frozen_snapshot_hash: '',
       stages: STAGE_DEFINITIONS.map(def => ({
         stage_id: def.id,

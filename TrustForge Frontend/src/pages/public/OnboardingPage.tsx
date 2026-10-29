@@ -60,6 +60,7 @@ export function OnboardingPage() {
   const [gstinState, setGstinState] = useState<"idle" | "checking" | "done">("idle");
   const [gstinResult, setGstinResult] = useState<GstinVerification | null>(null);
   const [domainState, setDomainState] = useState<"idle" | "checking" | "done">("idle");
+  const [domainResult, setDomainResult] = useState<any | null>(null);
 
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -74,10 +75,16 @@ export function OnboardingPage() {
 
   const verifyDomain = () => {
     setDomainState("checking");
-    identityService.verifyDomain(form.primaryDomain).then(() => setDomainState("done"));
+    identityService.verifyDomain(form.primaryDomain).then((r) => {
+      setDomainResult(r);
+      setDomainState("done");
+    });
   };
 
   const finish = () => {
+    const isDomainGenuine = domainResult?.verified ?? false;
+    const isGstinGenuine = gstinResult?.found ?? false;
+
     updateOrg({
       legalName: form.legalName,
       gstin: form.gstin,
@@ -86,11 +93,11 @@ export function OnboardingPage() {
       grievanceEmail: form.grievanceEmail,
       industry: form.industry,
       companySize: form.companySize,
-      gstinVerified: gstinState === "done",
-      domainVerified: domainState === "done",
-      authorizationVerified: domainState === "done",
+      gstinVerified: isGstinGenuine,
+      domainVerified: isDomainGenuine,
+      authorizationVerified: isDomainGenuine,
     });
-    notify("Organization workspace is ready.");
+    notify(isDomainGenuine ? "Organization workspace is ready and verified." : "Organization workspace created (Domain verification pending).");
     navigate("/dashboard");
   };
 

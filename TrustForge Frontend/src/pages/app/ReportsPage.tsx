@@ -31,7 +31,11 @@ export function ReportsPage() {
     try {
       const aid = getLatestAssessmentId() || "latest";
       const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
-      const res = await fetch(`${apiBase}/api/reports/${aid}/pdf`);
+      const token = typeof window !== "undefined" ? localStorage.getItem("trustforge.auth_token") : null;
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`${apiBase}/api/reports/${aid}/pdf`, { headers });
       if (!res.ok) {
         throw new Error(`Failed to generate PDF report (HTTP ${res.status})`);
       }

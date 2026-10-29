@@ -154,6 +154,7 @@ export interface C10TrustScoreComputation {
 
 export interface TrustScoreComputation {
   model_id: string;
+  org_id?: string;
   trust_score: number | null;
   raw_trust_score?: number | null;
   posture: PostureBand;

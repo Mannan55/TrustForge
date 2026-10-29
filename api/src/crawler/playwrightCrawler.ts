@@ -75,13 +75,28 @@ export async function crawlWebsite(targetUrl: string): Promise<ScanExecutionResu
 
     const page = await context.newPage();
 
-    // Intercept requests to detect third-party trackers
+    // Intercept requests to detect third-party trackers and payment gateways
     const detectedTrackers = new Set<string>();
+    const detectedGateways = new Set<string>();
+    const KNOWN_PAYMENT_GATEWAYS = [
+      { name: 'Razorpay', pattern: /checkout\.razorpay\.com|api\.razorpay\.com|razorpay\.js/i },
+      { name: 'Stripe', pattern: /js\.stripe\.com|checkout\.stripe\.com/i },
+      { name: 'Cashfree', pattern: /cashfree\.com|checkout\.cashfree\.com/i },
+      { name: 'PayU', pattern: /payu\.in|secure\.payu\.in/i },
+      { name: 'CCAvenue', pattern: /ccavenue\.com/i },
+      { name: 'BillDesk', pattern: /billdesk\.com/i },
+    ];
+
     page.on('request', req => {
       const reqUrl = req.url().toLowerCase();
       for (const tracker of KNOWN_TRACKERS) {
         if (reqUrl.includes(tracker)) {
           detectedTrackers.add(tracker);
+        }
+      }
+      for (const gw of KNOWN_PAYMENT_GATEWAYS) {
+        if (gw.pattern.test(reqUrl)) {
+          detectedGateways.add(gw.name);
         }
       }
     });
@@ -95,6 +110,7 @@ export async function crawlWebsite(targetUrl: string): Promise<ScanExecutionResu
     const finalUrl = page.url();
     const isHttps = finalUrl.startsWith('https://');
     const headers = response ? response.headers() : {};
+    const hsts = headers['strict-transport-security'];
 
     // ── Check 1: HTTPS & Transport Security ─────────────────────────────────
     if (isHttps) {
@@ -105,17 +121,6 @@ export async function crawlWebsite(targetUrl: string): Promise<ScanExecutionResu
         state: 'pass',
         detail: 'Website enforces TLS encryption for communication in transit.',
         recommendation: 'Ensure modern TLS 1.3 ciphers are configured.',
-      });
-      evidence.push({
-        id: `EVID_${scanId}_HTTPS`,
-        source_type: 'WEBSITE_SCAN',
-        key: 'https_enforced',
-        label: 'HTTPS Enforcement',
-        value: { isHttps: true, finalUrl },
-        status: 'VERIFIED',
-        confidence: 1.0,
-        extracted_at: scannedAt,
-        source_url: finalUrl,
       });
     } else {
       checks.push({
@@ -128,8 +133,32 @@ export async function crawlWebsite(targetUrl: string): Promise<ScanExecutionResu
       });
     }
 
+    // Always emit canonical transport_security evidence (P1-16 / C5 repair)
+    evidence.push({
+      id: `EVID_${scanId}_TRANSPORT_SEC`,
+      source_type: 'WEBSITE_SCAN',
+      key: 'transport_security',
+      label: 'HTTPS Transport Encryption',
+      value: { https: isHttps, hsts: !!hsts, finalUrl },
+      status: isHttps ? 'VERIFIED' : 'NOT_FOUND',
+      confidence: 1.0,
+      extracted_at: scannedAt,
+      source_url: finalUrl,
+      notes: isHttps ? 'Website enforces TLS encryption in transit.' : 'Website communicates over unencrypted plaintext HTTP.',
+    });
+    evidence.push({
+      id: `EVID_${scanId}_HTTPS`,
+      source_type: 'WEBSITE_SCAN',
+      key: 'https_enforced',
+      label: 'HTTPS Enforcement',
+      value: { isHttps, finalUrl },
+      status: isHttps ? 'VERIFIED' : 'NOT_FOUND',
+      confidence: 1.0,
+      extracted_at: scannedAt,
+      source_url: finalUrl,
+    });
+
     // ── Check 2: HSTS Header ────────────────────────────────────────────────
-    const hsts = headers['strict-transport-security'];
     if (hsts) {
       checks.push({
         id: 'SEC_HSTS',
@@ -307,6 +336,24 @@ export async function crawlWebsite(targetUrl: string): Promise<ScanExecutionResu
       });
     }
 
+    // Always emit canonical privacy_notice evidence (P1-16 / C5 repair)
+    evidence.push({
+      id: `EVID_${scanId}_PRIVACY_NOTICE`,
+      source_type: 'WEBSITE_SCAN',
+      key: 'privacy_notice',
+      label: 'Privacy Notice Discovery',
+      value: {
+        policyFound: policyResult.found,
+        policyUrl: policyResult.href || null,
+        anchorText: policyResult.text || null,
+      },
+      status: policyResult.found ? 'VERIFIED' : 'NOT_FOUND',
+      confidence: 1.0,
+      extracted_at: scannedAt,
+      source_url: policyResult.href || finalUrl,
+      notes: policyResult.found ? `Privacy notice link discovered at ${policyResult.href}` : 'No accessible privacy notice link found on homepage.',
+    });
+
     // ── Check 7: Cookie Consent Banner / CMP Detection ──────────────────────
     const cmpDetected = await page.evaluate(() => {
       const selectors = [
@@ -394,6 +441,29 @@ export async function crawlWebsite(targetUrl: string): Promise<ScanExecutionResu
         kind: 'privacy',
         state: 'pass',
         detail: 'No conspicuous personal data entry fields on initial landing page.',
+      });
+    }
+
+    // ── Check 9: Payment Gateway & Processor Detection ──────────────────────
+    if (detectedGateways.size > 0) {
+      const gatewayList = Array.from(detectedGateways);
+      checks.push({
+        id: 'TECH_PAYMENT_GATEWAYS',
+        label: 'Payment Processor Integration',
+        kind: 'technical',
+        state: 'pass',
+        detail: `Observed payment processor telemetry: ${gatewayList.join(', ')}`,
+      });
+      evidence.push({
+        id: `EVID_${scanId}_GATEWAYS`,
+        source_type: 'WEBSITE_SCAN',
+        key: 'payment_gateways',
+        label: 'Payment Processors',
+        value: { gateways: gatewayList, count: gatewayList.length },
+        status: 'DETECTED',
+        confidence: 0.95,
+        extracted_at: scannedAt,
+        notes: `Detected payment processor integration: ${gatewayList.join(', ')}`,
       });
     }
 

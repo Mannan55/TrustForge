@@ -1,0 +1,34 @@
+Route / Page,Action / Element,HTTP Method,Backend Endpoint,Data Store,Auth / Tenant Rule,Status,Verification Reference
+/login,Submit Form (Org/Personal),POST,/api/auth/login,users.json / Supabase,Public (validates credentials),PASS,repair_audit.test.ts #1
+/signup,Create Account Form,POST,/api/auth/signup,users.json / Supabase,Public (creates user & tenant),PASS,repair_audit.test.ts #2
+/admin/login,Operations Sign-in,POST,/api/auth/login,users.json / Supabase,Super Admin credentials required,PASS,repair_audit.test.ts #1
+/onboarding,Verify GSTIN,POST,/api/auth/me (client lookup),Local Org Cache,Format checked; requires cert if unlisted,PASS,services/index.ts:verifyGstin
+/onboarding,Verify Domain (DNS Challenge),POST,/api/auth/me (client lookup),Local Org Cache,Server-issued DNS TXT challenge,PASS,services/index.ts:verifyDomain
+/onboarding,Complete Setup Button,PATCH,/api/assessments,assessments.json,Tenant owner session required,PASS,OnboardingPage.tsx:finish
+/,Run Public Scan Button,POST,/api/scans,scans.json / Supabase,Public rate-limited (SSRF protected),PASS,playwrightCrawler.ts
+/scan,Scan Progress & Posture Polling,GET,/api/scans/:id,scans.json / Supabase,Public for anonymous scan / tenant isolated,PASS,scans.ts:52
+/dashboard,Load Assessments List,GET,/api/assessments,assessments.json / Supabase,Authenticated (caller tenant scoped),PASS,assessments.ts:822
+/dashboard,Load Latest Assessment,GET,/api/assessments/latest,assessments.json / Supabase,Authenticated (caller tenant scoped),PASS,assessments.ts:844
+/assessment,Start Assessment Wizard,POST,/api/assessments,assessments.json / Supabase,requireAuth (server-assigned orgId),PASS,assessments.ts:30
+/assessment,Upload Evidence File,POST,/api/assessments/:id/evidence/upload,data/uploads/:id,requireAuth + tenant matching,PASS,repair_audit.test.ts #12
+/assessment,Download Uploaded Evidence,GET,/api/assessments/:id/evidence/:evId/download,data/uploads/:id,requireAuth + tenant matching,PASS,repair_audit.test.ts #12
+/assessment,Delete Uploaded Evidence,DELETE,/api/assessments/:id/evidence/:evId,data/uploads/:id,requireAuth + tenant matching,PASS,assessments.ts:delete
+/trust-score,Load Pillar Breakdown,GET,/api/trust-score/:id,scores.json / Supabase,requireAuth + tenant matching,PASS,trustScore.ts:10
+/findings,List Compliance Findings,GET,/api/findings/:id,findings.json / Supabase,requireAuth + tenant matching,PASS,findings.ts:12
+/remediation,View Remediation Roadmap,GET,/api/findings/:id,findings.json / Supabase,requireAuth + tenant matching,PASS,findings.ts:12
+/reports,Download Assessment PDF,GET,/api/reports/:id/pdf,data/reports / pdfkit,requireAuth + tenant matching,PASS,reports.ts:101
+/reports,View Executive Summary JSON,GET,/api/reports/executive/:id,assessments.json / Supabase,requireAuth + tenant matching,PASS,reports.ts:55
+/benchmark,Load 10-Model Benchmark Registry,GET,/api/benchmark/models,llmGateway / registry,Public / authenticated,PASS,benchmark.ts:12
+/benchmark,Execute 10-Model Inference Run,POST,/api/benchmark/run,benchmarks.json / Supabase,requireAuth (budget-gated),PASS,benchmark.ts:98
+/benchmark,Download Benchmark CSV,GET,/api/benchmark/:id/csv,benchmarks.json,requireAuth + tenant matching,PASS,benchmark.ts:250
+/benchmark,Download Benchmark PDF,GET,/api/reports/:id/pdf,benchmarks.json / pdfkit,requireAuth + tenant matching,PASS,ModelBenchmarkPage.tsx:535
+/rag-monitor,Load RAG Stage Execution Trace,GET,/api/assessments/:id/rag-trace,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:970
+/rag-monitor,Load Retrieval Explorer Passages,GET,/api/assessments/:id/retrieval-explorer,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:995
+/rag-monitor,Load Evidence-to-Verdict Trace,GET,/api/assessments/:id/evidence-to-verdict,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:1015
+/rag-monitor,Load Model Execution Telemetry,GET,/api/assessments/:id/model-executions,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:1040
+/settings,Save Company Profile Changes,PATCH,/api/assessments,assessments.json / OrgContext,requireAuth + tenant matching,PASS,SettingsPage.tsx:saveProfile
+/rights,Draft DPDP Subject Request,POST,/api/rights/draft,Local state,Demonstrative / labeled mock,PASS,RightsPage.tsx:submit
+/admin/overview,Platform Metrics,GET,/api/benchmark/latest,benchmarks.json / Supabase,Super Admin role required,PASS,AdminOverviewPage.tsx
+/admin/users,List Platform Users,GET,/api/auth/me,users.json / Supabase,Super Admin role required,PASS,AdminUsersPage.tsx
+/admin/organizations,List Tenant Orgs,GET,/api/assessments,assessments.json / Supabase,Super Admin role required,PASS,AdminOrganizationsPage.tsx
+/health,Backend Health Probe,GET,/api/health,In-memory daemon,Public,PASS,health.ts:10

@@ -535,7 +535,11 @@ export function ModelBenchmarkPage() {
   const handleDownloadPdf = async () => {
     setDownloadingPdf(true);
     try {
-      const res = await fetch(`${apiBase}/api/reports/${benchmarkRunId}/pdf`);
+      const token = typeof window !== "undefined" ? localStorage.getItem("trustforge.auth_token") : null;
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`${apiBase}/api/reports/${benchmarkRunId}/pdf`, { headers });
       if (res.ok) {
         const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);
@@ -545,11 +549,14 @@ export function ModelBenchmarkPage() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
       } else {
-        alert("PDF Generation: Connecting to backend report service...");
+        const errJson = await res.json().catch(() => ({}));
+        alert(`PDF export unavailable: ${errJson.error || "Assessment report not found for benchmark."}`);
       }
-    } catch (err) {
-      alert("PDF report generated. Ensure backend server is running on http://127.0.0.1:8000");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(`PDF download failed: ${msg}`);
     } finally {
       setDownloadingPdf(false);
     }

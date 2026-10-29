@@ -21,11 +21,16 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const user = login(mode, email.trim() || undefined);
-    notify(`Welcome back, ${user.name.split(" ")[0]}.`);
-    navigate(from ?? "/dashboard");
+    try {
+      const user = await login(mode, email.trim() || undefined, password || undefined);
+      notify(`Welcome back, ${user.name.split(" ")[0]}.`);
+      navigate(from ?? "/dashboard");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Sign in failed";
+      notify(msg);
+    }
   };
 
   return (
@@ -97,8 +102,8 @@ export function LoginPage() {
         <div className="mt-6 flex flex-col items-center justify-center border-t border-line pt-6">
           <button
             type="button"
-            onClick={() => {
-              const user = login("organization", "mannan@google.com");
+            onClick={async () => {
+              const user = await login("organization", "mannan@google.com");
               notify(`Signed in with Google as ${user.name.split(" ")[0]}.`, "success");
               navigate(from ?? "/dashboard");
             }}

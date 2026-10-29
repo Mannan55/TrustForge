@@ -23,10 +23,23 @@ import { cn } from "@/lib/cn";
 
 export function SettingsPage() {
   const { user } = useAuth();
-  const { org } = useOrg();
+  const { org, updateOrg } = useOrg();
   const { notify } = useToast();
   const isOrg = user?.accountMode === "organization";
   const [notifs, setNotifs] = useState({ findings: true, weekly: true, product: false });
+
+  const [legalName, setLegalName] = useState(org.legalName);
+  const [displayName, setDisplayName] = useState(org.displayName);
+  const [cin, setCin] = useState(org.cin);
+  const [gstin, setGstin] = useState(org.gstin);
+  const [industry, setIndustry] = useState(org.industry);
+  const [companySize, setCompanySize] = useState(org.companySize);
+  const [registeredAddress, setRegisteredAddress] = useState(org.registeredAddress);
+
+  const saveProfile = () => {
+    updateOrg({ legalName, displayName, cin, gstin, industry, companySize, registeredAddress });
+    notify("Company profile saved successfully.", "success");
+  };
 
   return (
     <div className="space-y-6">
@@ -37,18 +50,18 @@ export function SettingsPage() {
           <Card>
             <CardHeader eyebrow="Organization" title="Company profile" description="Details used across your assessment and reports." />
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <Input label="Legal entity name" defaultValue={org.legalName} icon={<Building2 className="h-4 w-4" />} />
-              <Input label="Display name" defaultValue={org.displayName} />
-              <Input label="CIN" defaultValue={org.cin} />
-              <Input label="GSTIN" defaultValue={org.gstin} />
-              <Input label="Industry" defaultValue={org.industry} />
-              <Input label="Company size" defaultValue={org.companySize} />
+              <Input label="Legal entity name" value={legalName} onChange={(e) => setLegalName(e.target.value)} icon={<Building2 className="h-4 w-4" />} />
+              <Input label="Display name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+              <Input label="CIN" value={cin} onChange={(e) => setCin(e.target.value)} />
+              <Input label="GSTIN" value={gstin} onChange={(e) => setGstin(e.target.value)} />
+              <Input label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} />
+              <Input label="Company size" value={companySize} onChange={(e) => setCompanySize(e.target.value)} />
               <div className="sm:col-span-2">
-                <Input label="Registered address" defaultValue={org.registeredAddress} />
+                <Input label="Registered address" value={registeredAddress} onChange={(e) => setRegisteredAddress(e.target.value)} />
               </div>
             </div>
             <div className="mt-5 flex justify-end">
-              <Button size="sm" onClick={() => notify("Profile saved.", "success")}>
+              <Button size="sm" onClick={saveProfile}>
                 <Save className="h-4 w-4" /> Save changes
               </Button>
             </div>

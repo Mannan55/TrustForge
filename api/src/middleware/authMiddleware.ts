@@ -5,6 +5,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../database/supabaseClient.js';
+import { authService } from '../services/authService.js';
 
 export interface AuthContext {
   userId: string;
@@ -24,10 +25,6 @@ declare global {
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers['authorization'];
-  const xOrgHeader = req.headers['x-org-id'] as string | undefined;
-  const xUserHeader = req.headers['x-user-id'] as string | undefined;
-  const xEmailHeader = req.headers['x-user-email'] as string | undefined;
-  const xRoleHeader = req.headers['x-user-role'] as any;
 
   // 1. Explicit Anonymous Caller Header
   if (req.headers['x-anonymous'] === 'true' || authHeader === 'Bearer anonymous' || authHeader === 'Bearer anon') {
@@ -41,50 +38,21 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     return next();
   }
 
-  // 2. Explicit Test / Multi-Tenant Headers
-  if (xOrgHeader) {
-    req.authContext = {
-      userId: xUserHeader || `usr_${xOrgHeader}`,
-      email: xEmailHeader || `audit@${xOrgHeader}.in`,
-      orgId: xOrgHeader,
-      role: xRoleHeader || 'Owner',
-      isAuthenticated: true,
-    };
-    return next();
-  }
+  // 2. Reject unauthenticated header spoofing (P0-1 fix):
+  // Plain x-org-id / x-user-role headers without cryptographically verified session token MUST NOT grant authenticated access.
 
   // 3. Bearer Token Resolution
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7).trim();
 
-    if (token === 'token_org_technova' || token === 'demo_token') {
+    // Check signed HMAC-SHA256 session token
+    const session = authService.verifyToken(token);
+    if (session) {
       req.authContext = {
-        userId: 'usr_rajesh',
-        email: 'rajesh@technova.in',
-        orgId: 'org_technova',
-        role: 'Owner',
-        isAuthenticated: true,
-      };
-      return next();
-    }
-
-    if (token === 'token_org_competitor') {
-      req.authContext = {
-        userId: 'usr_competitor',
-        email: 'compliance@competitor.com',
-        orgId: 'org_competitor',
-        role: 'Owner',
-        isAuthenticated: true,
-      };
-      return next();
-    }
-
-    if (token === 'token_super_admin') {
-      req.authContext = {
-        userId: 'usr_admin',
-        email: 'admin@trustforge.in',
-        orgId: 'org_default',
-        role: 'Super Admin',
+        userId: session.userId,
+        email: session.email,
+        orgId: session.orgId,
+        role: session.role,
         isAuthenticated: true,
       };
       return next();
@@ -97,7 +65,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         const { data, error } = await client.auth.getUser(token);
         if (!error && data?.user) {
           const email = data.user.email || '';
-          // Resolve membership from organisation_memberships
           const { data: memberData } = await client
             .from('organisation_memberships')
             .select('organisation_id, role')
@@ -114,7 +81,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
           return next();
         }
       } catch {
-        // Fall through to unauthenticated
+        // Fall through to unverified
       }
     }
 
@@ -129,14 +96,14 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     return next();
   }
 
-  // 4. Default Authenticated Demo Tenant Context (for React Frontend Demo)
-  // Ensures seamless operation of frontend demo while establishing rigid tenant isolation
+  // 4. Default: Unauthenticated Visitor / Anonymous
+  // Eliminates P0-1 automatic demo identity assumption
   req.authContext = {
-    userId: 'usr_rajesh',
-    email: 'rajesh@technova.in',
-    orgId: 'org_technova',
-    role: 'Owner',
-    isAuthenticated: true,
+    userId: 'anonymous_user',
+    email: '',
+    orgId: '',
+    role: 'Viewer',
+    isAuthenticated: false,
   };
   return next();
 }

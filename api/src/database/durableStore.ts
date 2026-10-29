@@ -49,10 +49,17 @@ function loadJsonFile<T>(filename: string, defaultValue: T): T {
 
 function saveJsonFile(filename: string, data: any): void {
   const filepath = path.join(DATA_DIR, filename);
+  const tmpPath = `${filepath}.tmp.${process.pid}.${Date.now()}.${Math.random().toString(36).substring(2, 7)}`;
   try {
-    fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf-8');
+    fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
+    fs.renameSync(tmpPath, filepath);
   } catch (err) {
     console.warn(`Error saving ${filename}:`, err);
+    try {
+      if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
+    } catch {
+      // ignore cleanup failure
+    }
   }
 }
 
@@ -64,6 +71,7 @@ export class DurableStore {
   private benchmarks: Map<string, any>;
   private topsisRuns: Map<string, any>;
   private evaluationRuns: Map<string, any>;
+  private users: Map<string, any>;
 
   constructor() {
     const loadedAssessments = loadJsonFile<Record<string, any>>('assessments.json', {});
@@ -73,6 +81,7 @@ export class DurableStore {
     const loadedBenchmarks = loadJsonFile<Record<string, any>>('benchmarks.json', {});
     const loadedTopsisRuns = loadJsonFile<Record<string, any>>('topsis_runs.json', {});
     const loadedEvaluationRuns = loadJsonFile<Record<string, any>>('evaluation_runs.json', {});
+    const loadedUsers = loadJsonFile<Record<string, any>>('users.json', {});
 
     this.assessments = new Map(Object.entries(loadedAssessments));
     this.scans = new Map(Object.entries(loadedScans));
@@ -81,8 +90,9 @@ export class DurableStore {
     this.benchmarks = new Map(Object.entries(loadedBenchmarks));
     this.topsisRuns = new Map(Object.entries(loadedTopsisRuns));
     this.evaluationRuns = new Map(Object.entries(loadedEvaluationRuns));
+    this.users = new Map(Object.entries(loadedUsers));
 
-    console.log(`[DurableStore] Initialized. Loaded ${this.assessments.size} assessments, ${this.scores.size} scores, ${this.benchmarks.size} benchmarks, ${this.topsisRuns.size} topsis runs, ${this.evaluationRuns.size} evaluation runs from disk.`);
+    console.log(`[DurableStore] Initialized. Loaded ${this.assessments.size} assessments, ${this.scores.size} scores, ${this.benchmarks.size} benchmarks, ${this.topsisRuns.size} topsis runs, ${this.evaluationRuns.size} evaluation runs, ${this.users.size} users from disk.`);
   }
 
   // --- Assessments ---
@@ -202,6 +212,28 @@ export class DurableStore {
 
   public listEvaluationRuns(): any[] {
     return Array.from(this.evaluationRuns.values());
+  }
+
+  // --- Users ---
+  public setUser(id: string, user: any): void {
+    this.users.set(id, user);
+    saveJsonFile('users.json', Object.fromEntries(this.users));
+  }
+
+  public getUser(id: string): any | undefined {
+    return this.users.get(id);
+  }
+
+  public getUserByEmail(email: string): any | undefined {
+    const norm = email.toLowerCase().trim();
+    for (const u of this.users.values()) {
+      if (u.email && u.email.toLowerCase().trim() === norm) return u;
+    }
+    return undefined;
+  }
+
+  public listUsers(): any[] {
+    return Array.from(this.users.values());
   }
 }
 
