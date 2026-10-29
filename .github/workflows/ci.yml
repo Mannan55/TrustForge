@@ -18,18 +18,26 @@ jobs:
       ALLOW_PAID_INFERENCE: 'false'
       SERVER_PAID_INFERENCE_AUTHORIZED: 'false'
       NODE_ENV: 'test'
-      AUTH_SECRET: 'trustforge_production_grade_hmac_sha256_audit_secret_key_2026_dr_neelam_naik_dpdp'
 
     steps:
       - name: Checkout Codebase
         uses: actions/checkout@v4
+
+      - name: Generate ephemeral CI-only authentication secret
+        shell: bash
+        run: |
+          secret="$(python3 -c 'import secrets; print(secrets.token_hex(48))')"
+          echo "::add-mask::$secret"
+          echo "AUTH_SECRET=$secret" >> "$GITHUB_ENV"
 
       - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
-          cache-dependency-path: TrustForge/api/package-lock.json
+          cache-dependency-path: |
+            api/package-lock.json
+            TrustForge Frontend/package-lock.json
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -39,31 +47,31 @@ jobs:
       - name: Install Python Test Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio anyio
+          pip install pytest pytest-asyncio anyio pydantic pydantic-settings numpy
 
       - name: Run Python Backend Verification Suite
         run: |
-          python -m pytest TrustForge/backend
+          python -m pytest backend
 
       - name: Install API Dependencies
         run: |
-          npm --prefix TrustForge/api ci
+          npm --prefix api ci
 
       - name: Compile API TypeScript
         run: |
-          npm --prefix TrustForge/api run build
+          npm --prefix api run build
 
       - name: Run Full API Regression & Wire Acceptance Suite
         run: |
-          npm --prefix TrustForge/api test
+          npm --prefix api test
 
       - name: Install Frontend Dependencies
         run: |
-          npm --prefix "TrustForge/TrustForge Frontend" ci
+          npm --prefix "TrustForge Frontend" ci
 
       - name: Build React Frontend
         run: |
-          npm --prefix "TrustForge/TrustForge Frontend" run build
+          npm --prefix "TrustForge Frontend" run build
 
       - name: Upload Verified Release Documentation
         if: always()
@@ -71,6 +79,6 @@ jobs:
         with:
           name: stage3-verification-artifacts
           path: |
-            TrustForge/docs/research-implementation/24_STAGE3_RELEASE_GATES.md
-            TrustForge/TrustDocumentation/stage3_screenshots/
+            docs/research-implementation/24_STAGE3_RELEASE_GATES.md
+            TrustDocumentation/stage3_screenshots/
           if-no-files-found: warn
