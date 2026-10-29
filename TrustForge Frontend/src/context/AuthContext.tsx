@@ -8,14 +8,14 @@ import {
   type ReactNode,
 } from "react";
 import type { AccountMode, User } from "@/types";
-import { DEMO_USER, DEMO_PERSONAL_USER, ADMIN_USER } from "@/data/organization";
+import { DEMO_USER, DEMO_PERSONAL_USER } from "@/data/organization";
 import { loginApi, signupApi, logoutApi, getMeApi, setAuthToken, getAuthToken } from "@/services/api";
 
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   login: (mode: AccountMode, email?: string, password?: string) => Promise<User>;
-  loginAsAdmin: (password?: string) => Promise<User>;
+  loginAsAdmin: (password: string, email: string) => Promise<User>;
   signup: (mode: AccountMode, name: string, email: string, password?: string) => Promise<User>;
   logout: () => void;
 }
@@ -55,13 +55,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!res?.user?.id) {
             setAuthToken(null);
             persist(null);
+          } else {
+            // Keep user session in sync with authentic server state
+            setUser((prev) => {
+              if (!prev) return null;
+              if (prev.role === res.user.role && prev.id === res.user.id && prev.email === res.user.email) {
+                return prev;
+              }
+              const updated: User = {
+                ...prev,
+                id: res.user.id,
+                email: res.user.email,
+                role: res.user.role as any,
+              };
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+              } catch {}
+              return updated;
+            });
           }
         })
         .catch(() => {
           setAuthToken(null);
           persist(null);
         });
-    } else if (user) {
+    } else {
       persist(null);
     }
   }, [persist]);
@@ -97,12 +115,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const loginAsAdmin = useCallback<AuthContextValue["loginAsAdmin"]>(
-    async (password) => {
-      // P0-5 FIX: No automatic admin fallback on incorrect password or API offline
-      const res = await loginApi("admin@trustforge.in", password || "AdminSecret2026!");
+    async (password, email) => {
+      const cleanEmail = email?.trim();
+      const cleanPassword = password?.trim();
+
+      if (!cleanEmail) {
+        throw new Error("Administrator work email is required.");
+      }
+      if (!cleanPassword) {
+        throw new Error("Administrator password is required.");
+      }
+
+      // 1. Authenticate against server
+      const res = await loginApi(cleanEmail, cleanPassword);
+
+      // 2. Verify the authenticated role from the backend before permitting admin session
+      const serverRole = res.user?.role;
+      const isPlatformAdmin = serverRole === "Super Admin" || serverRole === "Platform Admin";
+      if (!isPlatformAdmin) {
+        // Customer or unprivileged credentials submitted at /admin/login must be rejected
+        setAuthToken(null);
+        persist(null);
+        throw new Error("Access denied: Account does not have platform administrator privileges.");
+      }
+
+      // 3. Set token only after role authorization succeeds
       setAuthToken(res.token);
-      persist(ADMIN_USER);
-      return ADMIN_USER;
+
+      // 4. Build user profile from authentic server data
+      const adminUserProfile: User = {
+        id: res.user.id,
+        name: res.user.name || "Platform Administrator",
+        email: res.user.email,
+        role: res.user.role as any,
+        accountMode: "organization",
+        avatarInitials:
+          res.user.name
+            ?.split(" ")
+            .slice(0, 2)
+            .map((p) => p[0]?.toUpperCase())
+            .join("") || "TF",
+      };
+      persist(adminUserProfile);
+      return adminUserProfile;
     },
     [persist]
   );

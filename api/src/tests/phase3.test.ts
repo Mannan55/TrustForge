@@ -79,7 +79,7 @@ test('Mandatory 2: Corpus integrity and version tracking manifest', () => {
   assert.ok(fs.existsSync(MANIFEST_PATH), 'corpus_manifest_v2.json must exist');
   const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
   const rawCorpus = fs.readFileSync(CORPUS_PATH, 'utf-8');
-  const computedHash = crypto.createHash('sha256').update(rawCorpus).digest('hex');
+  const computedHash = crypto.createHash('sha256').update(rawCorpus.replace(/\r\n/g, '\n')).digest('hex');
 
   assert.strictEqual(manifest.current_corpus_sha256, computedHash, 'Manifest hash must match live corpus SHA-256');
   assert.ok(manifest.previous_corpus_sha256, 'Historical corpus hash must be preserved');

@@ -142,12 +142,10 @@ router.post('/organization/verify-domain', requireAuth, async (req: Request, res
     const records = await dns.promises.resolveTxt(cleanDomain);
     const flattened = records.map(r => r.join(''));
     // Strict exact match only: reject substring matches
-    const expectedValue = challenge.recordValue.trim();
-    const expectedChallenge = challenge.challenge.trim();
-    const matched = flattened.some(rec => {
-      const trimmed = rec.trim();
-      return trimmed === expectedValue || trimmed === expectedChallenge;
-    });
+    const expectedValue = challenge.recordValue;
+    // Only the complete, server-issued TXT record is valid. A bare challenge hex
+    // string must never count as proof of domain control.
+    const matched = flattened.some(rec => rec === expectedValue);
 
     if (matched) {
       challenge.verified = true;
@@ -247,11 +245,29 @@ router.put('/organization', requireAuth, async (req: Request, res: Response): Pr
     created_at: new Date().toISOString(),
   };
 
-  const patch = req.body;
-  // Prevent tampering with verification status directly through update payload
-  delete patch.domainVerified;
-  delete patch.authorizationVerified;
-  delete patch.id;
+  // Only editable profile fields may be persisted. Never allow clients to
+  // assign scores, research results, verification timestamps or tenant IDs.
+  // The onboarding form may still submit server-owned flags; ignore them.
+  const requestBody = req.body;
+  if (!requestBody || typeof requestBody !== 'object' || Array.isArray(requestBody)) {
+    res.status(400).json({ error: 'Organization patch must be an object.', code: 'INVALID_ORGANIZATION_PATCH' });
+    return;
+  }
+  const editableFields = [
+    'legalName', 'displayName', 'cin', 'gstin', 'primaryDomain',
+    'industry', 'companySize', 'registeredAddress',
+    'grievanceOfficer', 'grievanceEmail',
+  ] as const;
+  const patch: Record<string, string> = {};
+  for (const field of editableFields) {
+    if (Object.prototype.hasOwnProperty.call(requestBody, field)) {
+      if (typeof requestBody[field] !== 'string') {
+        res.status(400).json({ error: `Field '${field}' must be a string.`, code: 'INVALID_ORGANIZATION_FIELD' });
+        return;
+      }
+      patch[field] = requestBody[field];
+    }
+  }
 
   const domainChanged = patch.primaryDomain !== undefined && patch.primaryDomain !== existingOrg.primaryDomain;
   if (domainChanged && existingOrg.primaryDomain) {

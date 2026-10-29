@@ -1,10 +1,11 @@
 {
   "manifest_version": "2.0.0-phase3",
   "generated_at": "2026-10-28T14:45:00Z",
+  "hash_revalidated_at": "2026-10-29",
   "taxonomy_framework": "DPDP-C1-C10-PROTIVITI-2025",
   "total_chunks": 83,
   "previous_corpus_sha256": "c79c0fb3eb811e69d0e45ea6f1ac5ceaee06ea1937463fe6cc4ac50c4f6901f8",
-  "current_corpus_sha256": "c79c0fb3eb811e69d0e45ea6f1ac5ceaee06ea1937463fe6cc4ac50c4f6901f8",
+  "current_corpus_sha256": "4cb11a384551941fb13a957a48305067bdf6e49a8a8a5c1bcedba972b080f8c5",
   "statutory_sources": [
     {
       "document_id": "dpdp-act-2023",

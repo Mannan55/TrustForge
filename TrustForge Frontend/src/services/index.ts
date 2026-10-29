@@ -300,8 +300,9 @@ export const orgService = {
           domainVerified: !!serverOrg.domainVerified,
           authorizationVerified: !!serverOrg.authorizationVerified,
           gstinVerified: !!serverOrg.gstinVerified,
-          trustScore: serverOrg.trustScore != null ? Math.round(serverOrg.trustScore) : trustScore,
-          posture: serverOrg.trustScore != null ? postureForScore(serverOrg.trustScore) : posture,
+          // Scores are derived from assessment records, never editable org fields.
+          trustScore,
+          posture,
           lastAssessed,
         };
       }
@@ -323,11 +324,9 @@ export const orgService = {
       if (!updated || !updated.id) {
         throw new Error("Failed to persist organization settings on server.");
       }
-      return {
-        ...DEMO_ORG,
-        ...updated,
-        posture: updated.trustScore != null ? postureForScore(updated.trustScore) : DEMO_ORG.posture,
-      };
+      // Reload canonical assessment score + server profile after a successful save.
+      // A saved organization patch must not override research-derived metrics.
+      return this.getOrganization();
     }
     const next = { ...DEMO_ORG, ...patch };
     if (patch.trustScore != null) next.posture = postureForScore(patch.trustScore);

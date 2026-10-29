@@ -188,7 +188,7 @@ export class HybridRAGRetriever {
         try {
           const raw = fs.readFileSync(p, 'utf-8');
           this.corpus = JSON.parse(raw);
-          this.corpusHash = crypto.createHash('sha256').update(raw, 'utf-8').digest('hex');
+          this.corpusHash = crypto.createHash('sha256').update(raw.replace(/\r\n/g, '\n'), 'utf-8').digest('hex');
           this.isLoaded = true;
           this.buildBM25Index();
           console.log(`[HybridRAGRetriever] Loaded authoritative legal corpus (${this.corpus.length} chunks, SHA-256: ${this.corpusHash.substring(0, 16)}...) & built BM25 index from ${p}`);

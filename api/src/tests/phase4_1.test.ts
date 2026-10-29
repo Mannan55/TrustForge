@@ -26,6 +26,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LLMGateway, RESEARCH_MODELS } from '../gateway/llmGateway.js';
 import { GroundingValidator } from '../validator/groundingValidator.js';
 import { CANONICAL_CONTROLS, computeModelTrustScore } from '../scoring/trustScoreEngine.js';
@@ -38,16 +39,39 @@ import { EvidenceItem, ModelFinding } from '../types/index.js';
 const gateway = new LLMGateway();
 const validator = new GroundingValidator();
 
+// Tests must not require or consume real provider credentials. Temporarily
+// inject nonfunctional markers ONLY while checking credential discovery and
+// safe diagnostics, then restore the original environment.
+function withOfflineProviderFixtures<T>(run: () => T): T {
+  const keys = ['GROQ_API_KEY', 'OPENROUTER_API_KEY', 'SARVAM_API_KEY', 'OLLAMA_API_KEY'] as const;
+  const previous = keys.map(key => process.env[key]);
+  try {
+    for (const key of keys) process.env[key] = `TRUSTFORGE_TEST_PLACEHOLDER_NOT_A_REAL_KEY_${key}`;
+    return run();
+  } finally {
+    keys.forEach((key, i) => {
+      if (previous[i] === undefined) delete process.env[key];
+      else process.env[key] = previous[i];
+    });
+  }
+}
+
 // Test 1: Environment variable loading
 test('Phase 4.1.1: Environment credentials load safely into API runtime', () => {
-  assert.ok(process.env.GROQ_API_KEY, 'GROQ_API_KEY must be configured in environment');
-  assert.ok(process.env.OPENROUTER_API_KEY, 'OPENROUTER_API_KEY must be configured in environment');
-  assert.ok(process.env.SARVAM_API_KEY, 'SARVAM_API_KEY must be configured in environment');
-  assert.ok(process.env.OLLAMA_API_KEY, 'OLLAMA_API_KEY must be configured in environment');
+  withOfflineProviderFixtures(() => {
+    for (const key of ['GROQ_API_KEY', 'OPENROUTER_API_KEY', 'SARVAM_API_KEY', 'OLLAMA_API_KEY']) {
+      assert.ok(process.env[key]?.startsWith('TRUSTFORGE_TEST_PLACEHOLDER_'), `${key} fixture should be detected without a live credential`);
+    }
+    const diag = gateway.getStartupDiagnostics();
+    assert.equal(diag.providers.groq.provider_configured, true);
+    assert.equal(diag.providers.openrouter.provider_configured, true);
+    assert.equal(diag.providers.sarvam.provider_configured, true);
+  });
 });
 
 // Test 2: Credential-safe provider diagnostics
 test('Phase 4.1.2: Startup diagnostics report provider status with zero secret exposure', () => {
+  withOfflineProviderFixtures(() => {
   const diag = gateway.getStartupDiagnostics();
 
   assert.equal(diag.summary.total, 10);
@@ -80,6 +104,7 @@ test('Phase 4.1.2: Startup diagnostics report provider status with zero secret e
     assert.equal(typeof pData.provider_reachable, 'boolean');
     assert.ok(Array.isArray(pData.available_model_ids));
   }
+  });
 });
 
 // Test 3: Model ID validation
@@ -122,6 +147,7 @@ test('Phase 4.1.5: Cost estimator enforces strict zero-cost for verified free ti
 
 // Test 6: Ollama local vs cloud mode separation
 test('Phase 4.1.6: Ollama local daemon mode is strictly separated from Ollama cloud registry', () => {
+  withOfflineProviderFixtures(() => {
   const m10Status = gateway.getModelSlotStatus(RESEARCH_MODELS[9]);
   assert.equal(m10Status.status, 'LOCAL_ONLY');
   assert.equal(m10Status.available, false);
@@ -131,6 +157,7 @@ test('Phase 4.1.6: Ollama local daemon mode is strictly separated from Ollama cl
   const diag = gateway.getStartupDiagnostics();
   assert.ok(diag.providers.ollama.authType.includes('OLLAMA_API_KEY'));
   assert.equal(diag.providers.ollama.provider_reachable, false);
+  });
 });
 
 // Test 7: Rate-limit backoff handling
@@ -375,7 +402,8 @@ test('Phase 4.1.18: SSRF guard blocks private/cloud metadata IPs and accepts pub
 
 // Test 19: Git secret exclusion verification
 test('Phase 4.1.19: .gitignore explicitly protects .env and secret files', () => {
-  const gitignorePath = path.resolve('C:/TF new V1/TrustForge/.gitignore');
+  // Resolve relative to the compiled test module, not a developer's Windows disk.
+  const gitignorePath = fileURLToPath(new URL('../../../.gitignore', import.meta.url));
   assert.ok(fs.existsSync(gitignorePath), '.gitignore must exist');
   const content = fs.readFileSync(gitignorePath, 'utf-8');
 

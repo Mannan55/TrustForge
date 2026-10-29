@@ -40,7 +40,8 @@ router.get('/trust-score/:id', requireAuth, async (req: Request, res: Response):
       trust_score: job.trust_score,
       raw_trust_score: (job as any).raw_trust_score ?? job.trust_score,
       posture: job.posture as any,
-      evidence_coverage: job.evidence_coverage || 80,
+      // Zero coverage is a genuine value; never replace missing evidence with a fabricated 80%.
+      evidence_coverage: job.evidence_coverage ?? 0,
       is_consensus: job.selection_mode === 'TOP3_MAJORITY_VOTING',
       pillar_scores: job.pillar_scores || [],
       category_scores: (job as any).category_scores,
