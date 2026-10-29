@@ -32,43 +32,77 @@ The platform bridges the gap between statutory legal mandates and technical engi
 
 ## System Architecture
 
-TrustForge is architected as a modular, local-first platform designed for air-gapped enterprise environments and zero recurring API spend:
+TrustForge implements a layered, local-first architecture engineered for high auditability, multi-tenant security, and zero recurring API costs. The platform decouples user interactions, statutory retrieval, model evaluation, and compliance scoring into distinct functional tiers:
 
 ```mermaid
-flowchart TD
-    subgraph ClientLayer ["Client Layer"]
-        A["React 18 SPA\n(TypeScript + Tailwind)"]
-        B["Admin Console\n(/admin/*)"]
+flowchart LR
+    %% Clients Tier
+    subgraph Presentation ["Presentation Tier (React 18 SPA)"]
+        UI_Cust["Customer Workspace<br/>• 14-Step Audit Wizard<br/>• Perimeter Scanner<br/>• Rights & Evidence Vault"]
+        UI_Admin["Platform Admin Console<br/>• Command Center & Telemetry<br/>• Cross-Tenant Governance<br/>• Rules Matrix & Audit Ledger"]
     end
 
-    subgraph APILayer ["Application Gateway"]
-        C["Express.js REST API\n(Node.js 22 LTS)"]
-        D["Auth Middleware\n(PBKDF2 + HMAC-SHA256)"]
-        E["Tenant Isolation Gate\n(org_id foreign key)"]
+    %% API Gateway & Security
+    subgraph Gateway ["Application Gateway (Express.js / Node.js 22 LTS)"]
+        AUTH["Auth & Session Security<br/>• PBKDF2 Password Derivation<br/>• HMAC-SHA256 Token (tf_tok_)<br/>• Server-Verified RBAC"]
+        TENANT["Tenant Boundary Enforcer<br/>• Scoped org_id Foreign Key<br/>• Route Access Isolation"]
     end
 
-    subgraph ServiceLayer ["Compliance & AI Engine"]
-        F["Python 3.12 Backend\n(FastAPI / AsyncIO)"]
-        G["Hybrid RAG Pipeline\n(BM25 + Dense Vectors + RRF k=60)"]
-        H["Deterministic Scoring\n(6 Pillars + Gating Caps)"]
-        I["TOPSIS Decision Engine\n(10 Model Slots M01–M10)"]
+    %% Core Application & Compliance Services
+    subgraph Compliance ["Compliance Services"]
+        SCANNER["Perimeter Crawler<br/>• Cookie & Script Auditing<br/>• TLS & Security Headers"]
+        ASSESS["Assessment Engine<br/>• 14-Step Statutory Workflow<br/>• Pre-Submission Matrix"]
+        SCORE["Deterministic Trust Score<br/>• 6 Statutory Pillars<br/>• Gating Caps (min(TS, 40))"]
     end
 
-    subgraph StorageLayer ["Persistence & Evidence Vault"]
-        J["Durable SQLite Engine\n(Multi-Tenant Scoped)"]
-        K["Cryptographic Evidence Locker\n(SHA-256 Hashes)"]
+    %% AI / RAG & Legal Retrieval Service
+    subgraph AI_Engine ["Statutory RAG & Model Benchmark Engine (Python 3.12)"]
+        CORPUS["Gazetted DPDP Act Corpus<br/>• 44 Statutory Sections<br/>• BM25 + Dense Vector Index"]
+        RRF["Hybrid Retrieval & RRF<br/>• Reciprocal Rank Fusion (k=60)<br/>• Cosine Thresholds"]
+        GROUND["Grounding Validator<br/>• Legal Citation Verification<br/>• Rejects Hallucinations"]
+        BENCH["Model Benchmark & TOPSIS<br/>• 10 Model Slots (M01–M10)<br/>• Zero-Paid Policy ($0 Spend)<br/>• 7 Primary TOPSIS Criteria"]
     end
 
-    A -->|JWT / Session Token| C
-    B -->|Admin Role Gate| C
-    C --> D --> E
-    E --> J
-    E --> K
-    C -->|Internal RPC / HTTP| F
-    F --> G
-    F --> H
-    F --> I
+    %% Persistence Tier
+    subgraph Storage ["Durable Persistence Layer"]
+        STORE[("Durable Store (SQLite)<br/>• Multi-Tenant Tables<br/>• Optional PostgreSQL")]
+        VAULT[("Evidence Vault<br/>• SHA-256 Hashed Files<br/>• Immutable Audit Trail")]
+    end
+
+    %% Workflows & Data Flows
+    UI_Cust -->|HTTP / tf_tok_ Token| AUTH
+    UI_Admin -->|Admin Role Gate| AUTH
+    AUTH --> TENANT
+    TENANT --> SCANNER
+    TENANT --> ASSESS
+    TENANT --> SCORE
+
+    SCANNER -.->|Perimeter Gaps| STORE
+    ASSESS -->|Questionnaire Responses| SCORE
+    ASSESS -->|Statutory Queries| RRF
+    CORPUS --> RRF
+    RRF --> GROUND
+    GROUND -->|Verified Citations| SCORE
+    GROUND -->|Audited Findings| STORE
+
+    SCORE --> STORE
+    TENANT --> STORE
+    TENANT --> VAULT
+    BENCH --> STORE
 ```
+
+### Architectural Subsystems & Separation of Concerns
+
+* **Presentation Tier:** Delivers distinct workflows for enterprise compliance assessors and platform administrators. Client sessions communicate via custom HMAC-SHA256 tokens (`tf_tok_...`), while the Admin Console is guarded by server-verified `platform_admin` role checks.
+* **Application Gateway & Security Layer:** Enforces PBKDF2 password derivation (SHA-512, 10,000 iterations), constant-time token verification, and mandatory `org_id` tenant scoping across all route handlers.
+* **Compliance & Assessment Services:** Coordinates active non-invasive perimeter crawlers, the structured 14-step statutory assessment questionnaire, and evidence ingestion.
+* **Statutory Retrieval & Grounding Gate:** Decouples legal knowledge from model evaluation. Legal sections from the DPDP Act 2023 corpus are retrieved using hybrid BM25 and dense vector search fused via Reciprocal Rank Fusion ($k=60$). The **Grounding Validator** strictly inspects all model-generated compliance statements, discarding ungrounded citations before findings can influence scores.
+* **Deterministic Trust Score Engine:** Computes a normalized score in $[0, 100]$ across six statutory pillars (Privacy, Security, Transparency, Governance, Lifecycle, Rights) with mandatory gating caps (e.g., missing HTTPS or privacy notices automatically cap scores at $\le 40$).
+* **Model Benchmarking & TOPSIS:** Standardizes evaluation across 10 designated model slots (M01–M10) using 7 primary TOPSIS decision criteria. Commercial models (M06–M09) are strictly gated to preserve the zero-paid commercial inference boundary ($0.00 spend).
+* **Durable Multi-Tenant Storage:** Combines a local-first SQLite engine with tenant-isolated directories, SHA-256 file hashing, and an append-only security audit ledger.
+
+> 🔍 **Deep-Dive Architecture & Sequence Pipelines:**  
+> For component-level data flow diagrams, sequence specifications, and failure-mode handling, consult the [Detailed Technical Architecture Specification](docs/architecture/DETAILED_ARCHITECTURE.md).
 
 ---
 
@@ -172,6 +206,7 @@ cd "TrustForge Frontend" && npm run build && cd ..
 
 * 📖 **[Setup & Run Guide](docs/SETUP_AND_RUN.md):** Detailed step-by-step instructions for installation, configuration, environment variables, and troubleshooting.
 * 📄 **[System Documentation (PDF)](docs/SYSTEM_DOCUMENTATION.pdf):** Comprehensive technical specification covering the 14-step assessment, 6-pillar formulation, TOPSIS MCDM analysis, and RAG architecture.
+* 🔍 **[Detailed Technical Architecture](docs/architecture/DETAILED_ARCHITECTURE.md):** In-depth component topology, sequence flows, and subsystem boundary specifications.
 
 ---
 
