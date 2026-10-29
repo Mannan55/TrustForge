@@ -241,55 +241,58 @@ export const scanService = {
 export const orgService = {
   async getOrganization(_id?: string): Promise<Organization> {
     if (USE_REAL_API) {
+      let serverOrg: any = null;
+      try {
+        serverOrg = await apiClient.getOrganizationApi();
+      } catch (err) {
+        console.warn("Could not fetch server organization:", err);
+      }
+
       let aid = getLatestAssessmentId();
       if (!aid) {
         aid = await resolveActiveAssessmentId();
       }
+
+      let trustScore = 0;
+      let posture: Organization["posture"] = "Not Assessed";
+      let lastAssessed = "Not assessed yet";
+
       if (aid) {
         try {
           const ts = await apiClient.getTrustScore(aid);
-          const assessment = await apiClient.getAssessmentResult(aid);
           if (ts) {
-            const orgLegalName = assessment?.org_id
-              ? assessment.org_id === "org_technova"
-                ? DEMO_ORG.legalName
-                : `Organization (${assessment.org_id})`
-              : DEMO_ORG.legalName;
-            return {
-              ...DEMO_ORG,
-              id: assessment?.org_id || DEMO_ORG.id,
-              legalName: orgLegalName,
-              displayName: orgLegalName,
-              trustScore: ts.trust_score != null ? Math.round(ts.trust_score) : 0,
-              posture: (ts.posture || "Not Scorable") as Organization["posture"],
-              lastAssessed: ts.scored_at ? new Date(ts.scored_at).toLocaleDateString() : "Recent",
-            };
+            trustScore = ts.trust_score != null ? Math.round(ts.trust_score) : 0;
+            posture = (ts.posture || "Not Scorable") as Organization["posture"];
+            lastAssessed = ts.scored_at ? new Date(ts.scored_at).toLocaleDateString() : "Recent";
           }
         } catch {
-          const fallbackAid = await resolveActiveAssessmentId();
-          if (fallbackAid && fallbackAid !== aid) {
-            try {
-              const ts = await apiClient.getTrustScore(fallbackAid);
-              if (ts) {
-                return {
-                  ...DEMO_ORG,
-                  trustScore: ts.trust_score != null ? Math.round(ts.trust_score) : 0,
-                  posture: (ts.posture || "Not Scorable") as Organization["posture"],
-                  lastAssessed: "Recent",
-                };
-              }
-            } catch {
-              /* fall through */
-            }
-          }
+          /* assessment score not found */
         }
       }
-      // If no completed assessment exists at all in real mode:
+
+      if (serverOrg && serverOrg.id) {
+        return {
+          ...DEMO_ORG,
+          ...serverOrg,
+          id: serverOrg.id,
+          legalName: serverOrg.legalName || DEMO_ORG.legalName,
+          displayName: serverOrg.displayName || serverOrg.legalName || DEMO_ORG.displayName,
+          primaryDomain: serverOrg.primaryDomain || "",
+          gstin: serverOrg.gstin || "",
+          domainVerified: !!serverOrg.domainVerified,
+          authorizationVerified: !!serverOrg.authorizationVerified,
+          gstinVerified: !!serverOrg.gstinVerified,
+          trustScore: serverOrg.trustScore != null ? Math.round(serverOrg.trustScore) : trustScore,
+          posture: serverOrg.trustScore != null ? postureForScore(serverOrg.trustScore) : posture,
+          lastAssessed,
+        };
+      }
+
       return {
         ...DEMO_ORG,
-        trustScore: 0,
-        posture: "Not Assessed" as Organization["posture"],
-        lastAssessed: "Not assessed yet",
+        trustScore,
+        posture,
+        lastAssessed,
       };
     }
     await delay(120);

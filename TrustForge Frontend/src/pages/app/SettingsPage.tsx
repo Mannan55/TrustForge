@@ -35,10 +35,18 @@ export function SettingsPage() {
   const [industry, setIndustry] = useState(org.industry);
   const [companySize, setCompanySize] = useState(org.companySize);
   const [registeredAddress, setRegisteredAddress] = useState(org.registeredAddress);
+  const [saving, setSaving] = useState(false);
 
-  const saveProfile = () => {
-    updateOrg({ legalName, displayName, cin, gstin, industry, companySize, registeredAddress });
-    notify("Company profile saved successfully.", "success");
+  const saveProfile = async () => {
+    setSaving(true);
+    try {
+      await updateOrg({ legalName, displayName, cin, gstin, industry, companySize, registeredAddress });
+      notify("Company profile saved successfully.", "success");
+    } catch (err: any) {
+      notify(err?.message || "Failed to save organization settings.", "warning");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -61,8 +69,8 @@ export function SettingsPage() {
               </div>
             </div>
             <div className="mt-5 flex justify-end">
-              <Button size="sm" onClick={saveProfile}>
-                <Save className="h-4 w-4" /> Save changes
+              <Button size="sm" onClick={saveProfile} disabled={saving}>
+                <Save className="h-4 w-4" /> {saving ? "Saving..." : "Save changes"}
               </Button>
             </div>
           </Card>

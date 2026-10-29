@@ -82,6 +82,11 @@ router.get('/ablation', (req: Request, res: Response) => {
 // POST /api/evaluation/run — Execute evaluation benchmark with configurable options
 router.post('/run', requireAuth, (req: Request, res: Response) => {
   try {
+    if (req.authContext?.role === 'Viewer') {
+      res.status(403).json({ error: 'Viewers are not permitted to execute evaluation runs.', code: 'FORBIDDEN' });
+      return;
+    }
+    const callerOrg = req.authContext!.orgId;
     const { rejection_policy = 'PENALIZE_AS_INCORRECT', run_bootstrap = true, bootstrap_iterations = 500 } = req.body || {};
     const runResult = evaluationRunner.runFullEvaluation({
       rejectionPolicy: rejection_policy,

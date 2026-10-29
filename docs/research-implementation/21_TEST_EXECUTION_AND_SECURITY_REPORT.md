@@ -100,3 +100,38 @@
 - Revoked tokens persisted to `revoked_tokens.json`.
 - Organization profiles persisted to `organizations.json`.
 - Domain challenges persisted to `domain_challenges.json`.
+
+
+---
+
+## 6. Stage 3 Automated Multi-Tenant & Security Verification
+
+**Execution Date:** 2026-10-29  
+**Test Suite:** `node --test dist/**/*.test.js`  
+**Test Count:** 162 total tests, 162 passed, 0 failed, 0 skipped  
+**Duration:** 11.96 seconds  
+
+### Stage 3 Multi-Tenant Boundary Test Results
+
+| Test Case | Scenario / Condition | Expected Result | Actual Result | Status |
+|---|---|---|---|---|
+| **ST3-1** | Tenant Beta requests `GET /api/benchmark/latest` when only Tenant Alpha has benchmarks | HTTP 404 (undefined / no benchmark found for Beta) | HTTP 404 (Alpha run excluded) | **PASS** |
+| **ST3-2** | Tenant Beta requests `GET /api/benchmark/bench_alpha_test` | HTTP 403 Forbidden (`CROSS_ORGANISATION_ACCESS_DENIED`) | HTTP 403 Forbidden | **PASS** |
+| **ST3-3** | Tenant Beta requests `GET /api/benchmark/bench_alpha_test/csv` | HTTP 403 Forbidden | HTTP 403 Forbidden | **PASS** |
+| **ST3-4** | Tenant Beta calls `GET /api/benchmark/list` | Returns only Beta benchmarks, Alpha records excluded | Filtered to `callerOrg` | **PASS** |
+| **ST3-5** | Tenant Beta attempts `POST /api/benchmark/topsis/run` referencing Alpha's benchmark | HTTP 403 / 404 (cross-tenant benchmark prohibited) | HTTP 404 / 403 Forbidden | **PASS** |
+| **ST3-6** | Tenant Alpha and Beta generate domain challenge for identical domain | Independent challenge tokens keyed by `${orgId}:${domain}` | Distinct tokens, no overwrites | **PASS** |
+| **ST3-7** | Tenant updates `primaryDomain` via `PUT /api/organization` | `domainVerified` and `authorizationVerified` reset to `false` | Verification reset to `false` | **PASS** |
+| **ST3-8** | Token bearer demoted to `Viewer` in durable store on live request | `authMiddleware` dynamically enforces `Viewer` role without token reissue | Dynamically demoted | **PASS** |
+| **ST3-9** | Disabled user attempts request with active JWT token | HTTP 401 Unauthorized | HTTP 401 Unauthorized | **PASS** |
+| **ST3-10**| `Viewer` role attempts benchmark/topsis/eval mutations | HTTP 403 Forbidden | HTTP 403 Forbidden | **PASS** |
+
+### Automated Browser E2E Test Suite (Playwright)
+
+- **Execution Command:** `node TrustForge/api/capture_stage3_screenshots.js`
+- **Results:**
+  - Admin Login (`/admin/login`): Clean inputs, password default value verified as empty `""` (`fig_s3_admin_login_clean.png`).
+  - Organization Sign-in (`/login`): Successfully authenticated as `rajesh@technova.in` with signed 309-character bearer token.
+  - Onboarding Step 2 (`/onboarding`): Successfully generated authentic cryptographic DNS TXT challenge (`trustforge-verification=<hex>`) with 24-hour countdown timer (`fig_s3_onboarding_dns_challenge.png`).
+  - Settings Page (`/settings`): Profile and identity verification status persisted and rendered (`fig_s3_organization_settings.png`).
+  - Model Benchmark Dashboard (`/benchmark`): Authenticated benchmark metrics, TOPSIS MCDA rankings, and sensitivity analysis rendered (`fig_s3_benchmark_dashboard.png`).

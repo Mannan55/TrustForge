@@ -9,12 +9,11 @@ import {
 } from "react";
 import type { Organization } from "@/types";
 import { DEMO_ORG } from "@/data/organization";
-import { postureForScore } from "@/lib/format";
 import { orgService } from "@/services";
 
 interface OrgContextValue {
   org: Organization;
-  updateOrg: (patch: Partial<Organization>) => void;
+  updateOrg: (patch: Partial<Organization>) => Promise<Organization>;
   reloadOrg: () => Promise<void>;
   loading: boolean;
 }
@@ -40,12 +39,10 @@ export function OrgProvider({ children }: { children: ReactNode }) {
     reloadOrg();
   }, [reloadOrg]);
 
-  const updateOrg = useCallback((patch: Partial<Organization>) => {
-    setOrg((prev) => {
-      const next = { ...prev, ...patch };
-      if (patch.trustScore != null) next.posture = postureForScore(patch.trustScore);
-      return next;
-    });
+  const updateOrg = useCallback(async (patch: Partial<Organization>): Promise<Organization> => {
+    const updated = await orgService.updateOrganization(patch);
+    setOrg(updated);
+    return updated;
   }, []);
 
   const value = useMemo(() => ({ org, updateOrg, reloadOrg, loading }), [org, updateOrg, reloadOrg, loading]);

@@ -166,3 +166,30 @@ Following independent source review of commit `45807e6`, all 10 P0 release block
 ## Conclusion
 
 All P0 and P1 audit findings are resolved in the source tree with accompanying regression assertions. Zero artificial scoring fallbacks, zero unauthenticated identity assumptions, and zero hardcoded tenant leakages remain.
+
+
+---
+
+## Stage 3 Independent Re-Review Remediation Addendum
+
+**Audit Verification Date:** 2026-10-29  
+**Target Working Branch:** `repair/audit-remediation-stage3-2026-10-29`  
+**Supervising Faculty:** Dr. Neelam Naik  
+**Total Automated API Tests:** 162 passing (0 failing, 0 skipped)  
+**Python Regression Tests:** 29 passing, 1 skipped  
+**Playwright Browser Tests:** 100% passing across Authentication, Onboarding, Settings, and Benchmark UI
+
+### Summary of Stage 3 Mandated Remediations
+
+| Mandate # | Domain | Defect Description | Remediation Implemented | Verification Evidence |
+|---|---|---|---|---|
+| **M1** | Multi-Tenancy | Benchmark, TOPSIS, and Evaluation routes leaked global latest run across tenants | Updated `durableStore.getBenchmark(id, orgId)`, `listBenchmarks`, `getTOPSISRun`, `listTOPSISRuns` to scope queries by `callerOrg`. Cross-tenant requests return 403/404 fail-closed. | `stage3_tenant_isolation.test.ts` (Tests 1, 2, 3, 4, 5) |
+| **M2** | Benchmark UI | `ModelBenchmarkPage.tsx` used unauthenticated raw `fetch()` and silently fell back on error | Replaced all raw `fetch()` calls with typed authenticated client (`getBenchmarkListApi`, `getBenchmarkLatestApi`, `runBenchmarkApi`, `runTopsisApi`, etc.). Surfaced 401/403 actionable alerts; eliminated silent fallback to demo state. | Frontend Vite build + Playwright automated run |
+| **M3** | Real Onboarding | Step 2 showed hardcoded TXT `trustforge-verify=tf_...` and "completes immediately" text | Step 2 requests `POST /api/organization/domain-challenge` first, renders exact returned `challengeRecord` and 24h expiration timer. Challenge keys scoped by `${orgId}:${domain}`. Removed hardcoded string and demo text. | `fig_s3_onboarding_dns_challenge.png` + `stage3_tenant_isolation.test.ts` (Test 6) |
+| **M4** | Org Persistence | `OrgContext.updateOrg` only updated local React state without awaiting server PUT | Made `OrgContext.updateOrg` async, awaiting server `PUT /api/organization`. `reloadOrg` reads `GET /api/organization` as truth. Settings & Onboarding call real save with disabled state and error handling. Reset domain verification (`domainVerified = false, authorizationVerified = false`) if domain changes. | `fig_s3_organization_settings.png` + `stage3_tenant_isolation.test.ts` (Test 7) |
+| **M5** | Reports | Lingering fallback defaults (`https://technova.in`, `M03: Qwen 3.8 27B`, `[M01,M02,M03]`) in `reports.ts` | Removed all fallback defaults from `GET /reports/:id` and `GET /reports/executive/:id`. Genuine zero remains 0; failed/unscored remains null/NOT_EVALUATED. | `reports.ts` code inspection + 162 passing tests |
+| **M6** | Authentication | Fallback secret allowed when `NODE_ENV` unset; prefilled admin password in UI; non-test demo seeding | `getValidatedAuthSecret` requires 32+ char secret in all non-test modes. Seeding restricted to `ALLOW_DEMO_SEEDING === 'true' && NODE_ENV !== 'production'`. Dynamic role verification from durable store on token validation. Cleared prefilled password in `AdminLoginPage.tsx`. | `fig_s3_admin_login_clean.png` + `stage3_tenant_isolation.test.ts` (Test 8) |
+| **M7** | Provenance | `isRealInferenceVerified` previously tied to static slot status rather than receipt; initial UI values hardcoded | Set `isRealInferenceVerified: false` on static models endpoint; verified inference strictly requires provider receipt (`request_id` + context hash). Initialized benchmark consensus, run ID, and hash as empty in UI. | `ModelBenchmarkPage.tsx` + `benchmark.ts` |
+| **M8** | Evidence Upload | File uploads needed multi-tenant isolation, duplicate name protection, and SHA-256 verification | Implemented `${evId}_${safeFilename}` disk naming, genuine SHA-256 content hashing, and flagged non-text formats (PDF/DOCX/image) as `NOT_PARSED` (participates_in_grounding: false). | `assessments.ts` + `repair_audit.test.ts` |
+| **M9** | Role & Budget Controls | Model runs allowed unauthorized roles; potential paid expenditures | Added Viewer role rejection (HTTP 403) across `POST /benchmark/run`, `POST /benchmark/topsis/run`, `POST /evaluation/run`, `PUT /organization`. Zero paid API expenditures policy strictly maintained. | `stage3_tenant_isolation.test.ts` (Test 9) |
+| **M10** | Integration & E2E | Required real Express HTTP route tests with two tenants (`org_alpha`, `org_beta`) and Playwright screenshots | Built 8 new Express integration tests in `stage3_tenant_isolation.test.ts`. Captured 4 authentic Playwright screenshots in `TrustDocumentation/stage3_screenshots/`. | 162 passing tests + 4 screenshots captured |

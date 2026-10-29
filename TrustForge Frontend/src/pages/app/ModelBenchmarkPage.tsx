@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
 import {
+  getBenchmarkListApi,
+  getBenchmarkLatestApi,
+  getBenchmarkByIdApi,
+  runBenchmarkApi,
+  getBenchmarkDiagnosticsApi,
+  getTopsisCriteriaApi,
+  getTopsisLatestApi,
+  runTopsisApi,
+  getEvaluationLatestApi,
+  runEvaluationApi,
+} from "@/services/api";
+import {
   Cpu,
   ShieldCheck,
   CheckCircle2,
@@ -338,12 +350,12 @@ const INITIAL_MODELS: ModelMetric[] = [
 export function ModelBenchmarkPage() {
   const [models, setModels] = useState<ModelMetric[]>(INITIAL_MODELS);
   const [selectedModel, setSelectedModel] = useState<ModelMetric>(INITIAL_MODELS[2]); // Qwen 3.8
-  const [consensusScore, setConsensusScore] = useState<number>(82.5);
-  const [consensusPosture, setConsensusPosture] = useState<string>("Strong Alignment");
-  const [benchmarkRunId, setBenchmarkRunId] = useState<string>("BENCH_LIVE_VERIFIED");
-  const [targetUrl, setTargetUrl] = useState<string>("https://trustforge-dpdp-audit.in");
-  const [ragHash, setRagHash] = useState<string>("b9cec8432e23... (83-chunk corpus)");
-  const [completedCount, setCompletedCount] = useState<number>(5);
+  const [consensusScore, setConsensusScore] = useState<number | null>(null);
+  const [consensusPosture, setConsensusPosture] = useState<string>("");
+  const [benchmarkRunId, setBenchmarkRunId] = useState<string>("");
+  const [targetUrl, setTargetUrl] = useState<string>("");
+  const [ragHash, setRagHash] = useState<string>("");
+  const [completedCount, setCompletedCount] = useState<number>(0);
   const [isRunning, setIsRunning] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [historyRuns, setHistoryRuns] = useState<any[]>([]);
@@ -368,35 +380,25 @@ export function ModelBenchmarkPage() {
     async function loadInitialData() {
       try {
         // 1. Fetch benchmark runs list
-        const listRes = await fetch(`${apiBase}/api/benchmark/list`);
-        if (listRes.ok) {
-          const listJson = await listRes.json();
-          if (listJson && listJson.benchmarks) {
-            setHistoryRuns(listJson.benchmarks);
-          }
+        const listJson = await getBenchmarkListApi().catch(() => null);
+        if (listJson && listJson.benchmarks) {
+          setHistoryRuns(listJson.benchmarks);
         }
 
         // 2. Fetch latest benchmark
-        const latestRes = await fetch(`${apiBase}/api/benchmark/latest`);
-        if (latestRes.ok) {
-          const data = await latestRes.json();
-          if (data && data.per_model_metrics) {
-            applyBenchmarkData(data);
-          }
+        const data = await getBenchmarkLatestApi().catch(() => null);
+        if (data && data.per_model_metrics) {
+          applyBenchmarkData(data);
         }
 
         // 3. Fetch TOPSIS Criteria and latest Run
-        const critRes = await fetch(`${apiBase}/api/benchmark/topsis/criteria`);
-        if (critRes.ok) {
-          const critJson = await critRes.json();
-          if (critJson?.available_profiles) {
-            setAvailableProfiles(critJson.available_profiles);
-          }
+        const critJson = await getTopsisCriteriaApi().catch(() => null);
+        if (critJson?.available_profiles) {
+          setAvailableProfiles(critJson.available_profiles);
         }
 
-        const topsisRes = await fetch(`${apiBase}/api/benchmark/topsis/latest`);
-        if (topsisRes.ok) {
-          const tJson = await topsisRes.json();
+        const tJson = await getTopsisLatestApi().catch(() => null);
+        if (tJson) {
           setTopsisData(tJson);
           if (tJson?.profile_used?.profile_id) {
             setSelectedProfileId(tJson.profile_used.profile_id);
@@ -404,13 +406,12 @@ export function ModelBenchmarkPage() {
         }
 
         // 4. Fetch Phase 6 Scientific Evaluation data
-        const evalRes = await fetch(`${apiBase}/api/evaluation/latest`);
-        if (evalRes.ok) {
-          const eJson = await evalRes.json();
+        const eJson = await getEvaluationLatestApi().catch(() => null);
+        if (eJson) {
           setEvaluationData(eJson);
         }
       } catch (e) {
-        console.warn("Could not load initial benchmark, TOPSIS, or evaluation data, using default state.", e);
+        console.warn("Could not load initial benchmark, TOPSIS, or evaluation data:", e);
       }
     }
     loadInitialData();
@@ -419,24 +420,18 @@ export function ModelBenchmarkPage() {
   const handleRunEvaluation = async () => {
     setEvalLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/evaluation/run`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          rejection_policy: "PENALIZE_AS_INCORRECT",
-          run_bootstrap: true,
-          bootstrap_iterations: 500,
-        }),
+      const data = await runEvaluationApi({
+        rejection_policy: "PENALIZE_AS_INCORRECT",
+        run_bootstrap: true,
+        bootstrap_iterations: 500,
       });
-      if (res.ok) {
-        const data = await res.json();
-        setEvaluationData(data);
-        if (data.topsis_empirical_ranking) {
-          setTopsisData(data.topsis_empirical_ranking);
-        }
+      setEvaluationData(data);
+      if (data.topsis_empirical_ranking) {
+        setTopsisData(data.topsis_empirical_ranking);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to run Phase 6 scientific evaluation:", e);
+      alert(`Evaluation run failed (${e?.status || 500}): ${e?.detail || e?.message || "Execution failed"}`);
     } finally {
       setEvalLoading(false);
     }
@@ -446,20 +441,14 @@ export function ModelBenchmarkPage() {
     setSelectedProfileId(profileId);
     setTopsisLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/benchmark/topsis/run`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profile_id: profileId,
-          use_synthetic_fixture: completedCount < 3,
-        }),
+      const data = await runTopsisApi({
+        profile_id: profileId,
+        use_synthetic_fixture: completedCount < 3,
       });
-      if (res.ok) {
-        const data = await res.json();
-        setTopsisData(data);
-      }
-    } catch (e) {
+      setTopsisData(data);
+    } catch (e: any) {
       console.error("Failed to re-run TOPSIS ranking:", e);
+      alert(`TOPSIS ranking failed (${e?.status || 500}): ${e?.detail || e?.message || "Execution failed"}`);
     } finally {
       setTopsisLoading(false);
     }
@@ -468,13 +457,11 @@ export function ModelBenchmarkPage() {
   const handleOpenDiagnostics = async () => {
     setShowDiagnostics(true);
     try {
-      const res = await fetch(`${apiBase}/api/benchmark/diagnostics`);
-      if (res.ok) {
-        const diag = await res.json();
-        setDiagnosticsData(diag);
-      }
-    } catch (e) {
+      const diag = await getBenchmarkDiagnosticsApi();
+      setDiagnosticsData(diag);
+    } catch (e: any) {
       console.warn("Could not fetch gateway diagnostics:", e);
+      alert(`Diagnostics request failed (${e?.status || 500}): ${e?.detail || e?.message || "Failed"}`);
     }
   };
 
@@ -523,13 +510,13 @@ export function ModelBenchmarkPage() {
   const handleSelectHistoryRun = async (runId: string) => {
     if (!runId) return;
     try {
-      const res = await fetch(`${apiBase}/api/benchmark/${runId}`);
-      if (res.ok) {
-        const data = await res.json();
+      const data = await getBenchmarkByIdApi(runId);
+      if (data && data.per_model_metrics) {
         applyBenchmarkData(data);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to load historical benchmark run:", e);
+      alert(`Failed to load benchmark run ${runId} (${e?.status || 500}): ${e?.detail || e?.message}`);
     }
   };
 
@@ -610,23 +597,14 @@ export function ModelBenchmarkPage() {
   const handleRunBenchmark = async () => {
     setIsRunning(true);
     try {
-      const res = await fetch(`${apiBase}/api/benchmark/run`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          target_url: targetUrl,
-          scan_id: `SCAN_${Date.now()}`,
-        }),
+      const runData = await runBenchmarkApi({
+        target_url: targetUrl || "https://example.com",
+        scan_id: `SCAN_${Date.now()}`,
       });
-
-      if (res.ok) {
-        const runData = await res.json();
-        applyBenchmarkData(runData);
-      } else {
-        console.warn("Backend benchmark returned non-200, maintaining current verified state.");
-      }
-    } catch (err) {
+      applyBenchmarkData(runData);
+    } catch (err: any) {
       console.error("Benchmark run request failed:", err);
+      alert(`Benchmark execution failed (${err?.status || 500}): ${err?.detail || err?.message || "Execution blocked"}`);
     } finally {
       setIsRunning(false);
     }

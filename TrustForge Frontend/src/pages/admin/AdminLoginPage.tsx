@@ -8,8 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 export function AdminLoginPage() {
   const { loginAsAdmin } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@trustforge.in");
-  const [password, setPassword] = useState("AdminSecret2026!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
 

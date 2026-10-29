@@ -39,7 +39,7 @@ router.post('/organization/domain-challenge', requireAuth, async (req: Request, 
     createdAt: new Date().toISOString(),
   };
 
-  durableStore.setDomainChallenge(cleanDomain, challengeData);
+  durableStore.setDomainChallenge(cleanDomain, challengeData, callerOrg);
 
   res.json({
     domain: cleanDomain,
@@ -64,7 +64,7 @@ router.post('/organization/verify-domain', requireAuth, async (req: Request, res
   const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
   const callerOrg = req.authContext!.orgId;
 
-  const challenge = durableStore.getDomainChallenge(cleanDomain);
+  const challenge = durableStore.getDomainChallenge(cleanDomain, callerOrg);
   if (!challenge) {
     res.status(400).json({
       verified: false,
@@ -101,7 +101,7 @@ router.post('/organization/verify-domain', requireAuth, async (req: Request, res
     if (matched) {
       challenge.verified = true;
       challenge.verifiedAt = new Date().toISOString();
-      durableStore.setDomainChallenge(cleanDomain, challenge);
+      durableStore.setDomainChallenge(cleanDomain, challenge, callerOrg);
 
       // Update tenant organization
       const existingOrg = durableStore.getOrganization(callerOrg) || {};
@@ -202,9 +202,15 @@ router.put('/organization', requireAuth, async (req: Request, res: Response): Pr
   delete patch.authorizationVerified;
   delete patch.id;
 
+  const domainChanged = patch.primaryDomain !== undefined && patch.primaryDomain !== existingOrg.primaryDomain;
+  const gstinChanged = patch.gstin !== undefined && patch.gstin !== existingOrg.gstin;
+
   const updatedOrg = {
     ...existingOrg,
     ...patch,
+    domainVerified: domainChanged ? false : (existingOrg.domainVerified ?? false),
+    authorizationVerified: domainChanged ? false : (existingOrg.authorizationVerified ?? false),
+    gstinVerified: gstinChanged ? false : (existingOrg.gstinVerified ?? false),
     updated_at: new Date().toISOString(),
   };
 

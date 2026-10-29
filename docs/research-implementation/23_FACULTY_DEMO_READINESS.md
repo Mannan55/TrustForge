@@ -85,3 +85,7 @@ npx --prefix "TrustForge Frontend" vite "TrustForge Frontend" --host 127.0.0.1 -
 2. **Model Slot M05:** Gated by OpenRouter free endpoint rate limits (HTTP 429).
 3. **Model Slot M10:** Requires local Ollama service running on the host machine.
 4. **GSTIN Registry Lookup:** Format is CBIC validated; direct automated real-time GSTN lookups require production GST portal API credentials.
+
+5. **Stage 3 Cryptographic Domain Challenge:** Domain authorization requires authentic DNS TXT record (`trustforge-verification=<hex>`) with 24-hour expiration. Domain changes invalidate verification automatically to prevent tenant spoofing.
+6. **Multi-Tenant Isolation on Benchmarks:** Benchmark runs, TOPSIS rankings, and CSV exports are strictly segregated by organization ID (`org_id`). Tenant Beta cannot access or trigger rankings on Tenant Alpha's evaluation records.
+7. **Dynamic Role Verification:** Admin or Owner demotion to Viewer dynamically invalidates write permissions without waiting for JWT token expiry.

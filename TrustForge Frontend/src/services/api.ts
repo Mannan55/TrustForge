@@ -667,3 +667,59 @@ export async function updateOrganizationApi(patch: any): Promise<any> {
 }
 
 
+
+// --- Benchmarks & TOPSIS Evaluation ---
+
+export async function getBenchmarkListApi(): Promise<{ total_runs: number; benchmarks: any[] }> {
+  return _request<{ total_runs: number; benchmarks: any[] }>("GET", "/api/benchmark/list");
+}
+
+export async function getBenchmarkLatestApi(): Promise<any> {
+  return _request<any>("GET", "/api/benchmark/latest");
+}
+
+export async function getBenchmarkByIdApi(id: string): Promise<any> {
+  return _request<any>("GET", `/api/benchmark/${encodeURIComponent(id)}`);
+}
+
+export async function runBenchmarkApi(payload: {
+  target_url?: string;
+  scan_id?: string;
+  assessment_id?: string;
+  selected_models?: string[];
+}): Promise<any> {
+  return _request<any>("POST", "/api/benchmark/run", payload);
+}
+
+export async function getBenchmarkDiagnosticsApi(): Promise<any> {
+  return _request<any>("GET", "/api/benchmark/diagnostics");
+}
+
+export async function getTopsisCriteriaApi(): Promise<any> {
+  return _request<any>("GET", "/api/benchmark/topsis/criteria");
+}
+
+export async function getTopsisLatestApi(): Promise<any> {
+  return _request<any>("GET", "/api/benchmark/topsis/latest");
+}
+
+export async function runTopsisApi(payload: {
+  profile_id?: string;
+  benchmark_id?: string;
+  custom_weights?: Record<string, number>;
+  use_synthetic_fixture?: boolean;
+}): Promise<any> {
+  return _request<any>("POST", "/api/benchmark/topsis/run", payload);
+}
+
+export async function getEvaluationLatestApi(): Promise<any> {
+  return _request<any>("GET", "/api/evaluation/latest");
+}
+
+export async function runEvaluationApi(payload?: {
+  rejection_policy?: string;
+  run_bootstrap?: boolean;
+  bootstrap_iterations?: number;
+}): Promise<any> {
+  return _request<any>("POST", "/api/evaluation/run", payload || {});
+}

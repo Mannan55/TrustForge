@@ -20,6 +20,7 @@ import { cn } from "@/lib/cn";
 import { useOrg } from "@/context/OrgContext";
 import { useToast } from "@/context/ToastContext";
 import { identityService, type GstinVerification } from "@/services";
+import { createDomainChallengeApi, verifyDomainApi } from "@/services/api";
 
 const STEPS = [
   { id: 1, label: "Identity", icon: Building2 },
@@ -61,6 +62,9 @@ export function OnboardingPage() {
   const [gstinResult, setGstinResult] = useState<GstinVerification | null>(null);
   const [domainState, setDomainState] = useState<"idle" | "checking" | "done">("idle");
   const [domainResult, setDomainResult] = useState<any | null>(null);
+  const [challengeData, setChallengeData] = useState<any | null>(null);
+  const [challengeLoading, setChallengeLoading] = useState(false);
+  const [finishing, setFinishing] = useState(false);
 
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -73,32 +77,65 @@ export function OnboardingPage() {
     });
   };
 
-  const verifyDomain = () => {
-    setDomainState("checking");
-    identityService.verifyDomain(form.primaryDomain).then((r) => {
-      setDomainResult(r);
-      setDomainState("done");
-    });
+  const requestChallenge = async () => {
+    if (!form.primaryDomain.trim()) return;
+    setChallengeLoading(true);
+    try {
+      const res = await createDomainChallengeApi(form.primaryDomain);
+      setChallengeData(res);
+      setDomainState("idle");
+      setDomainResult(null);
+    } catch (err: any) {
+      notify(err?.message || "Failed to generate domain verification challenge.", "warning");
+    } finally {
+      setChallengeLoading(false);
+    }
   };
 
-  const finish = () => {
+  const verifyDomain = async () => {
+    if (!challengeData) {
+      await requestChallenge();
+      return;
+    }
+    setDomainState("checking");
+    try {
+      const res = await verifyDomainApi(form.primaryDomain);
+      setDomainResult(res);
+      setDomainState("done");
+    } catch (err: any) {
+      setDomainResult({
+        verified: false,
+        note: err?.message || "Verification request failed."
+      });
+      setDomainState("done");
+    }
+  };
+
+  const finish = async () => {
+    setFinishing(true);
     const isDomainGenuine = domainResult?.verified ?? false;
     const isGstinGenuine = gstinResult?.found ?? false;
 
-    updateOrg({
-      legalName: form.legalName,
-      gstin: form.gstin,
-      primaryDomain: form.primaryDomain,
-      grievanceOfficer: form.grievanceOfficer,
-      grievanceEmail: form.grievanceEmail,
-      industry: form.industry,
-      companySize: form.companySize,
-      gstinVerified: isGstinGenuine,
-      domainVerified: isDomainGenuine,
-      authorizationVerified: isDomainGenuine,
-    });
-    notify(isDomainGenuine ? "Organization workspace is ready and verified." : "Organization workspace created (Domain verification pending).");
-    navigate("/dashboard");
+    try {
+      await updateOrg({
+        legalName: form.legalName,
+        gstin: form.gstin,
+        primaryDomain: form.primaryDomain,
+        grievanceOfficer: form.grievanceOfficer,
+        grievanceEmail: form.grievanceEmail,
+        industry: form.industry,
+        companySize: form.companySize,
+        gstinVerified: isGstinGenuine,
+        domainVerified: isDomainGenuine,
+        authorizationVerified: isDomainGenuine,
+      });
+      notify(isDomainGenuine ? "Organization workspace is ready and verified." : "Organization workspace created (Domain verification pending).");
+      navigate("/dashboard");
+    } catch (err: any) {
+      notify(err?.message || "Failed to persist organization profile.", "warning");
+    } finally {
+      setFinishing(false);
+    }
   };
 
   const canNext = step === 1 ? gstinState === "done" : step === 2 ? domainState === "done" : true;
@@ -218,30 +255,62 @@ export function OnboardingPage() {
                   <Input
                     label="Primary domain"
                     value={form.primaryDomain}
-                    onChange={(e) => set("primaryDomain", e.target.value)}
+                    onChange={(e) => {
+                      set("primaryDomain", e.target.value);
+                      setChallengeData(null);
+                      setDomainResult(null);
+                      setDomainState("idle");
+                    }}
                     icon={<Globe className="h-4 w-4" />}
                     className="sm:flex-1"
+                    placeholder="e.g. technova.in"
                   />
-                  <Button variant="outline" onClick={verifyDomain} disabled={domainState === "checking"} className="shrink-0">
-                    {domainState === "checking" ? (
-                      <>
-                        <Loader className="h-4 w-4 animate-spin" /> Checking
-                      </>
-                    ) : (
-                      "Verify domain"
-                    )}
-                  </Button>
+                  {!challengeData ? (
+                    <Button
+                      variant="outline"
+                      onClick={requestChallenge}
+                      disabled={challengeLoading || !form.primaryDomain.trim()}
+                      className="shrink-0"
+                    >
+                      {challengeLoading ? (
+                        <>
+                          <Loader className="h-4 w-4 animate-spin" /> Generating...
+                        </>
+                      ) : (
+                        "Generate DNS Challenge"
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      onClick={verifyDomain}
+                      disabled={domainState === "checking"}
+                      className="shrink-0"
+                    >
+                      {domainState === "checking" ? (
+                        <>
+                          <Loader className="h-4 w-4 animate-spin" /> Verifying DNS...
+                        </>
+                      ) : (
+                        "Verify DNS Record"
+                      )}
+                    </Button>
+                  )}
                 </div>
 
-                {domainState !== "done" && (
-                  <div className="rounded-xl border border-line bg-canvas p-4">
-                    <p className="text-sm font-medium text-ink">Add this TXT record to your DNS</p>
-                    <code className="mt-2 block overflow-x-auto rounded-lg bg-emerald-deep px-3 py-2 font-mono text-xs text-bone">
-                      trustforge-verify=tf_{form.primaryDomain.replace(/\W/g, "")}_9f2a
+                {challengeData && (
+                  <div className="rounded-xl border border-line bg-canvas p-4 animate-fade-in">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-ink">Active Cryptographic TXT Challenge</p>
+                      <span className="text-xs text-ink-muted font-mono">
+                        Expires: {new Date(challengeData.challengeExpiresAt).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <code className="mt-2 block overflow-x-auto rounded-lg bg-emerald-deep px-3 py-2 font-mono text-xs text-bone select-all">
+                      {challengeData.challengeRecord}
                     </code>
-                    <p className="mt-2 text-xs text-ink-muted">
-                      Records can take a few minutes to propagate. For this demo, verification
-                      completes immediately.
+                    <p className="mt-2 text-xs text-ink-soft">
+                      {challengeData.note}
                     </p>
                   </div>
                 )}
@@ -312,8 +381,8 @@ export function OnboardingPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={finish}>
-                Enter workspace
+              <Button onClick={finish} disabled={finishing}>
+                {finishing ? "Entering workspace..." : "Enter workspace"}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             )}

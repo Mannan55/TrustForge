@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../database/supabaseClient.js';
 import { authService } from '../services/authService.js';
+import { durableStore } from '../database/durableStore.js';
 
 export interface AuthContext {
   userId: string;
@@ -48,11 +49,19 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     // Check signed HMAC-SHA256 session token
     const session = authService.verifyToken(token);
     if (session) {
+      // Dynamic role & organization verification from durable store
+      const liveUser = durableStore.getUser(session.userId);
+      if (liveUser && (liveUser as any).is_disabled) {
+        res.status(401).json({ error: 'User account has been disabled.', code: 'UNAUTHORIZED' });
+        return;
+      }
+      const effectiveRole = liveUser ? liveUser.role : session.role;
+      const effectiveOrg = liveUser ? liveUser.org_id : session.orgId;
       req.authContext = {
         userId: session.userId,
-        email: session.email,
-        orgId: session.orgId,
-        role: session.role,
+        email: liveUser?.email || session.email,
+        orgId: effectiveOrg,
+        role: effectiveRole,
         isAuthenticated: true,
       };
       return next();

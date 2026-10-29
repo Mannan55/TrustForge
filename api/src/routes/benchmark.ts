@@ -43,7 +43,7 @@ router.get('/models', (req: Request, res: Response) => {
       availability_status: slotStatus.status,
       availability: slotStatus.available ? 'AVAILABLE' : slotStatus.status,
       reason: slotStatus.reason,
-      isRealInferenceVerified: slotStatus.available,
+      isRealInferenceVerified: false,
     };
   });
 
@@ -61,7 +61,8 @@ router.get('/diagnostics', (req: Request, res: Response) => {
 
 // GET /api/benchmark/latest — Return the most recent benchmark evaluation run
 router.get('/latest', requireAuth, (req: Request, res: Response) => {
-  const latest = durableStore.getBenchmark('latest');
+  const callerOrg = req.authContext?.orgId;
+  const latest = durableStore.getBenchmark('latest', callerOrg);
   if (!latest) {
     res.status(404).json({ error: 'No benchmark run recorded yet.' });
     return;
@@ -71,7 +72,8 @@ router.get('/latest', requireAuth, (req: Request, res: Response) => {
 
 // GET /api/benchmark/export/csv — Download latest benchmark matrix as RFC 4180 CSV
 router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
-  const latest = durableStore.getBenchmark('latest');
+  const callerOrg = req.authContext?.orgId;
+  const latest = durableStore.getBenchmark('latest', callerOrg);
   if (!latest) {
     res.status(404).send('No benchmark run recorded yet.');
     return;
@@ -84,7 +86,9 @@ router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
 
 // GET /api/benchmark/list — List all completed benchmark runs
 router.get('/list', requireAuth, (req: Request, res: Response) => {
-  const benchmarks = durableStore.listBenchmarks();
+  const callerOrg = req.authContext?.orgId;
+  const isSuperAdmin = req.authContext?.role === 'Super Admin';
+  const benchmarks = durableStore.listBenchmarks(callerOrg, isSuperAdmin);
   res.json({
     total_runs: benchmarks.length,
     benchmarks,
@@ -120,7 +124,8 @@ router.get('/topsis/profiles', (req: Request, res: Response) => {
 
 // GET /api/benchmark/topsis/latest — Return latest TOPSIS run result
 router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) => {
-  const latest = (await db.getTOPSISRun('latest')) || durableStore.getTOPSISRun('latest');
+  const callerOrg = req.authContext?.orgId;
+  const latest = (await db.getTOPSISRun('latest')) || durableStore.getTOPSISRun('latest', callerOrg);
   if (!latest) {
     // If no run recorded yet, execute demonstration run on synthetic fixture
     const syntheticRun = topsisEngine.executeFullTOPSISRun(
@@ -140,7 +145,9 @@ router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) =>
 
 // GET /api/benchmark/topsis/list — List all historical TOPSIS ranking runs
 router.get('/topsis/list', requireAuth, async (req: Request, res: Response) => {
-  const runs = (await db.listTOPSISRuns()) || durableStore.listTOPSISRuns();
+  const callerOrg = req.authContext?.orgId;
+  const isSuperAdmin = req.authContext?.role === 'Super Admin';
+  const runs = durableStore.listTOPSISRuns(callerOrg, isSuperAdmin);
   res.json({
     total_runs: runs.length,
     runs,
@@ -175,6 +182,11 @@ router.get('/topsis/:runId', requireAuth, async (req: Request, res: Response) =>
 // POST /api/benchmark/topsis/run — Execute TOPSIS multi-criteria ranking and sensitivity analysis
 router.post('/topsis/run', requireAuth, async (req: Request, res: Response) => {
   try {
+    if (req.authContext?.role === 'Viewer') {
+      res.status(403).json({ error: 'Viewers are not permitted to execute TOPSIS ranking runs.', code: 'FORBIDDEN' });
+      return;
+    }
+    const callerOrg = req.authContext!.orgId;
     const {
       benchmark_id,
       profile_id = 'PRIMARY_FACULTY_PROPOSED',
@@ -196,8 +208,12 @@ router.post('/topsis/run', requireAuth, async (req: Request, res: Response) => {
       }
     } else {
       const bId = benchmark_id || 'latest';
-      const benchmark = (await db.getBenchmark(bId)) || durableStore.getBenchmark(bId);
+      const benchmark = (await db.getBenchmark(bId)) || durableStore.getBenchmark(bId, callerOrg);
       if (!benchmark) {
+        if (benchmark_id) {
+          res.status(404).json({ error: `Referenced benchmark '${benchmark_id}' not found.`, code: 'NOT_FOUND' });
+          return;
+        }
         candidateMetrics = SYNTHETIC_RESEARCH_BENCHMARK_FIXTURE;
         sourceId = 'SYNTHETIC_RESEARCH_FIXTURE';
         mode = 'SYNTHETIC_DEMONSTRATION';
@@ -255,6 +271,7 @@ router.post('/topsis/run', requireAuth, async (req: Request, res: Response) => {
       (runResult as any).quarantine_status = 'SYNTHETIC_EXCLUDED_FROM_EMPIRICAL_METRICS';
     }
 
+    (runResult as any).org_id = callerOrg;
     durableStore.setTOPSISRun(runResult.run_id, runResult);
     await db.saveTOPSISRun(runResult);
 
@@ -370,7 +387,11 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
 
 // POST /api/benchmark/run — Execute evaluation across candidate models for a scan/assessment
 router.post('/run', requireAuth, async (req: Request, res: Response): Promise<void> => {
-    const { scan_id, assessment_id, target_url, selected_models } = req.body;
+  if (req.authContext?.role === 'Viewer') {
+    res.status(403).json({ error: 'Viewers are not permitted to trigger model benchmark evaluations.', code: 'FORBIDDEN' });
+    return;
+  }
+  const { scan_id, assessment_id, target_url, selected_models } = req.body;
   const callerOrg = req.authContext!.orgId;
 
   let evidence: any[] = [];
@@ -552,6 +573,7 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
           runSensitivity: true,
         }
       );
+      (topsisRun as any).org_id = callerOrg;
       durableStore.setTOPSISRun(topsisRun.run_id, topsisRun);
       db.saveTOPSISRun(topsisRun).catch(e => console.warn('[Benchmark Run] DB save TOPSIS error:', e));
 

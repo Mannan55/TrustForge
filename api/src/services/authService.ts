@@ -31,16 +31,14 @@ export interface SessionPayload {
 
 export function getValidatedAuthSecret(): string {
   const envSecret = process.env.JWT_SECRET || process.env.AUTH_SECRET;
-  if (process.env.NODE_ENV === 'production') {
+  const isTestEnv = process.env.NODE_ENV === 'test' || process.argv.some(a => a.includes('test'));
+  if (!isTestEnv) {
     if (!envSecret || envSecret.length < 32) {
-      throw new Error('FATAL: A strong AUTH_SECRET or JWT_SECRET (minimum 32 characters) must be configured in production.');
+      throw new Error('FATAL: A strong AUTH_SECRET or JWT_SECRET (minimum 32 characters) must be configured in all non-test environments.');
     }
     return envSecret;
   }
   if (envSecret) {
-    if (envSecret.length < 16) {
-      throw new Error('AUTH_SECRET must be at least 16 characters long.');
-    }
     return envSecret;
   }
   return 'trustforge_session_secret_2026_dpdp_audit_secure_token';
@@ -244,8 +242,8 @@ export class AuthService {
    */
   public seedDefaultUsersIfEmpty(): void {
     // P0-3 FIX: Gated behind explicit test mode or ALLOW_DEMO_SEEDING flag
-    const isTestMode = process.env.NODE_ENV === 'test' || !process.env.NODE_ENV;
-    const isDemoAllowed = process.env.ALLOW_DEMO_SEEDING === 'true';
+    const isTestMode = process.env.NODE_ENV === 'test';
+    const isDemoAllowed = process.env.ALLOW_DEMO_SEEDING === 'true' && process.env.NODE_ENV !== 'production';
 
     if (!isTestMode && !isDemoAllowed) {
       return;

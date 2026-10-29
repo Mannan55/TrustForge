@@ -176,16 +176,28 @@ export class DurableStore {
     saveJsonFile('benchmarks.json', Object.fromEntries(this.benchmarks));
   }
 
-  public getBenchmark(id: string): any | undefined {
+  public getBenchmark(id: string, orgId?: string): any | undefined {
     if (id === 'latest') {
       const all = Array.from(this.benchmarks.values());
+      if (orgId) {
+        const orgBenchmarks = all.filter(b => b.org_id === orgId);
+        return orgBenchmarks.length > 0 ? orgBenchmarks[orgBenchmarks.length - 1] : undefined;
+      }
       return all.length > 0 ? all[all.length - 1] : undefined;
     }
-    return this.benchmarks.get(id);
+    const bench = this.benchmarks.get(id);
+    if (bench && orgId && bench.org_id && bench.org_id !== orgId) {
+      return undefined;
+    }
+    return bench;
   }
 
-  public listBenchmarks(): any[] {
-    return Array.from(this.benchmarks.values());
+  public listBenchmarks(orgId?: string, isSuperAdmin?: boolean): any[] {
+    const all = Array.from(this.benchmarks.values());
+    if (orgId && !isSuperAdmin) {
+      return all.filter(b => b.org_id === orgId);
+    }
+    return all;
   }
 
   // --- TOPSIS Runs ---
@@ -194,16 +206,28 @@ export class DurableStore {
     saveJsonFile('topsis_runs.json', Object.fromEntries(this.topsisRuns));
   }
 
-  public getTOPSISRun(id: string): any | undefined {
+  public getTOPSISRun(id: string, orgId?: string): any | undefined {
     if (id === 'latest') {
       const all = Array.from(this.topsisRuns.values());
+      if (orgId) {
+        const orgRuns = all.filter(r => r.org_id === orgId);
+        return orgRuns.length > 0 ? orgRuns[orgRuns.length - 1] : undefined;
+      }
       return all.length > 0 ? all[all.length - 1] : undefined;
     }
-    return this.topsisRuns.get(id);
+    const run = this.topsisRuns.get(id);
+    if (run && orgId && run.org_id && run.org_id !== orgId) {
+      return undefined;
+    }
+    return run;
   }
 
-  public listTOPSISRuns(): any[] {
-    return Array.from(this.topsisRuns.values());
+  public listTOPSISRuns(orgId?: string, isSuperAdmin?: boolean): any[] {
+    const all = Array.from(this.topsisRuns.values());
+    if (orgId && !isSuperAdmin) {
+      return all.filter(r => r.org_id === orgId);
+    }
+    return all;
   }
 
   // --- Phase 6 Evaluation Runs ---
@@ -273,15 +297,21 @@ export class DurableStore {
   }
 
   // --- Domain Verification Challenges ---
-  public setDomainChallenge(domain: string, challenge: any): void {
-    const key = domain.toLowerCase().trim();
+  public setDomainChallenge(domain: string, challenge: any, orgId?: string): void {
+    const key = orgId ? `${orgId.toLowerCase().trim()}:${domain.toLowerCase().trim()}` : domain.toLowerCase().trim();
     this.domainChallenges.set(key, challenge);
     saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
   }
 
-  public getDomainChallenge(domain: string): any | undefined {
-    const key = domain.toLowerCase().trim();
-    return this.domainChallenges.get(key);
+  public getDomainChallenge(domain: string, orgId?: string): any | undefined {
+    if (orgId) {
+      const scopedKey = `${orgId.toLowerCase().trim()}:${domain.toLowerCase().trim()}`;
+      if (this.domainChallenges.has(scopedKey)) {
+        return this.domainChallenges.get(scopedKey);
+      }
+    }
+    const legacyKey = domain.toLowerCase().trim();
+    return this.domainChallenges.get(legacyKey);
   }
 }
 
