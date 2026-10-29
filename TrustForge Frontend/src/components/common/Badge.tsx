@@ -70,35 +70,54 @@ const statusLabel: Record<FindingStatus, string> = {
   DISMISSED: "Dismissed",
 };
 
-export function FindingStatusBadge({ status }: { status: FindingStatus }) {
-  return <Badge tone={statusTone[status]}>{statusLabel[status]}</Badge>;
+export function FindingStatusBadge({ status }: { status: FindingStatus | string }) {
+  const normalized = String(status || "").toUpperCase();
+  const tone = statusTone[normalized as FindingStatus] ?? (normalized === "PASS" ? "success" : normalized === "FAIL" ? "danger" : "info");
+  const label = statusLabel[normalized as FindingStatus] ?? (normalized ? normalized.replace(/_/g, " ") : "Open");
+  return <Badge tone={tone}>{label}</Badge>;
 }
 
-const evidenceTone: Record<EvidenceStatus, Tone> = {
+const evidenceTone: Record<string, Tone> = {
   VERIFIED: "success",
   DETECTED: "brand",
+  SELF_REPORTED: "brand",
   INFERRED: "info",
   NOT_FOUND: "danger",
   NOT_ASSESSED: "neutral",
 };
-const evidenceLabel: Record<EvidenceStatus, string> = {
+const evidenceLabel: Record<string, string> = {
   VERIFIED: "Verified",
   DETECTED: "Detected",
+  SELF_REPORTED: "Self-Reported",
   INFERRED: "Inferred",
   NOT_FOUND: "Not found",
   NOT_ASSESSED: "Not assessed",
 };
 
-export function EvidenceBadge({ status }: { status: EvidenceStatus }) {
-  return <Badge tone={evidenceTone[status]}>{evidenceLabel[status]}</Badge>;
+export function EvidenceBadge({ status }: { status: EvidenceStatus | string }) {
+  const key = (status || "DETECTED").toUpperCase();
+  const tone = evidenceTone[key] || "neutral";
+  const label = evidenceLabel[key] || key.replace(/_/g, " ");
+  return <Badge tone={tone}>{label}</Badge>;
 }
 
-const confidenceTone: Record<EvidenceConfidence, Tone> = {
+const confidenceTone: Record<string, Tone> = {
   HIGH: "success",
   MEDIUM: "warning",
   LOW: "danger",
 };
 
-export function ConfidenceBadge({ confidence }: { confidence: EvidenceConfidence }) {
-  return <Badge tone={confidenceTone[confidence]}>{confidence[0] + confidence.slice(1).toLowerCase()} confidence</Badge>;
+export function ConfidenceBadge({ confidence }: { confidence: EvidenceConfidence | string | number | undefined | null }) {
+  let key: string;
+  if (typeof confidence === "number") {
+    key = confidence >= 0.8 ? "HIGH" : confidence >= 0.5 ? "MEDIUM" : "LOW";
+  } else if (typeof confidence === "string" && confidence.trim()) {
+    key = confidence.trim().toUpperCase();
+  } else {
+    key = "MEDIUM";
+  }
+  const tone = confidenceTone[key] || "warning";
+  const formatted = key.charAt(0) + key.slice(1).toLowerCase();
+  return <Badge tone={tone}>{formatted} confidence</Badge>;
 }
+

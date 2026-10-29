@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="100%" height="100%" style="background:#0F172A;font-family:'Segoe UI',system-ui,sans-serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#60A5FA"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="800" letter-spacing="0.5">TRUSTFORGE DATABASE ARCHITECTURE (SUPABASE POSTGRESQL)</text>
+  <text x="600" y="65" text-anchor="middle" fill="#94A3B8" font-size="12">Entity-Relationship Schema with Row-Level Security and pgvector Embeddings</text>
+
+  <!-- Table 1: organisations -->
+  <g transform="translate(50, 100)" filter="url(#shadow)">
+    <rect width="240" height="170" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <rect width="240" height="30" rx="8" fill="#1D4ED8"/>
+    <text x="120" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">organisations</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : varchar</text>
+    <text x="15" y="70" fill="#94A3B8" font-size="10" font-family="monospace">    name : varchar</text>
+    <text x="15" y="88" fill="#94A3B8" font-size="10" font-family="monospace">    cin : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    gstin : varchar</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    primary_domain : varchar</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    dpo_email : varchar</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    created_at : timestamp</text>
+  </g>
+
+  <!-- Table 2: users & memberships -->
+  <g transform="translate(50, 310)" filter="url(#shadow)">
+    <rect width="240" height="150" rx="8" fill="#1E293B" stroke="#6366F1" stroke-width="1.5"/>
+    <rect width="240" height="30" rx="8" fill="#4338CA"/>
+    <text x="120" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">organisation_memberships</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : varchar</text>
+    <text x="15" y="70" fill="#38BDF8" font-size="10" font-family="monospace">FK  organisation_id : varchar</text>
+    <text x="15" y="88" fill="#38BDF8" font-size="10" font-family="monospace">FK  user_id : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    role : varchar (Owner/DPO)</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    is_active : boolean</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    created_at : timestamp</text>
+  </g>
+
+  <!-- Table 3: assessments -->
+  <g transform="translate(340, 100)" filter="url(#shadow)">
+    <rect width="260" height="230" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+    <rect width="260" height="30" rx="8" fill="#047857"/>
+    <text x="130" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">assessments</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : varchar</text>
+    <text x="15" y="70" fill="#38BDF8" font-size="10" font-family="monospace">FK  organisation_id : varchar</text>
+    <text x="15" y="88" fill="#94A3B8" font-size="10" font-family="monospace">    website_url : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    status : varchar (complete)</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    trust_score : numeric(5,2)</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    posture : varchar</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    pillar_scores : jsonb</text>
+    <text x="15" y="178" fill="#94A3B8" font-size="10" font-family="monospace">    selection_mode : varchar</text>
+    <text x="15" y="196" fill="#38BDF8" font-size="10" font-family="monospace">FK  benchmark_id : varchar</text>
+    <text x="15" y="214" fill="#94A3B8" font-size="10" font-family="monospace">    created_at : timestamp</text>
+  </g>
+
+  <!-- Table 4: website_scans & evidence -->
+  <g transform="translate(340, 360)" filter="url(#shadow)">
+    <rect width="260" height="170" rx="8" fill="#1E293B" stroke="#06B6D4" stroke-width="1.5"/>
+    <rect width="260" height="30" rx="8" fill="#0E7490"/>
+    <text x="130" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">website_scans</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : varchar</text>
+    <text x="15" y="70" fill="#38BDF8" font-size="10" font-family="monospace">FK  organisation_id : varchar</text>
+    <text x="15" y="88" fill="#94A3B8" font-size="10" font-family="monospace">    target_url : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    scan_checks : jsonb</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    evidence_items : jsonb</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    preliminary_score : int</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    duration_ms : int</text>
+  </g>
+
+  <!-- Table 5: benchmark_runs -->
+  <g transform="translate(650, 100)" filter="url(#shadow)">
+    <rect width="250" height="200" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+    <rect width="250" height="30" rx="8" fill="#B45309"/>
+    <text x="125" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">benchmark_runs</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : varchar</text>
+    <text x="15" y="70" fill="#38BDF8" font-size="10" font-family="monospace">FK  assessment_id : varchar</text>
+    <text x="15" y="88" fill="#38BDF8" font-size="10" font-family="monospace">FK  organisation_id : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    models_evaluated : text[]</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    per_model_metrics : jsonb</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    consensus_result : jsonb</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    rag_snapshot_hash : varchar</text>
+    <text x="15" y="178" fill="#94A3B8" font-size="10" font-family="monospace">    legal_corpus_version : varchar</text>
+    <text x="15" y="196" fill="#94A3B8" font-size="10" font-family="monospace">    created_at : timestamp</text>
+  </g>
+
+  <!-- Table 6: risk_findings -->
+  <g transform="translate(650, 330)" filter="url(#shadow)">
+    <rect width="250" height="200" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+    <rect width="250" height="30" rx="8" fill="#B91C1C"/>
+    <text x="125" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">risk_findings</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : bigint / uuid</text>
+    <text x="15" y="70" fill="#38BDF8" font-size="10" font-family="monospace">FK  assessment_id : varchar</text>
+    <text x="15" y="88" fill="#94A3B8" font-size="10" font-family="monospace">    control_id : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    model_id : varchar</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    verdict : varchar</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    severity : varchar (HIGH/MED)</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    finding : text</text>
+    <text x="15" y="178" fill="#94A3B8" font-size="10" font-family="monospace">    statutory_reference : text</text>
+    <text x="15" y="196" fill="#94A3B8" font-size="10" font-family="monospace">    is_grounded : boolean</text>
+  </g>
+
+  <!-- Table 7: statutory_chunks (pgvector) -->
+  <g transform="translate(930, 100)" filter="url(#shadow)">
+    <rect width="230" height="190" rx="8" fill="#1E293B" stroke="#8B5CF6" stroke-width="1.5"/>
+    <rect width="230" height="30" rx="8" fill="#6D28D9"/>
+    <text x="115" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">statutory_chunks</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : varchar</text>
+    <text x="15" y="70" fill="#94A3B8" font-size="10" font-family="monospace">    section : varchar</text>
+    <text x="15" y="88" fill="#94A3B8" font-size="10" font-family="monospace">    title : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    chunk_text : text</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    statutory_ref : varchar</text>
+    <text x="15" y="142" fill="#34D399" font-size="10" font-family="monospace">    embedding : vector(384)</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    legal_weight : float</text>
+    <text x="15" y="178" fill="#94A3B8" font-size="10" font-family="monospace">    metadata : jsonb</text>
+  </g>
+
+  <!-- Table 8: trust_scores -->
+  <g transform="translate(930, 320)" filter="url(#shadow)">
+    <rect width="230" height="170" rx="8" fill="#1E293B" stroke="#EC4899" stroke-width="1.5"/>
+    <rect width="230" height="30" rx="8" fill="#BE185D"/>
+    <text x="115" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">trust_scores</text>
+    <text x="15" y="52" fill="#E2E8F0" font-size="10" font-family="monospace">PK  id : bigint / uuid</text>
+    <text x="15" y="70" fill="#38BDF8" font-size="10" font-family="monospace">FK  assessment_id : varchar</text>
+    <text x="15" y="88" fill="#94A3B8" font-size="10" font-family="monospace">    model_id : varchar</text>
+    <text x="15" y="106" fill="#94A3B8" font-size="10" font-family="monospace">    trust_score : numeric</text>
+    <text x="15" y="124" fill="#94A3B8" font-size="10" font-family="monospace">    posture : varchar</text>
+    <text x="15" y="142" fill="#94A3B8" font-size="10" font-family="monospace">    pillar_scores : jsonb</text>
+    <text x="15" y="160" fill="#94A3B8" font-size="10" font-family="monospace">    is_consensus : boolean</text>
+  </g>
+
+  <!-- Relationship Connectors -->
+  <line x1="290" y1="180" x2="340" y2="180" stroke="#60A5FA" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="600" y1="180" x2="650" y2="180" stroke="#60A5FA" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="600" y1="250" x2="650" y2="350" stroke="#60A5FA" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="600" y1="210" x2="930" y2="360" stroke="#60A5FA" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="170" y1="270" x2="170" y2="310" stroke="#60A5FA" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="330" x2="470" y2="360" stroke="#60A5FA" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Footer Legend -->
+  <text x="600" y="710" text-anchor="middle" fill="#94A3B8" font-size="11">
+    PostgreSQL Row-Level Security: All private tenant queries are filtered on organisation_id • Vector Index: HNSW Cosine Distance
+  </text>
+</svg>

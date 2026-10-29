@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="100%" height="100%" style="background:#0F172A;font-family:'Segoe UI',system-ui,sans-serif;">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#60A5FA"/>
+    </marker>
+    <marker id="arrowEmerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#34D399"/>
+    </marker>
+  </defs>
+
+  <!-- Title & Metadata Header -->
+  <text x="700" y="45" text-anchor="middle" fill="#F8FAFC" font-size="24" font-weight="800" letter-spacing="1">TRUSTFORGE SYSTEM ARCHITECTURE</text>
+  <text x="700" y="72" text-anchor="middle" fill="#94A3B8" font-size="13">An Evidence-Grounded RAG Framework for Digital Personal Data Protection Compliance Assessment</text>
+  <text x="700" y="92" text-anchor="middle" fill="#38BDF8" font-size="11" font-weight="600">Jurisdiction: India (DPDP Act, 2023 &amp; DPDP Rules, 2025) • Supervisor: Dr. Neelam Naik</text>
+
+  <!-- LAYER 1: CLIENT & PRESENTATION (VERCEL) -->
+  <rect x="40" y="115" width="1320" height="120" rx="12" fill="url(#cardBg)" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="115" width="220" height="26" rx="6" fill="#1D4ED8"/>
+  <text x="50" y="132" fill="#FFFFFF" font-size="11" font-weight="700">1. PRESENTATION LAYER (VERCEL)</text>
+  
+  <g transform="translate(60, 150)">
+    <!-- Frontend Box 1 -->
+    <rect x="0" y="0" width="230" height="70" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="115" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">React 19 + Vite SPA</text>
+    <text x="115" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Tailwind CSS + Lucide Icons</text>
+    <text x="115" y="58" text-anchor="middle" fill="#38BDF8" font-size="9">Single Page Navigation</text>
+
+    <!-- Frontend Box 2 -->
+    <rect x="250" y="0" width="240" height="70" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="370" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Assessment Wizard</text>
+    <text x="370" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Target URL &amp; Scope Intake</text>
+    <text x="370" y="58" text-anchor="middle" fill="#38BDF8" font-size="9">Multi-Step Form Validation</text>
+
+    <!-- Frontend Box 3 -->
+    <rect x="510" y="0" width="240" height="70" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="630" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">10-LLM Benchmark Dashboard</text>
+    <text x="630" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Live Multi-Model Metrics</text>
+    <text x="630" y="58" text-anchor="middle" fill="#34D399" font-size="9">Top-3 Consensus Verdict</text>
+
+    <!-- Frontend Box 4 -->
+    <rect x="770" y="0" width="240" height="70" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="890" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Compliance Audit Reports</text>
+    <text x="890" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Pillar Scoring &amp; Priority Gaps</text>
+    <text x="890" y="58" text-anchor="middle" fill="#F59E0B" font-size="9">6 Core DPDP Pillars</text>
+
+    <!-- Frontend Box 5 -->
+    <rect x="1030" y="0" width="230" height="70" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="1145" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Export &amp; Certificate Engine</text>
+    <text x="1145" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Client-Side CSV Downloads</text>
+    <text x="1145" y="58" text-anchor="middle" fill="#A855F7" font-size="9">Native PDF Report Viewer</text>
+  </g>
+
+  <!-- LAYER 2: API & ORCHESTRATION (RENDER) -->
+  <rect x="40" y="260" width="1320" height="150" rx="12" fill="url(#cardBg)" stroke="#8B5CF6" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="260" width="240" height="26" rx="6" fill="#6D28D9"/>
+  <text x="50" y="277" fill="#FFFFFF" font-size="11" font-weight="700">2. ORCHESTRATION LAYER (RENDER)</text>
+
+  <g transform="translate(60, 295)">
+    <!-- Node Box 1 -->
+    <rect x="0" y="0" width="230" height="100" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="115" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Auth &amp; Tenant Isolation</text>
+    <text x="115" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">API Authorization Middleware</text>
+    <text x="115" y="58" text-anchor="middle" fill="#EF4444" font-size="9">IDOR &amp; Cross-Org Defense</text>
+    <text x="115" y="76" text-anchor="middle" fill="#38BDF8" font-size="9">Role Validation (Admin/Auditor)</text>
+
+    <!-- Node Box 2 -->
+    <rect x="250" y="0" width="240" height="100" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="370" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Playwright Web Crawler</text>
+    <text x="370" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Chromium Headless Runner</text>
+    <text x="370" y="58" text-anchor="middle" fill="#34D399" font-size="9">robots.txt &amp; Domain Boundaries</text>
+    <text x="370" y="76" text-anchor="middle" fill="#F59E0B" font-size="9">Extracts Policies, Banners, Headers</text>
+
+    <!-- Node Box 3 -->
+    <rect x="510" y="0" width="240" height="100" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="630" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Parallel LLM Orchestrator</text>
+    <text x="630" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Promise.allSettled Dispatch</text>
+    <text x="630" y="58" text-anchor="middle" fill="#38BDF8" font-size="9">2.48x Measured Concurrency</text>
+    <text x="630" y="76" text-anchor="middle" fill="#A855F7" font-size="9">DNS IPv4 Optimization</text>
+
+    <!-- Node Box 4 -->
+    <rect x="770" y="0" width="240" height="100" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="890" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Grounding &amp; Scoring Engine</text>
+    <text x="890" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">Citation Verification Engine</text>
+    <text x="890" y="58" text-anchor="middle" fill="#34D399" font-size="9">Top-3 Majority Voting Consensus</text>
+    <text x="890" y="76" text-anchor="middle" fill="#F59E0B" font-size="9">Trust Score Formula [0, 100]</text>
+
+    <!-- Node Box 5 -->
+    <rect x="1030" y="0" width="230" height="100" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="1145" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Native PDF Generator</text>
+    <text x="1145" y="42" text-anchor="middle" fill="#94A3B8" font-size="10">PDFKit Streaming Renderer</text>
+    <text x="1145" y="58" text-anchor="middle" fill="#38BDF8" font-size="9">Executive Audit Structure</text>
+    <text x="1145" y="76" text-anchor="middle" fill="#10B981" font-size="9">Validated %PDF- Specification</text>
+  </g>
+
+  <!-- LAYER 3: HYBRID RAG SUBSYSTEM -->
+  <rect x="40" y="435" width="640" height="200" rx="12" fill="url(#cardBg)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="435" width="250" height="26" rx="6" fill="#047857"/>
+  <text x="50" y="452" fill="#FFFFFF" font-size="11" font-weight="700">3. HYBRID STATUTORY RAG (DPDP)</text>
+
+  <g transform="translate(60, 475)">
+    <!-- RAG Box 1 -->
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="90" y="24" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">Authoritative Corpus</text>
+    <text x="90" y="44" text-anchor="middle" fill="#94A3B8" font-size="9">83 Legal Chunks</text>
+    <text x="90" y="62" text-anchor="middle" fill="#38BDF8" font-size="9">DPDP Act, 2023</text>
+    <text x="90" y="80" text-anchor="middle" fill="#38BDF8" font-size="9">(Sections 1 - 44)</text>
+    <text x="90" y="98" text-anchor="middle" fill="#38BDF8" font-size="9">DPDP Rules, 2025</text>
+    <text x="90" y="116" text-anchor="middle" fill="#34D399" font-size="9">Zero Hallucinations</text>
+
+    <!-- RAG Box 2 -->
+    <rect x="195" y="0" width="190" height="140" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="290" y="24" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">Dual Retrieval Paths</text>
+    <text x="290" y="46" text-anchor="middle" fill="#F59E0B" font-size="9">Path A: BM25 Lexical</text>
+    <text x="290" y="62" text-anchor="middle" fill="#94A3B8" font-size="8.5">Statutory Token Boosting</text>
+    <text x="290" y="78" text-anchor="middle" fill="#94A3B8" font-size="8.5">Hit@1 = 68.9% (Latency &lt;1ms)</text>
+    <text x="290" y="96" text-anchor="middle" fill="#8B5CF6" font-size="9">Path B: Dense pgvector</text>
+    <text x="290" y="112" text-anchor="middle" fill="#94A3B8" font-size="8.5">all-MiniLM-L6-v2 (384d)</text>
+    <text x="290" y="128" text-anchor="middle" fill="#94A3B8" font-size="8.5">Hit@5 = 75.6% (395ms)</text>
+
+    <!-- RAG Box 3 -->
+    <rect x="400" y="0" width="190" height="140" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="495" y="24" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">Reciprocal Rank Fusion</text>
+    <text x="495" y="46" text-anchor="middle" fill="#34D399" font-size="9">RRF Constant k = 60</text>
+    <text x="495" y="64" text-anchor="middle" fill="#EF4444" font-size="8.5">Non-Normative Dampening</text>
+    <text x="495" y="80" text-anchor="middle" fill="#94A3B8" font-size="8.5">0.35x Multiplier on Sec 40/44</text>
+    <text x="495" y="100" text-anchor="middle" fill="#38BDF8" font-size="9">Highest Top-5 Recall</text>
+    <text x="495" y="118" text-anchor="middle" fill="#34D399" font-weight="700" font-size="9.5">Hit@5 = 84.4%</text>
+  </g>
+
+  <!-- LAYER 4: 10-LLM RESEARCH REGISTRY -->
+  <rect x="720" y="435" width="640" height="200" rx="12" fill="url(#cardBg)" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="720" y="435" width="260" height="26" rx="6" fill="#B45309"/>
+  <text x="730" y="452" fill="#FFFFFF" font-size="11" font-weight="700">4. 10-LLM RESEARCH REGISTRY</text>
+
+  <g transform="translate(740, 475)">
+    <!-- LLM Verified Active -->
+    <rect x="0" y="0" width="280" height="140" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+    <text x="140" y="22" text-anchor="middle" fill="#34D399" font-size="11" font-weight="700">Active Live Models (Groq LPUs)</text>
+    <text x="15" y="46" fill="#F8FAFC" font-size="9.5" font-weight="600">M01: OpenAI GPT-OSS-120B</text>
+    <text x="25" y="60" fill="#94A3B8" font-size="8.5">MoE (117B/5.1B) • Latency: 642ms • Strict Caution</text>
+    <text x="15" y="78" fill="#F8FAFC" font-size="9.5" font-weight="600">M02: OpenAI GPT-OSS-20B</text>
+    <text x="25" y="92" fill="#94A3B8" font-size="8.5">MoE (21B/3.6B) • Latency: 554ms • Balanced F1: 0.39</text>
+    <text x="15" y="110" fill="#F8FAFC" font-size="9.5" font-weight="600">M03: Alibaba Qwen 3.8 27B (Top-Ranked)</text>
+    <text x="25" y="124" fill="#34D399" font-size="8.5">Dense 27B • Latency: 136ms • Peak Accuracy: 53.3%</text>
+
+    <!-- LLM Candidate Registry -->
+    <rect x="300" y="0" width="290" height="140" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="445" y="22" text-anchor="middle" fill="#F59E0B" font-size="11" font-weight="700">Preserved Faculty Slots</text>
+    <text x="315" y="46" fill="#CBD5E1" font-size="9">M04: Google Gemma 4 31B (AUTH_REQ)</text>
+    <text x="315" y="62" fill="#CBD5E1" font-size="9">M05: Google Gemma 4 26B-A4B (AUTH_REQ)</text>
+    <text x="315" y="78" fill="#CBD5E1" font-size="9">M06: Meta Llama 3.3 70B (AUTH_REQ)</text>
+    <text x="315" y="94" fill="#CBD5E1" font-size="9">M07: Mistral Small 24B (AUTH_REQ)</text>
+    <text x="315" y="110" fill="#CBD5E1" font-size="9">M08: DeepSeek V4.1 Flash (AUTH_REQ)</text>
+    <text x="315" y="126" fill="#94A3B8" font-size="8.5">M09: Sarvam-105B (AUTH) • M10: Sarvam-30B (LOCAL)</text>
+  </g>
+
+  <!-- LAYER 5: PERSISTENCE & HARDWARE -->
+  <rect x="40" y="660" width="1320" height="195" rx="12" fill="url(#cardBg)" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="660" width="260" height="26" rx="6" fill="#0284C7"/>
+  <text x="50" y="677" fill="#FFFFFF" font-size="11" font-weight="700">5. PERSISTENCE &amp; STORAGE ARCHITECTURE</text>
+
+  <g transform="translate(60, 700)">
+    <!-- DB Box 1 -->
+    <rect x="0" y="0" width="300" height="135" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="150" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Supabase Managed PostgreSQL</text>
+    <text x="150" y="44" text-anchor="middle" fill="#38BDF8" font-size="10">Cloud Database (Port 5432)</text>
+    <text x="20" y="66" fill="#94A3B8" font-size="9">• Row-Level Security (RLS) Tenant Policies</text>
+    <text x="20" y="82" fill="#94A3B8" font-size="9">• Organization Isolation Keys (org_id)</text>
+    <text x="20" y="98" fill="#94A3B8" font-size="9">• Service Role Key for Backend Aggregations</text>
+    <text x="20" y="114" fill="#94A3B8" font-size="9">• Encrypted Connections via SSL/TLS</text>
+
+    <!-- DB Box 2 -->
+    <rect x="320" y="0" width="310" height="135" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="475" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">pgvector Embedding Index</text>
+    <text x="475" y="44" text-anchor="middle" fill="#34D399" font-size="10">HNSW Vector Similarity Search</text>
+    <text x="340" y="66" fill="#94A3B8" font-size="9">• 384-Dimensional Statutory Vectors</text>
+    <text x="340" y="82" fill="#94A3B8" font-size="9">• Distance Metric: 1 - Cosine Distance</text>
+    <text x="340" y="98" fill="#94A3B8" font-size="9">• match_statutory_chunks() Stored Procedure</text>
+    <text x="340" y="114" fill="#94A3B8" font-size="9">• Pre-computed Embeddings on Migration</text>
+
+    <!-- DB Box 3 -->
+    <rect x="650" y="0" width="310" height="135" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="805" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Durable Local Store Cache</text>
+    <text x="805" y="44" text-anchor="middle" fill="#F59E0B" font-size="10">Write-Through Disk Persistence</text>
+    <text x="670" y="66" fill="#94A3B8" font-size="9">• JSON Storage: assessments, findings, runs</text>
+    <text x="670" y="82" fill="#94A3B8" font-size="9">• Recovers 100% of State on Server Restarts</text>
+    <text x="670" y="98" fill="#94A3B8" font-size="9">• Zero-Downtime Resilience on Render Starts</text>
+    <text x="670" y="114" fill="#94A3B8" font-size="9">• Local Test Harness &amp; Seed Fixtures</text>
+
+    <!-- DB Box 4 -->
+    <rect x="980" y="0" width="280" height="135" rx="8" fill="#1E293B" stroke="#475569"/>
+    <text x="1120" y="24" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">Audit Logs &amp; Research Datasets</text>
+    <text x="1120" y="44" text-anchor="middle" fill="#A855F7" font-size="10">Ground-Truth Benchmark Registry</text>
+    <text x="1000" y="66" fill="#94A3B8" font-size="9">• 60-Case DPDP Ground-Truth v1.0</text>
+    <text x="1000" y="82" fill="#94A3B8" font-size="9">• Frozen Context Hashes (SHA-256)</text>
+    <text x="1000" y="98" fill="#94A3B8" font-size="9">• Per-Model Latency, Token &amp; Cost Records</text>
+    <text x="1000" y="114" fill="#94A3B8" font-size="9">• Audit Provenance &amp; Benchmark Timestamps</text>
+  </g>
+
+  <!-- Connectors -->
+  <line x1="700" y1="235" x2="700" y2="260" stroke="#60A5FA" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="450" y1="410" x2="450" y2="435" stroke="#34D399" stroke-width="2" marker-end="url(#arrowEmerald)"/>
+  <line x1="950" y1="410" x2="950" y2="435" stroke="#60A5FA" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="700" y1="635" x2="700" y2="660" stroke="#60A5FA" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>

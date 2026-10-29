@@ -1,0 +1,31 @@
+{
+  "name": "trustforge-api",
+  "version": "1.0.0",
+  "description": "TrustForge Research Backend — Node.js/Express Orchestrator for DPDP Compliance Assessment & 10-LLM Benchmarking",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "test": "node --test --test-concurrency=1 dist/**/*.test.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "@types/multer": "^2.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "multer": "^2.5.0",
+    "pdfkit": "^0.16.0",
+    "playwright": "^1.51.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10",
+    "@types/pdfkit": "^0.13.9",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}

@@ -8,16 +8,32 @@ import { useAuth } from "@/context/AuthContext";
 export function AdminLoginPage() {
   const { loginAsAdmin } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("ops@trustforge.in");
-  const [password, setPassword] = useState("demo-console");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) {
+      setError("Administrator work email is required.");
+      return;
+    }
+    if (!password || !password.trim()) {
+      setError("Administrator password is required.");
+      return;
+    }
     setBusy(true);
-    loginAsAdmin();
-    setTimeout(() => navigate("/admin"), 250);
+    setError(null);
+    try {
+      await loginAsAdmin(password, email);
+      navigate("/admin");
+    } catch (err: any) {
+      setError(err?.message || "Invalid credentials. Restricted to authorized platform administrators.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -72,6 +88,12 @@ export function AdminLoginPage() {
                 </button>
               </div>
             </div>
+
+            {error && (
+              <div className="rounded-lg border border-rose-500/40 bg-rose-950/50 p-3 text-xs text-rose-200">
+                {error}
+              </div>
+            )}
 
             <Button type="submit" className="w-full" disabled={busy}>
               {busy ? "Signing in..." : "Sign in to console"}

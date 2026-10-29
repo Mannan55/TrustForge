@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Building2,
   ShieldCheck,
@@ -19,14 +19,90 @@ import { Input } from "@/components/common/Input";
 import { useAuth } from "@/context/AuthContext";
 import { useOrg } from "@/context/OrgContext";
 import { useToast } from "@/context/ToastContext";
+import { identityService } from "@/services";
 import { cn } from "@/lib/cn";
 
 export function SettingsPage() {
   const { user } = useAuth();
-  const { org } = useOrg();
+  const { org, updateOrg } = useOrg();
   const { notify } = useToast();
   const isOrg = user?.accountMode === "organization";
   const [notifs, setNotifs] = useState({ findings: true, weekly: true, product: false });
+
+  const [legalName, setLegalName] = useState(org.legalName);
+  const [displayName, setDisplayName] = useState(org.displayName);
+  const [cin, setCin] = useState(org.cin);
+  const [gstin, setGstin] = useState(org.gstin);
+  const [industry, setIndustry] = useState(org.industry);
+  const [companySize, setCompanySize] = useState(org.companySize);
+  const [registeredAddress, setRegisteredAddress] = useState(org.registeredAddress);
+  const [grievanceOfficer, setGrievanceOfficer] = useState(org.grievanceOfficer || "");
+  const [grievanceEmail, setGrievanceEmail] = useState(org.grievanceEmail || "");
+  const [saving, setSaving] = useState(false);
+  const [savingGrievance, setSavingGrievance] = useState(false);
+  const [dnsChallenge, setDnsChallenge] = useState<string | null>(null);
+  const [generatingChallenge, setGeneratingChallenge] = useState(false);
+
+  const handleGenerateDnsChallenge = async () => {
+    setGeneratingChallenge(true);
+    try {
+      const res = await identityService.requestDomainChallenge(org.primaryDomain || "technova.in");
+      setDnsChallenge(res.challengeRecord || null);
+      notify("DNS verification challenge generated.", "info");
+    } catch (err: any) {
+      notify(err?.message || "Failed to generate challenge", "warning");
+    } finally {
+      setGeneratingChallenge(false);
+    }
+  };
+
+  useEffect(() => {
+    if (org) {
+      setLegalName(org.legalName || "");
+      setDisplayName(org.displayName || "");
+      setCin(org.cin || "");
+      setGstin(org.gstin || "");
+      setIndustry(org.industry || "");
+      setCompanySize(org.companySize || "");
+      setRegisteredAddress(org.registeredAddress || "");
+      setGrievanceOfficer(org.grievanceOfficer || "");
+      setGrievanceEmail(org.grievanceEmail || "");
+    }
+  }, [org]);
+
+  const saveProfile = async () => {
+    setSaving(true);
+    try {
+      await updateOrg({
+        legalName,
+        displayName,
+        cin,
+        gstin,
+        industry,
+        companySize,
+        registeredAddress,
+        grievanceOfficer,
+        grievanceEmail,
+      });
+      notify("Company profile saved successfully.", "success");
+    } catch (err: any) {
+      notify(err?.message || "Failed to save organization settings.", "warning");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveGrievanceContact = async () => {
+    setSavingGrievance(true);
+    try {
+      await updateOrg({ grievanceOfficer, grievanceEmail });
+      notify("Grievance contact persisted successfully.", "success");
+    } catch (err: any) {
+      notify(err?.message || "Failed to update grievance contact.", "warning");
+    } finally {
+      setSavingGrievance(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -37,19 +113,19 @@ export function SettingsPage() {
           <Card>
             <CardHeader eyebrow="Organization" title="Company profile" description="Details used across your assessment and reports." />
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <Input label="Legal entity name" defaultValue={org.legalName} icon={<Building2 className="h-4 w-4" />} />
-              <Input label="Display name" defaultValue={org.displayName} />
-              <Input label="CIN" defaultValue={org.cin} />
-              <Input label="GSTIN" defaultValue={org.gstin} />
-              <Input label="Industry" defaultValue={org.industry} />
-              <Input label="Company size" defaultValue={org.companySize} />
+              <Input label="Legal entity name" value={legalName} onChange={(e) => setLegalName(e.target.value)} icon={<Building2 className="h-4 w-4" />} />
+              <Input label="Display name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+              <Input label="CIN" value={cin} onChange={(e) => setCin(e.target.value)} />
+              <Input label="GSTIN" value={gstin} onChange={(e) => setGstin(e.target.value)} />
+              <Input label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} />
+              <Input label="Company size" value={companySize} onChange={(e) => setCompanySize(e.target.value)} />
               <div className="sm:col-span-2">
-                <Input label="Registered address" defaultValue={org.registeredAddress} />
+                <Input label="Registered address" value={registeredAddress} onChange={(e) => setRegisteredAddress(e.target.value)} />
               </div>
             </div>
             <div className="mt-5 flex justify-end">
-              <Button size="sm" onClick={() => notify("Profile saved.", "success")}>
-                <Save className="h-4 w-4" /> Save changes
+              <Button size="sm" onClick={saveProfile} disabled={saving}>
+                <Save className="h-4 w-4" /> {saving ? "Saving..." : "Save changes"}
               </Button>
             </div>
           </Card>
@@ -85,17 +161,49 @@ export function SettingsPage() {
               Verifying identity is not the same as proving authorization. A confirmed GSTIN shows the entity is
               real; it does not by itself show that you are allowed to act for it.
             </div>
+
+            <div className="mt-5 border-t border-line pt-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-ink">DNS TXT Verification</p>
+                  <p className="text-xs text-ink-muted">Prove technical control of {org.primaryDomain || "technova.in"}</p>
+                </div>
+                <Button size="sm" variant="outline" onClick={handleGenerateDnsChallenge} disabled={generatingChallenge}>
+                  <Globe className="h-4 w-4" /> {generatingChallenge ? "Generating..." : "Generate Verification Challenge"}
+                </Button>
+              </div>
+              {dnsChallenge && (
+                <div className="rounded-lg border border-line bg-canvas p-3 text-xs font-mono text-ink">
+                  <p className="font-sans font-medium text-ink-soft mb-1">Add this DNS TXT record:</p>
+                  <code className="text-emerald-light break-all">{dnsChallenge}</code>
+                </div>
+              )}
+              <div className="flex items-start gap-2.5 rounded-lg border border-line bg-canvas p-3 text-sm text-ink-soft">
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-ink-muted" />
+                Technical DNS control confirms domain routing control; it does not substitute for corporate registration verification or legal authority to bind the entity.
+              </div>
+            </div>
           </Card>
 
           <Card>
             <CardHeader eyebrow="Accountability" title="Grievance contact" description="Published as your point of contact for data questions." />
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <Input label="Grievance officer" defaultValue={org.grievanceOfficer} icon={<UserCog className="h-4 w-4" />} />
-              <Input label="Grievance email" defaultValue={org.grievanceEmail} />
+              <Input
+                label="Grievance officer"
+                value={grievanceOfficer}
+                onChange={(e) => setGrievanceOfficer(e.target.value)}
+                icon={<UserCog className="h-4 w-4" />}
+              />
+              <Input
+                label="Grievance email"
+                type="email"
+                value={grievanceEmail}
+                onChange={(e) => setGrievanceEmail(e.target.value)}
+              />
             </div>
             <div className="mt-5 flex justify-end">
-              <Button variant="outline" size="sm" onClick={() => notify("Grievance contact updated.", "success")}>
-                <Save className="h-4 w-4" /> Update contact
+              <Button variant="outline" size="sm" onClick={saveGrievanceContact} disabled={savingGrievance}>
+                <Save className="h-4 w-4" /> {savingGrievance ? "Updating..." : "Update contact"}
               </Button>
             </div>
           </Card>

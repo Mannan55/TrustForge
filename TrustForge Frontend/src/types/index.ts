@@ -30,7 +30,9 @@ export type PostureLevel =
   | "Strong Alignment"
   | "Needs Attention"
   | "Potential Gaps"
-  | "Critical";
+  | "Critical"
+  | "Not Scorable"
+  | "Not Assessed";
 
 export interface Organization {
   id: string;

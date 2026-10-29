@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 500" width="100%" height="100%" style="background:#0F172A;font-family:'Segoe UI',system-ui,sans-serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <text x="550" y="35" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="800" letter-spacing="0.5">PROVIDER-AWARE PARALLEL LLM ORCHESTRATION</text>
+  <text x="550" y="60" text-anchor="middle" fill="#94A3B8" font-size="12">Timeline Comparison: Naive Sequential Iteration vs. TrustForge Bounded Concurrent Dispatch</text>
+
+  <!-- Section A: Sequential (Top) -->
+  <g transform="translate(60, 90)">
+    <text x="0" y="0" fill="#EF4444" font-size="12" font-weight="700">A. Naive Sequential Execution (Previous Implementation) — Cumulative Wall-Clock: 17,229 ms</text>
+    
+    <!-- Timeline bars -->
+    <g transform="translate(0, 15)">
+      <!-- M01: 6937ms -->
+      <rect x="0" y="0" width="347" height="30" rx="4" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+      <text x="173" y="19" text-anchor="middle" fill="#FCA5A5" font-size="10" font-weight="600">M01 (GPT-OSS-120B): 6,937 ms</text>
+
+      <!-- M02: 3714ms -->
+      <rect x="347" y="0" width="186" height="30" rx="4" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+      <text x="440" y="19" text-anchor="middle" fill="#FDE68A" font-size="10" font-weight="600">M02: 3,714 ms</text>
+
+      <!-- M03: 6578ms -->
+      <rect x="533" y="0" width="329" height="30" rx="4" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="697" y="19" text-anchor="middle" fill="#BFDBFE" font-size="10" font-weight="600">M03 (Qwen 3.8 27B): 6,578 ms</text>
+
+      <!-- Idle tail -->
+      <line x1="862" y1="-5" x2="862" y2="40" stroke="#EF4444" stroke-width="2" stroke-dasharray="4"/>
+      <text x="870" y="25" fill="#EF4444" font-size="11" font-weight="700">Total: 17.23s (High Latency Bottleneck)</text>
+    </g>
+  </g>
+
+  <!-- Section B: Parallel Concurrent (Bottom) -->
+  <g transform="translate(60, 200)">
+    <text x="0" y="0" fill="#10B981" font-size="12" font-weight="700">B. TrustForge Parallel Orchestration (Promise.allSettled) — Actual Wall-Clock: 6,938 ms (2.48x Speedup)</text>
+    
+    <g transform="translate(0, 15)">
+      <!-- M01: 6937ms -->
+      <rect x="0" y="0" width="347" height="30" rx="4" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+      <text x="173" y="19" text-anchor="middle" fill="#A7F3D0" font-size="10" font-weight="600">M01 (GPT-OSS-120B): 0ms to 6,937ms (Active)</text>
+
+      <!-- M02: 3714ms -->
+      <rect x="0" y="40" width="186" height="30" rx="4" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+      <text x="93" y="59" text-anchor="middle" fill="#A7F3D0" font-size="10" font-weight="600">M02: 0ms to 3,714ms</text>
+
+      <!-- M03: 6578ms -->
+      <rect x="0" y="80" width="329" height="30" rx="4" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+      <text x="165" y="99" text-anchor="middle" fill="#A7F3D0" font-size="10" font-weight="600">M03 (Qwen 3.8 27B): 0ms to 6,578ms (Active)</text>
+
+      <!-- Overlap shading -->
+      <rect x="0" y="0" width="186" height="110" fill="#3B82F6" fill-opacity="0.1" stroke="#3B82F6" stroke-width="1" stroke-dasharray="3"/>
+      <text x="195" y="60" fill="#38BDF8" font-size="10" font-weight="600">Verified Concurrency Overlap Window [0 to 3,714 ms]</text>
+
+      <!-- Wall-clock finish line -->
+      <line x1="347" y1="-5" x2="347" y2="120" stroke="#10B981" stroke-width="2.5"/>
+      <text x="355" y="115" fill="#34D399" font-size="12" font-weight="800">Wall-Clock Finish: 6.94s (2.48x Acceleration)</text>
+    </g>
+  </g>
+
+  <!-- Models 4 to 10 Honest Status -->
+  <g transform="translate(60, 375)" filter="url(#shadow)">
+    <rect width="980" height="90" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+    <rect width="980" height="24" rx="8" fill="#334155"/>
+    <text x="490" y="17" text-anchor="middle" fill="#FFFFFF" font-size="10.5" font-weight="700">Candidate Slots M04 to M10 — Transparent Non-Run Status Handling</text>
+    <text x="25" y="45" fill="#FDE68A" font-size="9.5" font-weight="600">M04 (Gemma 4 31B), M05 (Gemma 4 26B), M06 (Llama 3.3 70B), M07 (Mistral 24B), M08 (DeepSeek V4.1): AUTH_REQUIRED (OpenRouter Key)</text>
+    <text x="25" y="62" fill="#FDE68A" font-size="9.5" font-weight="600">M09 (Sarvam-105B Reasoning): AUTH_REQUIRED (Sarvam AI Enterprise Key) • M10 (Sarvam-30B): UNAVAILABLE (Hosted Deprecated; 60GB Local Weights)</text>
+    <text x="25" y="80" fill="#94A3B8" font-size="9">Academic Integrity Guarantee: Promise.allSettled isolates failures; partial runs persist without fabricating outputs.</text>
+  </g>
+</svg>

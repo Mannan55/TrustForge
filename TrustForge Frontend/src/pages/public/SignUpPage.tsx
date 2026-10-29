@@ -20,15 +20,20 @@ export function SignUpPage() {
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    signup(mode, name.trim(), email.trim());
-    if (mode === "organization") {
-      notify("Account created. Let's set up your organization.");
-      navigate("/onboarding");
-    } else {
-      notify("Account created. Welcome to TrustForge.");
-      navigate("/dashboard");
+    try {
+      await signup(mode, name.trim(), email.trim(), password || undefined);
+      if (mode === "organization") {
+        notify("Account created. Let's set up your organization.");
+        navigate("/onboarding");
+      } else {
+        notify("Account created. Welcome to TrustForge.");
+        navigate("/dashboard");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Account creation failed";
+      notify(msg);
     }
   };
 

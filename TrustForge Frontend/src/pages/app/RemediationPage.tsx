@@ -33,13 +33,21 @@ const COLUMNS: { id: RemediationStatus; label: string; icon: typeof Circle }[] =
 const effortTone = { Low: "success", Moderate: "warning", High: "danger" } as const;
 
 export function RemediationPage() {
-  const { data, loading } = useAsync(() => remediationService.list(), []);
+  const { data, loading, error } = useAsync(() => remediationService.list(), []);
   const { notify } = useToast();
   const [tasks, setTasks] = useState<RemediationTask[] | null>(null);
   const [selected, setSelected] = useState<RemediationTask | null>(null);
 
   const list = tasks ?? data;
-  if (loading || !list) return <PageSkeleton />;
+  if (loading) return <PageSkeleton />;
+  if (error || !list) {
+    return (
+      <div className="rounded-2xl border border-danger/30 bg-white p-8 text-center">
+        <p className="font-display font-semibold text-danger">Unable to load remediation plan</p>
+        <p className="mt-2 text-sm text-ink-muted">{error?.message || "Failed to retrieve remediation tasks from backend."}</p>
+      </div>
+    );
+  }
 
   const advance = (task: RemediationTask) => {
     const next: RemediationStatus =
@@ -51,7 +59,7 @@ export function RemediationPage() {
   };
 
   const done = list.filter((t) => t.status === "COMPLETED").length;
-  const progress = Math.round((done / list.length) * 100);
+  const progress = list.length > 0 ? Math.round((done / list.length) * 100) : 100;
 
   return (
     <div className="space-y-6">
@@ -61,25 +69,39 @@ export function RemediationPage() {
         subtitle="An ordered plan drawn from your findings. Each task states the problem, the fix, and the evidence that closes it."
       />
 
-      <Card>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-display font-semibold text-ink">Overall progress</p>
-            <p className="text-sm text-ink-soft">
-              {done} of {list.length} tasks resolved
-            </p>
+      {list.length === 0 ? (
+        <Card className="border-emerald-light/40 bg-emerald-soft/40 p-8 text-center">
+          <p className="font-display text-lg font-semibold text-ink">No Remediation Tasks Needed</p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-ink-soft">
+            There are no active remediation items. This occurs when all evaluated controls pass, or when an assessment has not yet been executed.
+          </p>
+          <div className="mt-4">
+            <Link to="/assessment">
+              <Button size="sm">Start Assessment Wizard</Button>
+            </Link>
           </div>
-          <div className="w-full sm:w-64">
-            <ProgressBar value={progress} tone={progress === 100 ? "success" : "brand"} showValue label="Completion" />
-          </div>
-        </div>
-      </Card>
+        </Card>
+      ) : (
+        <>
+          <Card>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-display font-semibold text-ink">Overall progress</p>
+                <p className="text-sm text-ink-soft">
+                  {done} of {list.length} tasks resolved
+                </p>
+              </div>
+              <div className="w-full sm:w-64">
+                <ProgressBar value={progress} tone={progress === 100 ? "success" : "brand"} showValue label="Completion" />
+              </div>
+            </div>
+          </Card>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        {COLUMNS.map((col) => {
-          const items = list.filter((t) => t.status === col.id);
-          return (
-            <div key={col.id}>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {COLUMNS.map((col) => {
+              const items = list.filter((t) => t.status === col.id);
+              return (
+                <div key={col.id}>
               <div className="mb-3 flex items-center gap-2">
                 <col.icon
                   className={cn(
@@ -123,6 +145,8 @@ export function RemediationPage() {
           );
         })}
       </div>
+    </>
+  )}
 
       <TaskDrawer task={selected} onClose={() => setSelected(null)} onAdvance={advance} />
     </div>

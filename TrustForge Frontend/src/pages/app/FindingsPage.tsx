@@ -128,7 +128,7 @@ function DpdpModal({ reference, onClose }: { reference: string; onClose: () => v
 }
 
 export function FindingsPage() {
-  const { data: findings, loading } = useAsync(() => findingsService.list(), []);
+  const { data: findings, loading, error } = useAsync(() => findingsService.list(), []);
   const [filter, setFilter] = useState<Filter>("all");
   const [selected, setSelected] = useState<Finding | null>(null);
   const [dpdpRef, setDpdpRef] = useState<string | null>(null);
@@ -138,7 +138,15 @@ export function FindingsPage() {
     return FILTERS.map((f) => ({ id: f.id, label: f.label, count: src.filter((x) => f.match(x.status)).length }));
   }, [findings]);
 
-  if (loading || !findings) return <PageSkeleton />;
+  if (loading) return <PageSkeleton />;
+  if (error || !findings) {
+    return (
+      <div className="rounded-2xl border border-danger/30 bg-white p-8 text-center">
+        <p className="font-display font-semibold text-danger">Unable to load assessment findings</p>
+        <p className="mt-2 text-sm text-ink-muted">{error?.message || "Failed to retrieve findings from backend."}</p>
+      </div>
+    );
+  }
 
   const active = FILTERS.find((f) => f.id === filter)!;
   const visible = findings.filter((f) => active.match(f.status));
@@ -151,7 +159,19 @@ export function FindingsPage() {
         subtitle="Each finding names the problem, why it matters, the evidence behind it, and the specific fix."
       />
       <Tabs items={counts} active={filter} onChange={(id) => setFilter(id as Filter)} />
-      {visible.length === 0 ? (
+      {findings.length === 0 ? (
+        <Card className="border-emerald-light/40 bg-emerald-soft/40 p-8 text-center">
+          <p className="font-display text-lg font-semibold text-ink">No Findings Available</p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-ink-soft">
+            No compliance gaps or findings have been evaluated yet. Run the Assessment Wizard to evaluate your organization against the 20 DPDP controls.
+          </p>
+          <div className="mt-4">
+            <Link to="/assessment">
+              <Button size="sm">Start Assessment Wizard</Button>
+            </Link>
+          </div>
+        </Card>
+      ) : visible.length === 0 ? (
         <EmptyState
           icon={<ListChecks className="h-6 w-6" />}
           title="Nothing here"

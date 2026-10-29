@@ -1,0 +1,345 @@
+{
+  "embedding_model": "all-MiniLM-L6-v2",
+  "embedding_dimension": 384,
+  "similarity_metric": "cosine (inner product on normalised vectors)",
+  "chunk_size": 800,
+  "chunk_overlap": 150,
+  "total_chunks": 83,
+  "sources": [
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-act-2023",
+      "source_type": "LEGAL_PRIMARY"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    },
+    {
+      "document_id": "dpdp-act-commencement-2025",
+      "source_type": "LEGAL_SECONDARY_OFFICIAL"
+    }
+  ],
+  "built_at": "2026-10-09T14:22:31Z",
+  "faiss_index_file": "knowledge\\index\\trustforge.faiss",
+  "metadata_file": "knowledge\\index\\chunks.pkl"
+}

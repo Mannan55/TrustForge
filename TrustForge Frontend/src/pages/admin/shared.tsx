@@ -10,6 +10,8 @@ export const postureToneMap: Record<PostureLevel, Tone> = {
   "Needs Attention": "warning",
   "Potential Gaps": "info",
   Critical: "danger",
+  "Not Scorable": "neutral",
+  "Not Assessed": "neutral",
 };
 
 export const orgStatusTone: Record<string, Tone> = {

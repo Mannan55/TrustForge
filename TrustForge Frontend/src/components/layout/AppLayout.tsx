@@ -17,6 +17,8 @@ import {
   Building2,
   ShieldCheck,
   BookOpen,
+  Cpu,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useAuth } from "@/context/AuthContext";
@@ -59,6 +61,8 @@ const SECTIONS: NavSection[] = [
       { to: "/evidence", label: "Evidence", icon: FolderCheck },
       { to: "/remediation", label: "Remediation", icon: ListTodo },
       { to: "/reports", label: "Reports", icon: FileText },
+      { to: "/benchmark", label: "10-LLM Benchmark", icon: Cpu },
+      { to: "/rag-monitor", label: "RAG Framework Monitor", icon: Activity },
     ],
   },
   {

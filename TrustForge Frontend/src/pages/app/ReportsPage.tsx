@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Printer, Download, ShieldCheck, FileText, Hash, Calendar, CircleCheck, CircleDot, CircleAlert } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Button } from "@/components/common/Button";
@@ -6,15 +6,56 @@ import { SeverityBadge } from "@/components/common/Badge";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { useOrg } from "@/context/OrgContext";
 import { useToast } from "@/context/ToastContext";
+import { useAsync } from "@/hooks/useAsync";
+import { orgService, findingsService, evidenceService, getLatestAssessmentId } from "@/services";
 import { PILLARS, FINDINGS, EVIDENCE, REPORT_META } from "@/data/assessmentData";
 import { cn } from "@/lib/cn";
 
 export function ReportsPage() {
   const { org } = useOrg();
   const { notify } = useToast();
+  const [isExporting, setIsExporting] = useState(false);
+  const { data: pillars } = useAsync(() => orgService.getPillars(), []);
+  const { data: findings } = useAsync(() => findingsService.list(), []);
+  const { data: evidence } = useAsync(() => evidenceService.list(), []);
 
-  const open = FINDINGS.filter((f) => f.status !== "REMEDIATED").length;
-  const verified = EVIDENCE.filter((e) => e.status === "VERIFIED").length;
+  const activePillars = pillars ?? PILLARS;
+  const activeFindings = findings ?? FINDINGS;
+  const activeEvidence = evidence ?? EVIDENCE;
+
+  const open = activeFindings.filter((f) => f.status !== "REMEDIATED").length;
+  const verified = activeEvidence.filter((e) => e.status === "VERIFIED" || e.status === "DETECTED").length;
+
+  const handleExportPdf = async () => {
+    setIsExporting(true);
+    try {
+      const aid = getLatestAssessmentId() || "latest";
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+      const token = typeof window !== "undefined" ? localStorage.getItem("trustforge.auth_token") : null;
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`${apiBase}/api/reports/${aid}/pdf`, { headers });
+      if (!res.ok) {
+        throw new Error(`Failed to generate PDF report (HTTP ${res.status})`);
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `TrustForge_DPDP_Report_${aid}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      notify("Downloaded DPDP compliance assessment report.", "success");
+    } catch (err: any) {
+      console.error("PDF download failed:", err);
+      notify(err?.message || "Failed to download PDF report. Check backend connection.", "warning");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -25,8 +66,14 @@ export function ReportsPage() {
           subtitle="A shareable summary of your current posture. Print to PDF for your records or to send to a stakeholder."
           actions={
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => notify("PDF export is mocked. Use Print to save as PDF.", "info")}>
-                <Download className="h-4 w-4" /> Export
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportPdf}
+                disabled={isExporting}
+              >
+                <Download className={cn("h-4 w-4", isExporting && "animate-spin")} />
+                {isExporting ? "Generating PDF..." : "Export PDF"}
               </Button>
               <Button size="sm" onClick={() => window.print()}>
                 <Printer className="h-4 w-4" /> Print
@@ -86,7 +133,7 @@ export function ReportsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {PILLARS.map((p) => (
+              {activePillars.map((p) => (
                 <tr key={p.id}>
                   <td className="py-2.5 font-medium text-ink">{p.name}</td>
                   <td className="py-2.5 text-center tabular text-ink-soft">{p.weight}%</td>
@@ -112,14 +159,14 @@ export function ReportsPage() {
           <div className="grid grid-cols-3 gap-3">
             <StatBox icon={CircleDot} label="Open findings" value={open} />
             <StatBox icon={CircleCheck} label="Verified evidence" value={verified} />
-            <StatBox icon={FileText} label="Pillars assessed" value={PILLARS.length} />
+            <StatBox icon={FileText} label="Pillars assessed" value={activePillars.length} />
           </div>
         </Section>
 
         {/* Key findings */}
         <Section title="Priority findings">
           <div className="space-y-3">
-            {FINDINGS.filter((f) => f.status !== "REMEDIATED")
+            {activeFindings.filter((f) => f.status !== "REMEDIATED")
               .slice(0, 4)
               .map((f) => (
                 <div key={f.id} className="page-break flex items-start gap-3 rounded-xl border border-line p-4">

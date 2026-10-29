@@ -1,0 +1,97 @@
+{
+  "phase": "Phase 2 \u2014 Bounded Complete Context",
+  "evaluation_date": "2026-10-09T19:22:57Z",
+  "llm_model": "qwen/qwen3.8-27b",
+  "tie_context_budget": 4000,
+  "total_assertions": 32,
+  "overall_accuracy": 0.65625,
+  "deterministic_accuracy": 0.95,
+  "qualitative_accuracy": 0.16666666666666666,
+  "macro_f1": 0.48326210826210825,
+  "citation_validity_rate": 1.0,
+  "new_groq_calls": 12,
+  "per_class_metrics": {
+    "PASS": {
+      "GT_Count": 17,
+      "TP": 10,
+      "FP": 0,
+      "FN": 7,
+      "Precision": 1.0,
+      "Recall": 0.5882352941176471,
+      "F1": 0.7407407407407407
+    },
+    "FAIL": {
+      "GT_Count": 3,
+      "TP": 0,
+      "FP": 0,
+      "FN": 3,
+      "Precision": 0.0,
+      "Recall": 0.0,
+      "F1": 0.0
+    },
+    "POTENTIAL_GAP": {
+      "GT_Count": 10,
+      "TP": 9,
+      "FP": 7,
+      "FN": 1,
+      "Precision": 0.5625,
+      "Recall": 0.9,
+      "F1": 0.6923076923076923
+    },
+    "NOT_APPLICABLE": {
+      "GT_Count": 0,
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0
+    },
+    "INSUFFICIENT_EVIDENCE": {
+      "GT_Count": 2,
+      "TP": 2,
+      "FP": 4,
+      "FN": 0,
+      "Precision": 0.3333333333333333,
+      "Recall": 1.0,
+      "F1": 0.5
+    }
+  },
+  "confusion_matrix": {
+    "PASS": {
+      "PASS": 10,
+      "POTENTIAL_GAP": 4,
+      "INSUFFICIENT_EVIDENCE": 3,
+      "FAIL": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "POTENTIAL_GAP": {
+      "POTENTIAL_GAP": 9,
+      "INSUFFICIENT_EVIDENCE": 1,
+      "PASS": 0,
+      "FAIL": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "FAIL": {
+      "POTENTIAL_GAP": 3,
+      "PASS": 0,
+      "FAIL": 0,
+      "NOT_APPLICABLE": 0,
+      "INSUFFICIENT_EVIDENCE": 0
+    },
+    "INSUFFICIENT_EVIDENCE": {
+      "INSUFFICIENT_EVIDENCE": 2,
+      "PASS": 0,
+      "FAIL": 0,
+      "POTENTIAL_GAP": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "NOT_APPLICABLE": {
+      "PASS": 0,
+      "FAIL": 0,
+      "POTENTIAL_GAP": 0,
+      "NOT_APPLICABLE": 0,
+      "INSUFFICIENT_EVIDENCE": 0
+    }
+  }
+}

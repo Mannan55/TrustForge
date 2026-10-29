@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FileCheck2,
@@ -20,7 +20,7 @@ import { PageSkeleton } from "@/components/common/Skeleton";
 import { useAsync } from "@/hooks/useAsync";
 import { useToast } from "@/context/ToastContext";
 import { evidenceService } from "@/services";
-import { UPLOADED_DOCUMENTS } from "@/data/assessmentData";
+import { cn } from "@/lib/cn";
 import type { EvidenceItem, EvidenceSource, EvidenceStatus } from "@/types";
 
 const sourceIcon: Record<EvidenceSource, typeof ScanLine> = {
@@ -33,44 +33,110 @@ const sourceIcon: Record<EvidenceSource, typeof ScanLine> = {
 const STATUS_ORDER: EvidenceStatus[] = ["VERIFIED", "DETECTED", "INFERRED", "NOT_FOUND", "NOT_ASSESSED"];
 
 export function EvidencePage() {
-  const { data: evidence, loading } = useAsync(() => evidenceService.list(), []);
+  const { data: initialEvidence, loading, error } = useAsync(() => evidenceService.list(), []);
+  const [evidence, setEvidence] = useState<EvidenceItem[] | null>(null);
   const { notify } = useToast();
   const [filter, setFilter] = useState<"all" | EvidenceStatus>("all");
   const [selected, setSelected] = useState<EvidenceItem | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useMemo(() => ({ current: null as HTMLInputElement | null }), []);
+
+  useEffect(() => {
+    if (initialEvidence) setEvidence(initialEvidence);
+  }, [initialEvidence]);
+
+  const reload = async () => {
+    try {
+      const refreshed = await evidenceService.list();
+      setEvidence(refreshed);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      notify("File exceeds maximum allowed size of 10 MB.", "warning");
+      e.target.value = "";
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      await evidenceService.upload(file);
+      notify(`Successfully uploaded ${file.name}. Added as detected evidence.`, "success");
+      await reload();
+    } catch (err: any) {
+      console.error("Upload failed:", err);
+      notify(err?.detail || err?.message || "Failed to upload evidence document.", "warning");
+    } finally {
+      setIsUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const currentList = evidence ?? initialEvidence ?? [];
 
   const tabs = useMemo(() => {
-    const src = evidence ?? [];
     return [
-      { id: "all", label: "All", count: src.length },
+      { id: "all", label: "All", count: currentList.length },
       ...STATUS_ORDER.map((s) => ({
         id: s,
         label: s[0] + s.slice(1).toLowerCase().replace("_", " "),
-        count: src.filter((e) => e.status === s).length,
+        count: currentList.filter((e) => e.status === s).length,
       })).filter((t) => t.count > 0),
     ];
-  }, [evidence]);
+  }, [currentList]);
 
-  if (loading || !evidence) return <PageSkeleton />;
+  if (loading && !evidence) return <PageSkeleton />;
+  if (error && !evidence) {
+    return (
+      <div className="rounded-2xl border border-danger/30 bg-white p-8 text-center">
+        <p className="font-display font-semibold text-danger">Unable to load assessment evidence</p>
+        <p className="mt-2 text-sm text-ink-muted">{error?.message || "Failed to retrieve evidence from backend."}</p>
+      </div>
+    );
+  }
 
-  const visible = filter === "all" ? evidence : evidence.filter((e) => e.status === filter);
-  const verified = evidence.filter((e) => e.status === "VERIFIED").length;
-  const coverage = Math.round((evidence.filter((e) => e.status === "VERIFIED" || e.status === "DETECTED").length / evidence.length) * 100);
+  const visible = filter === "all" ? currentList : currentList.filter((e) => e.status === filter);
+  const verified = currentList.filter((e) => e.status === "VERIFIED").length;
+  const coverage = currentList.length > 0
+    ? Math.round((currentList.filter((e) => e.status === "VERIFIED" || e.status === "DETECTED").length / currentList.length) * 100)
+    : 0;
+
+  const uploadedDocs = currentList.filter((e) => e.sourceType === "Document Upload");
 
   return (
     <div className="space-y-6">
+      <input
+        ref={(el) => { fileInputRef.current = el; }}
+        type="file"
+        accept=".pdf,.docx,.doc,.txt,.png,.jpg,.jpeg"
+        className="hidden"
+        onChange={handleFileUpload}
+      />
+
       <PageHeader
         eyebrow="Compliance"
         title="Evidence"
         subtitle="What backs each claim, and how sure we are. Verified items are strongest; inferred items rely on indirect signals."
         actions={
-          <Button size="sm" onClick={() => notify("Evidence upload is mocked in this demo.", "info")}>
-            <Upload className="h-4 w-4" /> Upload evidence
+          <Button
+            size="sm"
+            disabled={isUploading}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload className={cn("h-4 w-4", isUploading && "animate-spin")} />
+            {isUploading ? "Uploading..." : "Upload evidence"}
           </Button>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <SummaryCard label="Evidence items" value={`${evidence.length}`} hint="Across all pillars" />
+        <SummaryCard label="Evidence items" value={`${currentList.length}`} hint="Across all pillars" />
         <SummaryCard label="Verified" value={`${verified}`} hint="Confirmed against source" />
         <SummaryCard label="Backed coverage" value={`${coverage}%`} hint="Verified or detected" />
       </div>
@@ -83,51 +149,68 @@ export function EvidencePage() {
 
       <Tabs items={tabs} active={filter} onChange={(id) => setFilter(id as typeof filter)} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        {visible.map((e) => {
-          const Icon = sourceIcon[e.sourceType];
-          return (
-            <button
-              key={e.id}
-              onClick={() => setSelected(e)}
-              className="rounded-2xl border border-line bg-white p-5 text-left transition-colors hover:border-emerald-light/40 hover:bg-beige-light/30"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-beige-light text-emerald-light">
-                    <Icon className="h-4.5 w-4.5" />
-                  </span>
-                  <div>
-                    <p className="font-medium text-ink">{e.title}</p>
-                    <p className="mt-0.5 text-xs text-ink-muted">{e.sourceType}</p>
+      {currentList.length === 0 ? (
+        <Card className="p-8 text-center">
+          <p className="font-display font-semibold text-ink">No evidence items recorded yet</p>
+          <p className="mt-1 text-sm text-ink-muted">Complete an assessment or upload compliance documentation.</p>
+        </Card>
+      ) : (
+        <div className="grid gap-4 lg:grid-cols-2">
+          {visible.map((e) => {
+            const Icon = sourceIcon[e.sourceType] || Info;
+            return (
+              <button
+                key={e.id}
+                onClick={() => setSelected(e)}
+                className="rounded-2xl border border-line bg-white p-5 text-left transition-colors hover:border-emerald-light/40 hover:bg-beige-light/30"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-beige-light text-emerald-light">
+                      <Icon className="h-4.5 w-4.5" />
+                    </span>
+                    <div>
+                      <p className="font-medium text-ink">{e.title}</p>
+                      <p className="mt-0.5 text-xs text-ink-muted">{e.sourceType}</p>
+                    </div>
                   </div>
+                  <EvidenceBadge status={e.status} />
                 </div>
-                <EvidenceBadge status={e.status} />
-              </div>
-              <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{e.notes}</p>
-              <div className="mt-3 flex items-center justify-between">
-                <ConfidenceBadge confidence={e.confidence} />
-                <span className="text-xs text-ink-muted">Checked {e.lastChecked}</span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+                <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{e.notes}</p>
+                <div className="mt-3 flex items-center justify-between">
+                  <ConfidenceBadge confidence={e.confidence} />
+                  <span className="text-xs text-ink-muted">Checked {e.lastChecked}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Uploaded documents */}
       <Card padded={false}>
-        <div className="border-b border-line px-6 py-4">
-          <p className="font-display text-sm font-semibold text-ink">Uploaded documents</p>
+        <div className="border-b border-line px-6 py-4 flex items-center justify-between">
+          <div>
+            <p className="font-display text-sm font-semibold text-ink">Uploaded documents</p>
+            <p className="text-xs text-ink-muted">Self-uploaded documents registered into the compliance assessment</p>
+          </div>
+          <span className="text-xs font-mono text-ink-muted">{uploadedDocs.length} attached</span>
         </div>
         <div className="divide-y divide-line">
-          {UPLOADED_DOCUMENTS.map((d) => (
-            <div key={d.id} className="flex items-center gap-3 px-6 py-3.5">
-              <Paperclip className="h-4 w-4 text-ink-muted" />
-              <span className="flex-1 truncate text-sm text-ink">{d.name}</span>
-              <span className="text-xs text-ink-muted tabular">{d.sizeLabel}</span>
-              <Badge tone={d.status === "Verified" ? "success" : "info"}>{d.status}</Badge>
+          {uploadedDocs.length > 0 ? (
+            uploadedDocs.map((d) => (
+              <div key={d.id} className="flex items-center gap-3 px-6 py-3.5">
+                <Paperclip className="h-4 w-4 text-ink-muted" />
+                <span className="flex-1 truncate text-sm text-ink">{d.title}</span>
+                <span className="text-xs text-ink-muted">{d.notes}</span>
+                <Badge tone="info">Document Upload</Badge>
+              </div>
+            ))
+          ) : (
+            <div className="p-5 text-center text-xs text-ink-muted">
+              No custom documents uploaded yet. Use "Upload evidence" to attach policy files or reports.
             </div>
-          ))}
+          )}
         </div>
       </Card>
 
