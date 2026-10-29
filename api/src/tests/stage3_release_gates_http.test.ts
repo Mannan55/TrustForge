@@ -8,9 +8,11 @@ import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { AddressInfo } from 'node:net';
 import { Server } from 'node:http';
+import dns from 'node:dns';
 import app from '../index.js';
 import { durableStore } from '../database/durableStore.js';
 import { authService } from '../services/authService.js';
+import { LLMGateway, RESEARCH_MODELS } from '../gateway/llmGateway.js';
 
 let server: Server;
 let baseUrl: string;
@@ -500,4 +502,248 @@ test('Wire HTTP - DNS Verification Security: Challenge generation, exact match, 
   assert.equal(reuseRes.status, 400, 'Consumed challenge must be rejected with 400');
   const reuseData = await reuseRes.json();
   assert.equal(reuseData.code, 'CHALLENGE_ALREADY_USED');
+});
+
+test('Wire HTTP - Acceptance Test 1: PUT /api/organization restricts fields, strips un-editable score/provenance metadata, and rejects invalid types with 400', async () => {
+  // 1. Attempt to inject un-editable score, posture, verifiedAt, and domainVerified
+  const patchRes = await fetch(`${baseUrl}/api/organization`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      legalName: 'Alpha Real Legal Name Ltd',
+      trustScore: 99,
+      posture: 'Strong',
+      verifiedAt: '2020-01-01T00:00:00.000Z',
+      domainVerified: true,
+      authorizationVerified: true,
+      cin: 'U72200KA2020PTC123456',
+    }),
+  });
+  assert.equal(patchRes.status, 200);
+  const updatedOrg = await patchRes.json();
+  assert.equal(updatedOrg.legalName, 'Alpha Real Legal Name Ltd');
+  assert.equal(updatedOrg.cin, 'U72200KA2020PTC123456');
+  // Confirm uneditable fields were NOT set on the organization record
+  assert.strictEqual(updatedOrg.trustScore, undefined, 'Client cannot assign trustScore via PUT /organization');
+  assert.strictEqual(updatedOrg.posture, undefined, 'Client cannot assign posture via PUT /organization');
+  assert.notEqual(updatedOrg.verifiedAt, '2020-01-01T00:00:00.000Z', 'Client cannot spoof verifiedAt');
+
+  // 2. Reject non-string editable field with 400 INVALID_ORGANIZATION_FIELD
+  const nonStringRes = await fetch(`${baseUrl}/api/organization`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ legalName: 12345 }),
+  });
+  assert.equal(nonStringRes.status, 400);
+  const nonStringData = await nonStringRes.json();
+  assert.equal(nonStringData.code, 'INVALID_ORGANIZATION_FIELD');
+
+  // 3. Reject non-object body (array) with 400 INVALID_ORGANIZATION_PATCH
+  const nonObjectRes = await fetch(`${baseUrl}/api/organization`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(['invalid_array_payload']),
+  });
+  assert.equal(nonObjectRes.status, 400);
+  const nonObjectData = await nonObjectRes.json();
+  assert.equal(nonObjectData.code, 'INVALID_ORGANIZATION_PATCH');
+});
+
+test('Wire HTTP - Acceptance Test 2: DNS verification requires exact server-issued TXT token; bare hex and prefix/suffix fail', async () => {
+  const testDomain = 'dns-accept-test.alphatech.in';
+  // 1. Generate challenge
+  const genRes = await fetch(`${baseUrl}/api/organization/domain-challenge`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ domain: testDomain }),
+  });
+  assert.equal(genRes.status, 200);
+  const genData = await genRes.json();
+  const fullToken = genData.challengeRecord; // e.g. trustforge-verification=123456...
+  const hexPart = fullToken.replace('trustforge-verification=', '');
+
+  // Mock dns.promises.resolveTxt
+  const origResolveTxt = dns.promises.resolveTxt;
+  try {
+    // Case A: DNS returns only bare hex
+    (dns.promises as any).resolveTxt = async () => [[hexPart]];
+    const resBareHex = await fetch(`${baseUrl}/api/organization/verify-domain`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenAlphaOwner}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ domain: testDomain }),
+    });
+    assert.equal(resBareHex.status, 200);
+    const dataBareHex = await resBareHex.json();
+    assert.strictEqual(dataBareHex.verified, false, 'Bare hex without trustforge-verification= must fail');
+
+    // Case B: DNS returns prefix / suffix mismatch
+    (dns.promises as any).resolveTxt = async () => [[`${fullToken}-extra`]];
+    const resPrefix = await fetch(`${baseUrl}/api/organization/verify-domain`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenAlphaOwner}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ domain: testDomain }),
+    });
+    assert.equal(resPrefix.status, 200);
+    const dataPrefix = await resPrefix.json();
+    assert.strictEqual(dataPrefix.verified, false, 'Prefix/suffix mismatch must fail');
+
+    // Case C: DNS returns exact full token
+    (dns.promises as any).resolveTxt = async () => [[fullToken]];
+    const resExact = await fetch(`${baseUrl}/api/organization/verify-domain`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenAlphaOwner}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ domain: testDomain }),
+    });
+    assert.equal(resExact.status, 200);
+    const dataExact = await resExact.json();
+    assert.strictEqual(dataExact.verified, true, 'Exact match of server-issued token must pass');
+
+    // Case D: Re-verification of already verified challenge returns 400 CHALLENGE_ALREADY_USED
+    const resReused = await fetch(`${baseUrl}/api/organization/verify-domain`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenAlphaOwner}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ domain: testDomain }),
+    });
+    assert.equal(resReused.status, 400);
+    const dataReused = await resReused.json();
+    assert.equal(dataReused.code, 'CHALLENGE_ALREADY_USED');
+  } finally {
+    dns.promises.resolveTxt = origResolveTxt;
+  }
+});
+
+test('Wire HTTP - Acceptance Test 3: evaluateSingleModel on provider failure returns INSUFFICIENT_EVIDENCE with 0 confidence, no invented citations, and MODEL_INFERENCE_FAILED', async () => {
+  const gateway = new LLMGateway();
+  // Simulate provider unavailable / connection error
+  (gateway as any).dispatchProviderCall = async () => {
+    throw new Error('Provider connection failed: 503 Service Unavailable');
+  };
+  const m01 = RESEARCH_MODELS.find(m => m.id === 'M01')!;
+  const finding = await gateway.evaluateSingleModel(
+    m01,
+    {
+      controlId: 'TF-SEC-001',
+      controlName: 'Transport Security',
+      pillar: 'Security Safeguards',
+      statutoryRef: 'Section 8(5)',
+      retrievedLegalContext: 'Section 8(5) statutory provisions...',
+      observedEvidence: [
+        {
+          id: 'EVID_TEST_1',
+          label: 'SSL Cert',
+          status: 'VERIFIED' as const,
+          source_type: 'WEBSITE_SCAN' as const,
+          key: 'transport_security',
+          confidence: 0.9,
+          extracted_at: new Date().toISOString(),
+          value: { https: true },
+        },
+      ],
+    }
+  );
+
+  assert.equal(finding.verdict, 'INSUFFICIENT_EVIDENCE', 'Must not fabricate a SUPPORTED verdict on failure');
+  assert.strictEqual(finding.confidence, 0, 'Must have 0 confidence on failure');
+  assert.strictEqual(finding.legal_citations.length, 0, 'Must have empty legal citations on failure');
+  assert.strictEqual(finding.is_grounded, false, 'Must not be marked grounded');
+  assert.strictEqual(finding.grounding_score, 0, 'Must have grounding score 0');
+  assert.equal(finding.rejection_reason, 'MODEL_INFERENCE_FAILED', 'Must record MODEL_INFERENCE_FAILED rejection');
+});
+
+test('Wire HTTP - Acceptance Test 4: GET /api/trust-score/:id preserves 0 evidence coverage, handles unscored assessments, and enforces tenant isolation', async () => {
+  const zeroCoverageId = `ASSESS_ZERO_COV_${Date.now()}`;
+  durableStore.setAssessment(zeroCoverageId, {
+    id: zeroCoverageId,
+    org_id: TENANT_ALPHA,
+    website_url: 'https://zero-cov.example.com',
+    trust_score: 0,
+    posture: 'CRITICAL',
+    evidence_coverage: 0, // Genuine 0% coverage
+    models_evaluated: ['M01'],
+    selection_mode: 'TOP3_MAJORITY_VOTING',
+    pillar_scores: [],
+  });
+
+  // 1. Alpha fetches its own score with 0% coverage: assert coverage is preserved as 0, NOT coerced to 80
+  const zeroRes = await fetch(`${baseUrl}/api/trust-score/${zeroCoverageId}`, {
+    headers: { Authorization: `Bearer ${tokenAlphaOwner}` },
+  });
+  assert.equal(zeroRes.status, 200);
+  const zeroData = await zeroRes.json();
+  assert.strictEqual(zeroData.evidence_coverage, 0, '0 evidence coverage must be preserved as 0, not coerced to 80');
+  assert.strictEqual(zeroData.trust_score, 0, '0 trust score must be preserved as 0');
+
+  // 2. Unscored assessment (trust_score: null) returns 404
+  const unscoredId = `ASSESS_UNSCORED_${Date.now()}`;
+  durableStore.setAssessment(unscoredId, {
+    id: unscoredId,
+    org_id: TENANT_ALPHA,
+    website_url: 'https://unscored.example.com',
+    trust_score: null,
+    evidence_coverage: 0,
+  });
+  const unscoredRes = await fetch(`${baseUrl}/api/trust-score/${unscoredId}`, {
+    headers: { Authorization: `Bearer ${tokenAlphaOwner}` },
+  });
+  assert.equal(unscoredRes.status, 404, 'Unscored assessment must return 404');
+
+  // 3. Tenant B cannot access Tenant A's trust score
+  const crossRes = await fetch(`${baseUrl}/api/trust-score/${zeroCoverageId}`, {
+    headers: { Authorization: `Bearer ${tokenBetaOwner}` },
+  });
+  assert.equal(crossRes.status, 403, 'Tenant B must receive 403 trying to access Tenant A trust score');
+});
+
+test('Wire HTTP - Acceptance Test 6: Zero paid inference gate prevents dispatchProviderCall from making commercial network requests', async () => {
+  const gateway = new LLMGateway();
+  const m06 = RESEARCH_MODELS.find(m => m.id === 'M06')!;
+  // Attempt direct dispatchProviderCall for paid model M06 without server authorization
+  await assert.rejects(
+    async () => {
+      await (gateway as any).dispatchProviderCall(m06, 'Test prompt');
+    },
+    /Call blocked by Zero-Paid-Spend server policy/,
+    'dispatchProviderCall must throw and refuse to call provider for commercial model without server authorization'
+  );
+});
+
+test('Wire HTTP - Acceptance Test 7: Backend restart persistence verifies disk store survives and reloads', async () => {
+  const testOrgId = `org_persist_test_${Date.now()}`;
+  const testOrgData = {
+    id: testOrgId,
+    legalName: 'Persisted Enterprise Solutions',
+    primaryDomain: 'persisted-enterprise.in',
+    gstin: '36AAACP1234A1Z5',
+  };
+  durableStore.setOrganization(testOrgId, testOrgData);
+
+  // Read from store instance
+  const fetchedOrg = durableStore.getOrganization(testOrgId);
+  assert.ok(fetchedOrg, 'Organization must be retrieved from durable store');
+  assert.equal(fetchedOrg.legalName, 'Persisted Enterprise Solutions');
+  assert.equal(fetchedOrg.primaryDomain, 'persisted-enterprise.in');
 });

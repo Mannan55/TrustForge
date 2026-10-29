@@ -5,10 +5,10 @@
  * 2. Authenticated login with seeded credentials -> redirects to /dashboard
  * 3. Settings persistence (Grievance Officer and Email wired to real backend, reloaded and verified)
  * 4. DNS challenge generation with statutory legal disclaimer verification
- * 5. Model benchmark interface with zero-paid spend policy and slot display
- * 6. Benchmark run creation & tenant-scoped history
- * 7. Authentic Trust Score 0 display verification (no coercion)
- * 8. Benchmark CSV RFC 4180 export validation
+ * 5. Full assessment execution with non-default questionnaire choices, evaluation & posture
+ * 6. Live RAG framework monitor & statutory legal retrieval inspection
+ * 7. Benchmark RFC 4180 CSV export download and HTTP 200 validation
+ * 8. Strict multi-tenant isolation across two independent organizations (Alpha vs Beta)
  * 9. Fail-closed assertion ensuring zero unexpected 5xx server errors
  */
 import { chromium } from 'playwright';
@@ -31,11 +31,11 @@ async function runPlaywrightGates() {
     headless: true,
   });
 
-  const context = await browser.newContext({
+  const contextAlpha = await browser.newContext({
     viewport: { width: 1440, height: 900 },
   });
 
-  const page = await context.newPage();
+  const page = await contextAlpha.newPage();
 
   // Fail browser tests on unexpected 5xx server errors
   const serverErrors = [];
@@ -47,6 +47,10 @@ async function runPlaywrightGates() {
       console.error(`[Playwright Network Error] ${status} at ${url}`);
     }
   });
+
+  let alphaAuthToken = '';
+  let alphaAssessmentId = '';
+  let alphaBenchmarkId = '';
 
   try {
     // ------------------------------------------------------------------------
@@ -68,7 +72,7 @@ async function runPlaywrightGates() {
     console.log('✓ [Test 1 Passed] Invalid credentials rejected, stayed on login page.');
 
     // ------------------------------------------------------------------------
-    // Step 2: Customer / Workspace Login with Seeded Credentials
+    // Step 2: Customer / Workspace Login with Seeded Credentials (Tenant Alpha)
     // ------------------------------------------------------------------------
     console.log('[Test 2] Testing workspace login at /login...');
     await page.goto('http://127.0.0.1:5173/login', { waitUntil: 'networkidle', timeout: 15000 });
@@ -83,8 +87,8 @@ async function runPlaywrightGates() {
     assert.ok(page.url().includes('/dashboard'), 'Successful login must redirect to /dashboard workspace');
 
     // Verify token stored in localStorage
-    const authToken = await page.evaluate(() => localStorage.getItem('trustforge.auth_token') || localStorage.getItem('tf_auth_token'));
-    assert.ok(authToken && authToken.length > 20, 'Authentic JWT session token must be stored in localStorage');
+    alphaAuthToken = await page.evaluate(() => localStorage.getItem('trustforge.auth_token') || localStorage.getItem('tf_auth_token'));
+    assert.ok(alphaAuthToken && alphaAuthToken.length > 20, 'Authentic JWT session token must be stored in localStorage');
 
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02_authenticated_dashboard.png') });
     console.log('✓ [Test 2 Passed] User successfully authenticated; token stored; dashboard loaded.');
@@ -145,54 +149,196 @@ async function runPlaywrightGates() {
     console.log('✓ [Test 4 Passed] DNS challenge section verified with legal disclaimers.');
 
     // ------------------------------------------------------------------------
-    // Step 5: Model Benchmark Page & Zero-Paid-Spend Policy
+    // Step 5: Full Assessment Wizard Execution with Non-Default Answers
     // ------------------------------------------------------------------------
-    console.log('[Test 5] Navigating to Model Benchmarks Page at /benchmark...');
-    await page.goto('http://127.0.0.1:5173/benchmark', { waitUntil: 'networkidle', timeout: 15000 });
+    console.log('[Test 5] Executing full Assessment Wizard with non-default answers at /assessment...');
+    await page.goto('http://127.0.0.1:5173/assessment', { waitUntil: 'networkidle', timeout: 15000 });
 
-    const benchmarkText = await page.textContent('body');
+    // Step 1: Click "Begin assessment"
+    const beginBtn = page.getByRole('button', { name: /Begin assessment/i });
+    if (await beginBtn.count() > 0) {
+      await beginBtn.click();
+      await page.waitForTimeout(500);
+    }
+
+    // Step through wizard until Review step
+    for (let s = 2; s <= 13; s++) {
+      // Toggle custom non-default selections where present
+      const checkboxes = await page.locator('input[type="checkbox"]').all();
+      if (checkboxes.length > 1) {
+        // Toggle the second checkbox to make answers non-default
+        await checkboxes[1].click().catch(() => {});
+      }
+
+      // Check for retention select
+      const selects = await page.locator('select').all();
+      if (selects.length > 0) {
+        await selects[0].selectOption({ index: 2 }).catch(() => {});
+      }
+
+      // Click "Continue" or "Run analysis"
+      const continueBtn = page.getByRole('button', { name: /Continue|Run analysis/i });
+      if (await continueBtn.count() > 0) {
+        await continueBtn.click();
+        await page.waitForTimeout(600);
+      }
+    }
+
+    // Wait for the assessment result to process and load
+    console.log('Waiting for assessment analysis to complete...');
+    await page.waitForSelector('text=/Assessment complete|What to fix first|Pillars|evidence coverage/i', { timeout: 30000 });
+    await page.waitForTimeout(2000);
+
+    const resultText = await page.textContent('body');
     assert.ok(
-      benchmarkText.includes('M01') || benchmarkText.includes('GPT-OSS') || benchmarkText.includes('Benchmark') || benchmarkText.includes('Candidate Models'),
-      'Benchmark page must display model registry slots'
+      resultText.includes('Assessment complete') || resultText.includes('What to fix first') || resultText.includes('Trust Score'),
+      'Assessment results page must render evaluation summary and posture'
     );
 
-    // Verify zero-paid spend indicator or commercial models blocked indicator
-    const hasZeroSpendNotice = benchmarkText.includes('Free') || benchmarkText.includes('Zero-Paid') || benchmarkText.includes('$0') || benchmarkText.includes('AVAILABLE');
-    assert.ok(hasZeroSpendNotice, 'Benchmark interface must indicate zero-paid spend or free candidate model tiers');
+    // Capture the generated assessment ID from latest assessment
+    const activeAssessmentRes = await page.request.get('http://127.0.0.1:8000/api/assessments/active', {
+      headers: { Authorization: `Bearer ${alphaAuthToken}` },
+    });
+    if (activeAssessmentRes.ok()) {
+      const activeData = await activeAssessmentRes.json();
+      alphaAssessmentId = activeData.assessment_id || activeData.id || '';
+    }
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05_model_benchmark_view.png') });
-    console.log('✓ [Test 5 Passed] Model Benchmark page loaded with verified model slots.');
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05_assessment_nondefault_result.png') });
+    console.log('✓ [Test 5 Passed] Assessment wizard completed with non-default answers; score and findings rendered.');
 
     // ------------------------------------------------------------------------
-    // Step 6: Direct API Wire Verification for Benchmark CSV RFC 4180
+    // Step 6: Live RAG Framework Monitor & Evidence Inspection
     // ------------------------------------------------------------------------
-    console.log('[Test 6] Verifying Benchmark CSV export formatting...');
+    console.log('[Test 6] Navigating to Live RAG Monitor at /rag-monitor...');
+    await page.goto('http://127.0.0.1:5173/rag-monitor', { waitUntil: 'networkidle', timeout: 15000 });
+
+    const ragText = await page.textContent('body');
+    assert.ok(
+      ragText.includes('BM25') || ragText.includes('RAG') || ragText.includes('Retrieval') || ragText.includes('Statutory') || ragText.includes('Corpus'),
+      'RAG Monitor must display hybrid retrieval events and statutory context'
+    );
+
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '06_rag_evidence_inspection.png') });
+    console.log('✓ [Test 6 Passed] Live RAG Framework monitor loaded and verified.');
+
+    // ------------------------------------------------------------------------
+    // Step 7: Reports Page & Benchmark RFC 4180 CSV Download (Assert HTTP 200)
+    // ------------------------------------------------------------------------
+    console.log('[Test 7] Triggering candidate model benchmark to ensure benchmark data exists...');
+    const benchTriggerRes = await page.request.post('http://127.0.0.1:8000/api/benchmark/run', {
+      headers: {
+        Authorization: `Bearer ${alphaAuthToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        selected_models: ['M01', 'M02', 'M03'],
+        target_url: 'https://technova.in',
+      }),
+    });
+    assert.equal(benchTriggerRes.status(), 200, 'Benchmark trigger must return 200');
+    const benchData = await benchTriggerRes.json();
+    alphaBenchmarkId = benchData.benchmark_id;
+    console.log(`Generated Benchmark ID for Alpha: ${alphaBenchmarkId}`);
+
+    console.log('Navigating to Reports Page at /reports...');
+    await page.goto('http://127.0.0.1:5173/reports', { waitUntil: 'networkidle', timeout: 15000 });
+
+    // Verify Benchmark RFC 4180 CSV export endpoint directly
+    console.log('Testing GET /api/benchmark/export/csv...');
     const csvResponse = await page.request.get('http://127.0.0.1:8000/api/benchmark/export/csv', {
-      headers: { Authorization: `Bearer ${authToken}` },
+      headers: { Authorization: `Bearer ${alphaAuthToken}` },
     });
 
     console.log(`CSV Export status: ${csvResponse.status()}`);
-    if (csvResponse.status() === 200) {
-      const csvContent = await csvResponse.text();
-      assert.ok(csvContent.includes('Slot,Model Name,Provider'), 'CSV must contain standard RFC headers');
-      assert.ok(csvContent.includes('M01'), 'CSV must contain M01 slot');
-      console.log('✓ [Test 6 Passed] RFC 4180 CSV export endpoint validated.');
-    } else {
-      console.log(`CSV endpoint responded with status ${csvResponse.status()} (scoped fail-closed).`);
+    assert.equal(csvResponse.status(), 200, 'Benchmark CSV export must respond with HTTP 200');
+    const csvContent = await csvResponse.text();
+    assert.ok(csvContent.includes('Slot,Model Name,Provider'), 'CSV must contain RFC 4180 header row');
+    assert.ok(csvContent.includes('M01'), 'CSV must contain M01 candidate model row');
+    assert.ok(csvContent.includes('M02'), 'CSV must contain M02 candidate model row');
+
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '07_reports_and_benchmark_csv.png') });
+    console.log('✓ [Test 7 Passed] Reports and RFC 4180 CSV export validated with HTTP 200.');
+
+    // ------------------------------------------------------------------------
+    // Step 8: Multi-Tenant Isolation Across Two Organizations (Alpha vs Beta)
+    // ------------------------------------------------------------------------
+    console.log('[Test 8] Testing strict multi-tenant isolation with Tenant Beta...');
+    // Create second independent browser context for Tenant Beta
+    const contextBeta = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const pageBeta = await contextBeta.newPage();
+
+    // Authenticate Tenant Beta using distinct user via server registration
+    const betaSignupRes = await pageBeta.request.post('http://127.0.0.1:8000/api/auth/signup', {
+      data: {
+        email: `beta_owner_${Date.now()}@betaanalytics.co.in`,
+        password: 'BetaSecurePassword123!',
+        name: 'Beta Compliance Officer',
+        orgName: 'Beta Analytics India Private Limited',
+      },
+    });
+
+    if (betaSignupRes.status() !== 201) {
+      const errText = await betaSignupRes.text();
+      console.error(`Tenant Beta signup failed with status ${betaSignupRes.status()}:`, errText);
+    }
+    assert.equal(betaSignupRes.status(), 201, 'Tenant Beta signup must succeed with HTTP 201');
+    const betaData = await betaSignupRes.json();
+    const betaToken = betaData.token;
+    console.log(`Tenant Beta successfully authenticated: ${betaData.user.email} (Org: ${betaData.user.orgId})`);
+
+    assert.ok(betaToken, 'Tenant Beta token must be acquired');
+
+    // Tenant Beta attempts to access Tenant Alpha's benchmark by ID
+    console.log(`Tenant Beta querying Tenant Alpha benchmark '${alphaBenchmarkId}'...`);
+    const crossBenchRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/benchmark/${alphaBenchmarkId}`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossBenchRes.status(), 403, 'Cross-tenant benchmark GET must be strictly denied with HTTP 403');
+    const crossBenchData = await crossBenchRes.json();
+    assert.equal(crossBenchData.code, 'CROSS_ORGANISATION_ACCESS_DENIED');
+
+    // Tenant Beta attempts to download Tenant Alpha's benchmark CSV
+    console.log(`Tenant Beta querying Tenant Alpha benchmark CSV '${alphaBenchmarkId}/csv'...`);
+    const crossCsvRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/benchmark/${alphaBenchmarkId}/csv`, {
+      headers: { Authorization: `Bearer ${betaToken}` },
+    });
+    assert.equal(crossCsvRes.status(), 403, 'Cross-tenant CSV export must be strictly denied with HTTP 403');
+
+    // If assessment ID is available, test cross-tenant assessment report access
+    if (alphaAssessmentId) {
+      console.log(`Tenant Beta querying Tenant Alpha assessment '${alphaAssessmentId}'...`);
+      const crossAssessRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/reports/${alphaAssessmentId}`, {
+        headers: { Authorization: `Bearer ${betaToken}` },
+      });
+      assert.equal(crossAssessRes.status(), 403, 'Cross-tenant assessment report must be denied with HTTP 403');
+
+      const crossFindingsRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/findings/${alphaAssessmentId}`, {
+        headers: { Authorization: `Bearer ${betaToken}` },
+      });
+      assert.equal(crossFindingsRes.status(), 403, 'Cross-tenant findings must be denied with HTTP 403');
+
+      const crossScoreRes = await pageBeta.request.get(`http://127.0.0.1:8000/api/trust-score/${alphaAssessmentId}`, {
+        headers: { Authorization: `Bearer ${betaToken}` },
+      });
+      assert.equal(crossScoreRes.status(), 403, 'Cross-tenant trust score must be denied with HTTP 403');
     }
 
-    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '06_benchmark_csv_export.png') });
+    await pageBeta.goto('http://127.0.0.1:5173/login', { waitUntil: 'networkidle', timeout: 15000 });
+    await pageBeta.screenshot({ path: path.join(SCREENSHOT_DIR, '08_tenant_isolation_verified.png') });
+    await contextBeta.close();
+    console.log('✓ [Test 8 Passed] Cross-tenant boundaries verified; private records fail closed with HTTP 403.');
 
     // ------------------------------------------------------------------------
-    // Step 7: Assert Zero Unexpected 5xx Server Errors
+    // Step 9: Assert Zero Unexpected 5xx Server Errors
     // ------------------------------------------------------------------------
-    console.log('[Test 7] Checking for unexpected server errors...');
+    console.log('[Test 9] Checking for unexpected server errors...');
     assert.equal(
       serverErrors.length,
       0,
       `Unexpected server 5xx errors were encountered during browser run:\n${serverErrors.join('\n')}`
     );
-    console.log('✓ [Test 7 Passed] Zero 5xx server errors occurred during Playwright session.');
+    console.log('✓ [Test 9 Passed] Zero 5xx server errors occurred during Playwright session.');
 
     console.log('================================================================');
     console.log('ALL PLAYWRIGHT ASSERTIONS PASSED SUCCESSFULLY!');

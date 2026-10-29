@@ -52,7 +52,33 @@ function saveJsonFile(filename: string, data: any): void {
   const tmpPath = `${filepath}.tmp.${process.pid}.${Date.now()}.${Math.random().toString(36).substring(2, 7)}`;
   try {
     fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
-    fs.renameSync(tmpPath, filepath);
+    let renamed = false;
+    let lastErr: any = null;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        fs.renameSync(tmpPath, filepath);
+        renamed = true;
+        break;
+      } catch (err: any) {
+        lastErr = err;
+        if (err.code === 'EPERM' || err.code === 'EBUSY') {
+          try {
+            fs.copyFileSync(tmpPath, filepath);
+            fs.unlinkSync(tmpPath);
+            renamed = true;
+            break;
+          } catch {
+            const start = Date.now();
+            while (Date.now() - start < 15) {}
+          }
+        } else {
+          throw err;
+        }
+      }
+    }
+    if (!renamed && lastErr) {
+      throw lastErr;
+    }
   } catch (err) {
     console.error(`[DurableStore] Error saving ${filename}:`, err);
     try {
