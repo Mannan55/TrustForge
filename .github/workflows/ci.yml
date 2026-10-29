@@ -73,12 +73,12 @@ jobs:
         run: |
           npm --prefix "TrustForge Frontend" run build
 
-      - name: Upload Verified Release Documentation
+      - name: Upload Production Documentation Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: stage3-verification-artifacts
+          name: product-documentation-artifacts
           path: |
-            docs/research-implementation/24_STAGE3_RELEASE_GATES.md
-            TrustDocumentation/stage3_screenshots/
+            docs/SYSTEM_DOCUMENTATION.pdf
+            docs/SETUP_AND_RUN.md
           if-no-files-found: warn
