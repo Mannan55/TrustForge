@@ -6,7 +6,7 @@
 **Date:** 2026-10-29  
 **Repository Remote:** `https://github.com/Mannan55/TrustForge`  
 **Published Audit Branch:** `audit/reliability-baseline-2026-10-29`  
-**Baseline Commit:** `d1d10e121c874e1bbf9a10d2bc7492f845154246` (Initial commit) / amended baseline  
+**Baseline Commit:** `e86ca08ff8e95e319cdc19c2748a042c7ca4db3a`  
 
 ---
 
