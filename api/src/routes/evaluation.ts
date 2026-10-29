@@ -8,7 +8,7 @@ import { Router, Request, Response } from 'express';
 import { evaluationRunner } from '../evaluation/evaluationRunner.js';
 import { canonicalEvaluationDataset } from '../evaluation/expertDataset.js';
 import { durableStore } from '../database/durableStore.js';
-import { requireAuth } from '../middleware/authMiddleware.js';
+import { requireAuth, validateTenantAccess } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
@@ -22,23 +22,31 @@ router.get('/dataset', (req: Request, res: Response) => {
 });
 
 // GET /api/evaluation/latest — Return latest evaluation run results with statistical CIs
-router.get('/latest', (req: Request, res: Response) => {
-  const latest = durableStore.getEvaluationRun('latest');
+router.get('/latest', requireAuth, (req: Request, res: Response) => {
+  const callerOrg = req.authContext?.orgId;
+  const latest = durableStore.getEvaluationRun('latest', callerOrg);
   if (!latest) {
     const freshRun = evaluationRunner.runFullEvaluation({
       rejectionPolicy: 'PENALIZE_AS_INCORRECT',
       runBootstrap: true,
       bootstrapIterations: 500,
     });
+    (freshRun as any).org_id = callerOrg;
+    durableStore.setEvaluationRun(freshRun.evaluation_id, freshRun);
     res.json(freshRun);
+    return;
+  }
+  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   res.json(latest);
 });
 
 // GET /api/evaluation/list — Return all completed evaluation runs
-router.get('/list', (req: Request, res: Response) => {
-  const runs = durableStore.listEvaluationRuns();
+router.get('/list', requireAuth, (req: Request, res: Response) => {
+  const callerOrg = req.authContext?.orgId;
+  const isSuperAdmin = req.authContext?.role === 'Super Admin';
+  const runs = durableStore.listEvaluationRuns(callerOrg, isSuperAdmin);
   res.json({
     total_runs: runs.length,
     runs,
@@ -93,6 +101,8 @@ router.post('/run', requireAuth, (req: Request, res: Response) => {
       runBootstrap: run_bootstrap,
       bootstrapIterations: bootstrap_iterations,
     });
+    (runResult as any).org_id = callerOrg;
+    durableStore.setEvaluationRun(runResult.evaluation_id, runResult);
     res.json(runResult);
   } catch (err: any) {
     console.error('[Evaluation Route Error]:', err);
@@ -102,7 +112,11 @@ router.post('/run', requireAuth, (req: Request, res: Response) => {
 
 // GET /api/evaluation/export/csv — Download evaluation matrix as RFC 4180 CSV
 router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
-  const latest = durableStore.getEvaluationRun('latest') || evaluationRunner.runFullEvaluation();
+  const callerOrg = req.authContext?.orgId;
+  const latest = durableStore.getEvaluationRun('latest', callerOrg) || evaluationRunner.runFullEvaluation();
+  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+    return;
+  }
 
   const headers = [
     'Model ID',
@@ -156,11 +170,15 @@ router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
 });
 
 // GET /api/evaluation/:id — Return specific evaluation run by ID
-router.get('/:id', (req: Request, res: Response) => {
+router.get('/:id', requireAuth, (req: Request, res: Response) => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const run = durableStore.getEvaluationRun(id);
+  const callerOrg = req.authContext?.orgId;
+  const run = durableStore.getEvaluationRun(id, callerOrg);
   if (!run) {
     res.status(404).json({ error: `Evaluation run ${id} not found.` });
+    return;
+  }
+  if (run.org_id && !validateTenantAccess(run.org_id, req, res)) {
     return;
   }
   res.json(run);

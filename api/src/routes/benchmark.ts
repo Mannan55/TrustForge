@@ -60,22 +60,28 @@ router.get('/diagnostics', (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/latest — Return the most recent benchmark evaluation run
-router.get('/latest', requireAuth, (req: Request, res: Response) => {
+router.get('/latest', requireAuth, async (req: Request, res: Response) => {
   const callerOrg = req.authContext?.orgId;
-  const latest = durableStore.getBenchmark('latest', callerOrg);
+  const latest = (await db.getBenchmark('latest', callerOrg)) || durableStore.getBenchmark('latest', callerOrg);
   if (!latest) {
     res.status(404).json({ error: 'No benchmark run recorded yet.' });
+    return;
+  }
+  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   res.json(latest);
 });
 
 // GET /api/benchmark/export/csv — Download latest benchmark matrix as RFC 4180 CSV
-router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
+router.get('/export/csv', requireAuth, async (req: Request, res: Response) => {
   const callerOrg = req.authContext?.orgId;
-  const latest = durableStore.getBenchmark('latest', callerOrg);
+  const latest = (await db.getBenchmark('latest', callerOrg)) || durableStore.getBenchmark('latest', callerOrg);
   if (!latest) {
     res.status(404).send('No benchmark run recorded yet.');
+    return;
+  }
+  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   const csv = formatBenchmarkCsv(latest);
@@ -85,10 +91,13 @@ router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/list — List all completed benchmark runs
-router.get('/list', requireAuth, (req: Request, res: Response) => {
+router.get('/list', requireAuth, async (req: Request, res: Response) => {
   const callerOrg = req.authContext?.orgId;
   const isSuperAdmin = req.authContext?.role === 'Super Admin';
-  const benchmarks = durableStore.listBenchmarks(callerOrg, isSuperAdmin);
+  const dbBenchmarks = await db.listBenchmarks(callerOrg, isSuperAdmin);
+  const benchmarks = (dbBenchmarks && dbBenchmarks.length > 0)
+    ? dbBenchmarks
+    : durableStore.listBenchmarks(callerOrg, isSuperAdmin);
   res.json({
     total_runs: benchmarks.length,
     benchmarks,
@@ -125,7 +134,7 @@ router.get('/topsis/profiles', (req: Request, res: Response) => {
 // GET /api/benchmark/topsis/latest — Return latest TOPSIS run result
 router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) => {
   const callerOrg = req.authContext?.orgId;
-  const latest = (await db.getTOPSISRun('latest')) || durableStore.getTOPSISRun('latest', callerOrg);
+  const latest = (await db.getTOPSISRun('latest', callerOrg)) || durableStore.getTOPSISRun('latest', callerOrg);
   if (!latest) {
     // If no run recorded yet, execute demonstration run on synthetic fixture
     const syntheticRun = topsisEngine.executeFullTOPSISRun(
@@ -137,7 +146,14 @@ router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) =>
         runSensitivity: true,
       }
     );
+    (syntheticRun as any).is_demonstration = true;
+    (syntheticRun as any).label = '[DEMONSTRATION / NON-EMPIRICAL RESEARCH FIXTURE]';
+    (syntheticRun as any).is_synthetic = true;
+    (syntheticRun as any).quarantine_status = 'SYNTHETIC_EXCLUDED_FROM_EMPIRICAL_METRICS';
     res.json(syntheticRun);
+    return;
+  }
+  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   res.json(latest);
@@ -147,7 +163,10 @@ router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) =>
 router.get('/topsis/list', requireAuth, async (req: Request, res: Response) => {
   const callerOrg = req.authContext?.orgId;
   const isSuperAdmin = req.authContext?.role === 'Super Admin';
-  const runs = durableStore.listTOPSISRuns(callerOrg, isSuperAdmin);
+  const dbRuns = await db.listTOPSISRuns(callerOrg, isSuperAdmin);
+  const runs = (dbRuns && dbRuns.length > 0)
+    ? dbRuns
+    : durableStore.listTOPSISRuns(callerOrg, isSuperAdmin);
   res.json({
     total_runs: runs.length,
     runs,
@@ -162,6 +181,9 @@ router.get('/topsis/:runId/sensitivity', requireAuth, async (req: Request, res: 
     res.status(404).json({ error: `TOPSIS run ${runId} not found.` });
     return;
   }
+  if (run.org_id && !validateTenantAccess(run.org_id, req, res)) {
+    return;
+  }
   res.json({
     run_id: run.run_id,
     sensitivity_analysis: run.sensitivity_analysis || null,
@@ -174,6 +196,9 @@ router.get('/topsis/:runId', requireAuth, async (req: Request, res: Response) =>
   const run = (await db.getTOPSISRun(runId)) || durableStore.getTOPSISRun(runId);
   if (!run) {
     res.status(404).json({ error: `TOPSIS run ${runId} not found.` });
+    return;
+  }
+  if (run.org_id && !validateTenantAccess(run.org_id, req, res)) {
     return;
   }
   res.json(run);
@@ -208,7 +233,12 @@ router.post('/topsis/run', requireAuth, async (req: Request, res: Response) => {
       }
     } else {
       const bId = benchmark_id || 'latest';
-      const benchmark = (await db.getBenchmark(bId)) || durableStore.getBenchmark(bId, callerOrg);
+      const benchmark = bId === 'latest'
+        ? ((await db.getBenchmark('latest', callerOrg)) || durableStore.getBenchmark('latest', callerOrg))
+        : ((await db.getBenchmark(bId)) || durableStore.getBenchmark(bId));
+      if (benchmark && benchmark.org_id && !validateTenantAccess(benchmark.org_id, req, res)) {
+        return;
+      }
       if (!benchmark) {
         if (benchmark_id) {
           res.status(404).json({ error: `Referenced benchmark '${benchmark_id}' not found.`, code: 'NOT_FOUND' });
@@ -290,6 +320,9 @@ router.get('/:id/csv', requireAuth, async (req: Request, res: Response) => {
     res.status(404).send(`Benchmark run ${id} not found.`);
     return;
   }
+  if (benchmark.org_id && !validateTenantAccess(benchmark.org_id, req, res)) {
+    return;
+  }
 
   const csv = formatBenchmarkCsv(benchmark);
   res.setHeader('Content-Type', 'text/csv');
@@ -354,9 +387,10 @@ function formatBenchmarkCsv(benchmark: any): string {
 
 // GET /api/benchmark/:id — Return a specific benchmark run by ID
 router.get('/:id', requireAuth, async (req: Request, res: Response) => {
-    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const callerOrg = req.authContext?.orgId;
   if (id === 'latest') {
-    const latest = durableStore.getBenchmark('latest');
+    const latest = (await db.getBenchmark('latest', callerOrg)) || durableStore.getBenchmark('latest', callerOrg);
     if (!latest) {
       res.status(404).json({ error: 'No benchmark run recorded yet.' });
       return;
@@ -371,6 +405,10 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
   const benchmark = (await db.getBenchmark(id)) || durableStore.getBenchmark(id);
   if (!benchmark) {
     res.status(404).json({ error: `Benchmark run ${id} not found.` });
+    return;
+  }
+
+  if (benchmark.org_id && !validateTenantAccess(benchmark.org_id, req, res)) {
     return;
   }
 
@@ -391,8 +429,21 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
     res.status(403).json({ error: 'Viewers are not permitted to trigger model benchmark evaluations.', code: 'FORBIDDEN' });
     return;
   }
-  const { scan_id, assessment_id, target_url, selected_models } = req.body;
+  const { scan_id, assessment_id, target_url, selected_models, allow_paid_models } = req.body || {};
   const callerOrg = req.authContext!.orgId;
+
+  if (selected_models !== undefined) {
+    if (!Array.isArray(selected_models) || selected_models.length === 0) {
+      res.status(400).json({
+        error: 'selected_models cannot be empty. Specify at least one valid candidate model ID or omit to use default free candidate models.',
+        code: 'EMPTY_MODEL_SELECTION',
+      });
+      return;
+    }
+  }
+  const effectiveSelectedModels = (Array.isArray(selected_models) && selected_models.length > 0)
+    ? selected_models
+    : ['M01', 'M02', 'M03', 'M04'];
 
   let evidence: any[] = [];
   let resolvedUrl = target_url || 'https://example.com';
@@ -449,7 +500,10 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
     controls: controlsWithLegal,
     evidence,
   };
-  const batchOutputs = await gateway.evaluateAllModelsBatch(batchPayload);
+  const batchOutputs = await gateway.evaluateAllModelsBatch(batchPayload, {
+    selectedModelIds: effectiveSelectedModels,
+    allowPaidModels: allow_paid_models === true,
+  });
 
   const benchmarkId = `BENCH_${Date.now()}`;
   const allModelFindings: Record<string, ModelFinding[]> = {};
@@ -604,6 +658,7 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
 
   const benchmarkRecord = {
     benchmark_id: benchmarkId,
+    org_id: callerOrg,
     scan_id: scan_id || assessment_id || `SCAN_${Date.now()}`,
     target_url: resolvedUrl,
     status: completedModels.length === 10 ? 'COMPLETE_10_OF_10' : 'PARTIAL',

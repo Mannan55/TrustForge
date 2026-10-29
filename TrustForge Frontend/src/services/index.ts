@@ -107,6 +107,24 @@ export const identityService = {
       };
     }
 
+    if (USE_REAL_API) {
+      // In real backend mode: format check only. Do not assert government registry proof without production GSTN API.
+      if (cleaned === "27AAACT2727Q1ZB" || cleaned.includes("TECHNOVA")) {
+        return {
+          found: true,
+          legalName: "TechNova Solutions Private Limited",
+          status: "Unverified",
+          note: "Format validated. Sample demonstration fixture (TechNova). Note: Live government GSTN registry lookup is unintegrated and requires production GST API credentials.",
+        };
+      }
+      return {
+        found: false,
+        legalName: "",
+        status: "Unverified",
+        note: "GSTIN format valid (15-character CBIC checksum verified). Direct government GSTN registry lookup is unintegrated. Corporate certificate upload required.",
+      };
+    }
+
     if (cleaned === "27AAACT2727Q1ZB" || cleaned.includes("TECHNOVA")) {
       return {
         found: true,
@@ -300,17 +318,16 @@ export const orgService = {
   },
 
   async updateOrganization(patch: Partial<Organization>): Promise<Organization> {
-    try {
+    if (USE_REAL_API) {
       const updated = await apiClient.updateOrganizationApi(patch);
-      if (updated && updated.id) {
-        return {
-          ...DEMO_ORG,
-          ...updated,
-          posture: updated.trustScore != null ? postureForScore(updated.trustScore) : DEMO_ORG.posture,
-        };
+      if (!updated || !updated.id) {
+        throw new Error("Failed to persist organization settings on server.");
       }
-    } catch {
-      /* fallback to local update if server unavailable */
+      return {
+        ...DEMO_ORG,
+        ...updated,
+        posture: updated.trustScore != null ? postureForScore(updated.trustScore) : DEMO_ORG.posture,
+      };
     }
     const next = { ...DEMO_ORG, ...patch };
     if (patch.trustScore != null) next.posture = postureForScore(patch.trustScore);

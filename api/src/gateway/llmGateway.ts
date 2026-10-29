@@ -180,7 +180,10 @@ export type LLMOutcomeStatus =
   | 'DISABLED'
   | 'TIMEOUT'
   | 'FAILED'
-  | 'NOT_RUN';
+  | 'NOT_RUN'
+  | 'BLOCKED_PAID_MODEL';
+
+export const PAID_MODEL_IDS: readonly string[] = ['M06', 'M07', 'M08', 'M09'];
 
 export interface ModelBatchResult {
   model_id: string;
@@ -519,7 +522,8 @@ export class LLMGateway {
    */
   public async evaluateBatchModel(
     model: LLMModelInfo,
-    payload: BatchControlPayload
+    payload: BatchControlPayload,
+    allowPaidModels: boolean = false
   ): Promise<ModelBatchResult> {
     const startMs = Date.now();
     const startTimeStr = new Date(startMs).toISOString();
@@ -531,6 +535,31 @@ export class LLMGateway {
       .update(JSON.stringify(payload.controls.map(c => c.retrievedLegalContext)))
       .digest('hex')
       .substring(0, 16);
+
+    // ZERO PAID SPEND GATE: Block paid models unless explicitly authorized
+    const isPaidModel = PAID_MODEL_IDS.includes(model.id);
+    const allowPaid = allowPaidModels || process.env.ALLOW_PAID_INFERENCE === 'true';
+    if (isPaidModel && !allowPaid) {
+      const durationMs = Date.now() - startMs;
+      return {
+        model_id: model.id,
+        model_name: model.name,
+        provider: model.provider,
+        requested_model_id: requestedModelTag,
+        status: 'BLOCKED_PAID_MODEL',
+        start_time: startTimeStr,
+        end_time: new Date().toISOString(),
+        findings: [],
+        duration_ms: durationMs,
+        error: `Model ${model.id} (${model.name}) requires commercial credits. Call blocked by Zero-Paid-Spend budget policy (ALLOW_PAID_INFERENCE=false).`,
+        is_real_inference: false,
+        context_hash: contextHash,
+        estimated_cost_usd: 0,
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0,
+      };
+    }
 
     // Check credentials and slot status first
     const slotStatus = this.getModelSlotStatus(model);
@@ -620,22 +649,31 @@ export class LLMGateway {
    * Records execution timeline, latency overlap, and wall-clock performance metrics.
    */
   public async evaluateAllModelsBatch(
-    payload: BatchControlPayload
+    payload: BatchControlPayload,
+    options?: { selectedModelIds?: string[]; allowPaidModels?: boolean }
   ): Promise<BatchExecutionSummary> {
     const t0 = Date.now();
-    console.log(`[ParallelLLMOrchestrator] Initiating concurrent 10-model evaluation across ${RESEARCH_MODELS.length} models for ${payload.websiteUrl}...`);
+    const selectedIds = options?.selectedModelIds;
+    const allowPaid = options?.allowPaidModels ?? false;
+
+    // Filter candidate models if selectedModelIds provided
+    const targetModels = selectedIds && selectedIds.length > 0
+      ? RESEARCH_MODELS.filter(m => selectedIds.includes(m.id))
+      : RESEARCH_MODELS;
+
+    console.log(`[ParallelLLMOrchestrator] Initiating concurrent evaluation across ${targetModels.length} models for ${payload.websiteUrl}...`);
 
     // Group candidate models by provider
-    const groqModels = RESEARCH_MODELS.filter(m => m.provider === 'groq');
-    const openRouterModels = RESEARCH_MODELS.filter(m => m.provider === 'openrouter');
-    const sarvamModels = RESEARCH_MODELS.filter(m => m.provider === 'sarvam');
-    const localModels = RESEARCH_MODELS.filter(m => m.provider === 'local');
+    const groqModels = targetModels.filter(m => m.provider === 'groq');
+    const openRouterModels = targetModels.filter(m => m.provider === 'openrouter');
+    const sarvamModels = targetModels.filter(m => m.provider === 'sarvam');
+    const localModels = targetModels.filter(m => m.provider === 'local');
 
     // Dispatch all model slots concurrently across provider buckets
-    const groqPromises = groqModels.map(model => this.evaluateBatchModel(model, payload));
-    const openRouterPromises = openRouterModels.map(model => this.evaluateBatchModel(model, payload));
-    const sarvamPromises = sarvamModels.map(model => this.evaluateBatchModel(model, payload));
-    const localPromises = localModels.map(model => this.evaluateBatchModel(model, payload));
+    const groqPromises = groqModels.map(model => this.evaluateBatchModel(model, payload, allowPaid));
+    const openRouterPromises = openRouterModels.map(model => this.evaluateBatchModel(model, payload, allowPaid));
+    const sarvamPromises = sarvamModels.map(model => this.evaluateBatchModel(model, payload, allowPaid));
+    const localPromises = localModels.map(model => this.evaluateBatchModel(model, payload, allowPaid));
 
     const [groqSettled, openRouterSettled, sarvamSettled, localSettled] = await Promise.all([
       Promise.allSettled(groqPromises),
@@ -717,7 +755,7 @@ export class LLMGateway {
 
     const orchestration: ParallelOrchestrationMetadata = {
       orchestration_mode: 'TRUE_PROVIDER_AWARE_PARALLEL',
-      total_models: RESEARCH_MODELS.length,
+      total_models: allModels.length,
       started_concurrently: liveCount,
       completed_models: liveCount,
       wall_clock_ms: wallClockMs,

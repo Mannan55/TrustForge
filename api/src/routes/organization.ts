@@ -11,18 +11,37 @@ import { durableStore } from '../database/durableStore.js';
 
 const router = Router();
 
+const DOMAIN_REGEX = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
+
+function normalizeAndValidateDomain(rawDomain: any): { valid: boolean; domain: string; error?: string } {
+  if (!rawDomain || typeof rawDomain !== 'string') {
+    return { valid: false, domain: '', error: 'Domain must be a non-empty string.' };
+  }
+  const clean = rawDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/:\d+$/, '');
+  if (!clean || clean.length > 253 || !DOMAIN_REGEX.test(clean)) {
+    return {
+      valid: false,
+      domain: clean,
+      error: `Invalid canonical domain format: '${rawDomain}'. Must be a valid DNS hostname (e.g., 'technova.in').`,
+    };
+  }
+  return { valid: true, domain: clean };
+}
+
+
 /**
  * POST /api/organization/domain-challenge
  * Generates an expiring cryptographic TXT record challenge for the tenant's domain.
  */
 router.post('/organization/domain-challenge', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const { domain } = req.body;
-  if (!domain || typeof domain !== 'string') {
-    res.status(400).json({ error: 'Valid domain name is required.', code: 'INVALID_DOMAIN' });
+  const validation = normalizeAndValidateDomain(domain);
+  if (!validation.valid) {
+    res.status(400).json({ error: validation.error, code: 'INVALID_DOMAIN_FORMAT' });
     return;
   }
 
-  const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  const cleanDomain = validation.domain;
   const callerOrg = req.authContext!.orgId;
 
   const challengeHex = crypto.randomBytes(16).toString('hex');
@@ -56,12 +75,13 @@ router.post('/organization/domain-challenge', requireAuth, async (req: Request, 
  */
 router.post('/organization/verify-domain', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const { domain } = req.body;
-  if (!domain || typeof domain !== 'string') {
-    res.status(400).json({ error: 'Valid domain name is required.', code: 'INVALID_DOMAIN' });
+  const validation = normalizeAndValidateDomain(domain);
+  if (!validation.valid) {
+    res.status(400).json({ error: validation.error, code: 'INVALID_DOMAIN_FORMAT' });
     return;
   }
 
-  const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  const cleanDomain = validation.domain;
   const callerOrg = req.authContext!.orgId;
 
   const challenge = durableStore.getDomainChallenge(cleanDomain, callerOrg);
@@ -203,6 +223,9 @@ router.put('/organization', requireAuth, async (req: Request, res: Response): Pr
   delete patch.id;
 
   const domainChanged = patch.primaryDomain !== undefined && patch.primaryDomain !== existingOrg.primaryDomain;
+  if (domainChanged && existingOrg.primaryDomain) {
+    durableStore.invalidateDomainChallenge(existingOrg.primaryDomain, callerOrg);
+  }
   const gstinChanged = patch.gstin !== undefined && patch.gstin !== existingOrg.gstin;
 
   const updatedOrg = {

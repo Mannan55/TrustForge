@@ -236,16 +236,28 @@ export class DurableStore {
     saveJsonFile('evaluation_runs.json', Object.fromEntries(this.evaluationRuns));
   }
 
-  public getEvaluationRun(id: string): any | undefined {
+  public getEvaluationRun(id: string, orgId?: string): any | undefined {
     if (id === 'latest') {
       const all = Array.from(this.evaluationRuns.values());
+      if (orgId) {
+        const orgRuns = all.filter(r => r.org_id === orgId);
+        return orgRuns.length > 0 ? orgRuns[orgRuns.length - 1] : undefined;
+      }
       return all.length > 0 ? all[all.length - 1] : undefined;
     }
-    return this.evaluationRuns.get(id);
+    const run = this.evaluationRuns.get(id);
+    if (run && orgId && run.org_id && run.org_id !== orgId) {
+      return undefined;
+    }
+    return run;
   }
 
-  public listEvaluationRuns(): any[] {
-    return Array.from(this.evaluationRuns.values());
+  public listEvaluationRuns(orgId?: string, isSuperAdmin?: boolean): any[] {
+    const all = Array.from(this.evaluationRuns.values());
+    if (orgId && !isSuperAdmin) {
+      return all.filter(r => r.org_id === orgId);
+    }
+    return all;
   }
 
   // --- Users ---
@@ -312,6 +324,16 @@ export class DurableStore {
     }
     const legacyKey = domain.toLowerCase().trim();
     return this.domainChallenges.get(legacyKey);
+  }
+
+  public invalidateDomainChallenge(domain: string, orgId?: string): void {
+    if (orgId) {
+      const scopedKey = `${orgId.toLowerCase().trim()}:${domain.toLowerCase().trim()}`;
+      this.domainChallenges.delete(scopedKey);
+    }
+    const legacyKey = domain.toLowerCase().trim();
+    this.domainChallenges.delete(legacyKey);
+    saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
   }
 }
 

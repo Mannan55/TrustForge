@@ -399,30 +399,47 @@ export class BenchmarkRepository {
     }
   }
 
-  async getBenchmark(id: string): Promise<BenchmarkRecord | null> {
-    if (this.mode === 'supabase' && this.client && id !== 'latest') {
+  async getBenchmark(id: string, orgId?: string): Promise<BenchmarkRecord | null> {
+    if (this.mode === 'supabase' && this.client) {
       try {
-        const { data, error } = await this.client.from('benchmark_runs').select('*').eq('id', id).single();
-        if (data && !error) return { ...data, benchmark_id: data.id };
+        if (id === 'latest') {
+          let query = this.client.from('benchmark_runs').select('*').order('created_at', { ascending: false });
+          if (orgId) {
+            query = query.eq('organisation_id', orgId);
+          }
+          const { data, error } = await query.limit(1).maybeSingle();
+          if (data && !error) return { ...data, benchmark_id: data.id, org_id: data.organisation_id };
+        } else {
+          let query = this.client.from('benchmark_runs').select('*').eq('id', id);
+          if (orgId) {
+            query = query.eq('organisation_id', orgId);
+          }
+          const { data, error } = await query.maybeSingle();
+          if (data && !error) return { ...data, benchmark_id: data.id, org_id: data.organisation_id };
+        }
       } catch (err) {
         console.warn('[BenchmarkRepository] Supabase get failed:', err);
       }
     }
-    return durableStore.getBenchmark(id) || null;
+    return durableStore.getBenchmark(id, orgId) || null;
   }
 
-  async listBenchmarks(): Promise<BenchmarkRecord[]> {
+  async listBenchmarks(orgId?: string, isSuperAdmin?: boolean): Promise<BenchmarkRecord[]> {
     if (this.mode === 'supabase' && this.client) {
       try {
-        const { data, error } = await this.client.from('benchmark_runs').select('*').order('created_at', { ascending: false });
+        let query = this.client.from('benchmark_runs').select('*').order('created_at', { ascending: false });
+        if (orgId && !isSuperAdmin) {
+          query = query.eq('organisation_id', orgId);
+        }
+        const { data, error } = await query;
         if (data && !error && data.length > 0) {
-          return data.map(d => ({ ...d, benchmark_id: d.id }));
+          return data.map(d => ({ ...d, benchmark_id: d.id, org_id: d.organisation_id }));
         }
       } catch (err) {
         console.warn('[BenchmarkRepository] Supabase list failed:', err);
       }
     }
-    return durableStore.listBenchmarks();
+    return durableStore.listBenchmarks(orgId, isSuperAdmin);
   }
 }
 
@@ -440,6 +457,7 @@ export class TOPSISRepository {
         await this.client.from('topsis_runs').upsert({
           id: run.run_id,
           benchmark_id: run.benchmark_source_id || null,
+          organisation_id: (run as any).org_id || null,
           profile_id: run.profile_used?.profile_id || 'unknown',
           execution_mode: run.execution_mode,
           top_model_id: run.top_model_id,
@@ -456,29 +474,46 @@ export class TOPSISRepository {
     }
   }
 
-  async getTOPSISRun(id: string): Promise<TOPSISRunResult | null> {
-    if (this.mode === 'supabase' && this.client && id !== 'latest') {
+  async getTOPSISRun(id: string, orgId?: string): Promise<TOPSISRunResult | null> {
+    if (this.mode === 'supabase' && this.client) {
       try {
-        const { data, error } = await this.client.from('topsis_runs').select('*').eq('id', id).single();
-        if (data && !error) return { ...data, run_id: data.id };
+        if (id === 'latest') {
+          let query = this.client.from('topsis_runs').select('*').order('created_at', { ascending: false });
+          if (orgId) {
+            query = query.eq('organisation_id', orgId);
+          }
+          const { data, error } = await query.limit(1).maybeSingle();
+          if (data && !error) return { ...data, run_id: data.id, org_id: data.organisation_id };
+        } else {
+          let query = this.client.from('topsis_runs').select('*').eq('id', id);
+          if (orgId) {
+            query = query.eq('organisation_id', orgId);
+          }
+          const { data, error } = await query.maybeSingle();
+          if (data && !error) return { ...data, run_id: data.id, org_id: data.organisation_id };
+        }
       } catch (err) {
         console.warn('[TOPSISRepository] Supabase get failed:', err);
       }
     }
-    return durableStore.getTOPSISRun(id) || null;
+    return durableStore.getTOPSISRun(id, orgId) || null;
   }
 
-  async listTOPSISRuns(): Promise<TOPSISRunResult[]> {
+  async listTOPSISRuns(orgId?: string, isSuperAdmin?: boolean): Promise<TOPSISRunResult[]> {
     if (this.mode === 'supabase' && this.client) {
       try {
-        const { data, error } = await this.client.from('topsis_runs').select('*').order('created_at', { ascending: false });
+        let query = this.client.from('topsis_runs').select('*').order('created_at', { ascending: false });
+        if (orgId && !isSuperAdmin) {
+          query = query.eq('organisation_id', orgId);
+        }
+        const { data, error } = await query;
         if (data && !error && data.length > 0) {
-          return data.map(d => ({ ...d, run_id: d.id }));
+          return data.map(d => ({ ...d, run_id: d.id, org_id: d.organisation_id }));
         }
       } catch (err) {
         console.warn('[TOPSISRepository] Supabase list failed:', err);
       }
     }
-    return durableStore.listTOPSISRuns();
+    return durableStore.listTOPSISRuns(orgId, isSuperAdmin);
   }
 }

@@ -35,17 +35,42 @@ export function SettingsPage() {
   const [industry, setIndustry] = useState(org.industry);
   const [companySize, setCompanySize] = useState(org.companySize);
   const [registeredAddress, setRegisteredAddress] = useState(org.registeredAddress);
+  const [grievanceOfficer, setGrievanceOfficer] = useState(org.grievanceOfficer || "");
+  const [grievanceEmail, setGrievanceEmail] = useState(org.grievanceEmail || "");
   const [saving, setSaving] = useState(false);
+  const [savingGrievance, setSavingGrievance] = useState(false);
 
   const saveProfile = async () => {
     setSaving(true);
     try {
-      await updateOrg({ legalName, displayName, cin, gstin, industry, companySize, registeredAddress });
+      await updateOrg({
+        legalName,
+        displayName,
+        cin,
+        gstin,
+        industry,
+        companySize,
+        registeredAddress,
+        grievanceOfficer,
+        grievanceEmail,
+      });
       notify("Company profile saved successfully.", "success");
     } catch (err: any) {
       notify(err?.message || "Failed to save organization settings.", "warning");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const saveGrievanceContact = async () => {
+    setSavingGrievance(true);
+    try {
+      await updateOrg({ grievanceOfficer, grievanceEmail });
+      notify("Grievance contact persisted successfully.", "success");
+    } catch (err: any) {
+      notify(err?.message || "Failed to update grievance contact.", "warning");
+    } finally {
+      setSavingGrievance(false);
     }
   };
 
@@ -111,12 +136,22 @@ export function SettingsPage() {
           <Card>
             <CardHeader eyebrow="Accountability" title="Grievance contact" description="Published as your point of contact for data questions." />
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <Input label="Grievance officer" defaultValue={org.grievanceOfficer} icon={<UserCog className="h-4 w-4" />} />
-              <Input label="Grievance email" defaultValue={org.grievanceEmail} />
+              <Input
+                label="Grievance officer"
+                value={grievanceOfficer}
+                onChange={(e) => setGrievanceOfficer(e.target.value)}
+                icon={<UserCog className="h-4 w-4" />}
+              />
+              <Input
+                label="Grievance email"
+                type="email"
+                value={grievanceEmail}
+                onChange={(e) => setGrievanceEmail(e.target.value)}
+              />
             </div>
             <div className="mt-5 flex justify-end">
-              <Button variant="outline" size="sm" onClick={() => notify("Grievance contact updated.", "success")}>
-                <Save className="h-4 w-4" /> Update contact
+              <Button variant="outline" size="sm" onClick={saveGrievanceContact} disabled={savingGrievance}>
+                <Save className="h-4 w-4" /> {savingGrievance ? "Updating..." : "Update contact"}
               </Button>
             </div>
           </Card>

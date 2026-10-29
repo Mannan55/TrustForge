@@ -129,24 +129,24 @@ export class SupabaseDataService {
     await this.benchmarks.saveBenchmark(benchmark);
   }
 
-  public async getBenchmark(id: string): Promise<BenchmarkRecord | null> {
-    return this.benchmarks.getBenchmark(id);
+  public async getBenchmark(id: string, orgId?: string): Promise<BenchmarkRecord | null> {
+    return this.benchmarks.getBenchmark(id, orgId);
   }
 
-  public async listBenchmarks(): Promise<BenchmarkRecord[]> {
-    return this.benchmarks.listBenchmarks();
+  public async listBenchmarks(orgId?: string, isSuperAdmin?: boolean): Promise<BenchmarkRecord[]> {
+    return this.benchmarks.listBenchmarks(orgId, isSuperAdmin);
   }
 
   public async saveTOPSISRun(run: TOPSISRunResult): Promise<void> {
     await this.topsis.saveTOPSISRun(run);
   }
 
-  public async getTOPSISRun(id: string): Promise<TOPSISRunResult | null> {
-    return this.topsis.getTOPSISRun(id);
+  public async getTOPSISRun(id: string, orgId?: string): Promise<TOPSISRunResult | null> {
+    return this.topsis.getTOPSISRun(id, orgId);
   }
 
-  public async listTOPSISRuns(): Promise<TOPSISRunResult[]> {
-    return this.topsis.listTOPSISRuns();
+  public async listTOPSISRuns(orgId?: string, isSuperAdmin?: boolean): Promise<TOPSISRunResult[]> {
+    return this.topsis.listTOPSISRuns(orgId, isSuperAdmin);
   }
 }
 

@@ -501,11 +501,24 @@ export function ModelBenchmarkPage() {
     const completed = updated.filter(m => m.execution_status === "EXECUTED").length;
     setCompletedCount(completed);
 
-    if (data.consensus_result?.trust_score) {
+    if (data.consensus_result && data.consensus_result.trust_score !== null && data.consensus_result.trust_score !== undefined) {
       setConsensusScore(data.consensus_result.trust_score);
-      setConsensusPosture(data.consensus_result.posture || "Strong Alignment");
+      setConsensusPosture(data.consensus_result.posture || (data.consensus_result.trust_score === 0 ? "Critical Non-Compliance" : "Calculated"));
+    } else {
+      setConsensusScore(null);
+      setConsensusPosture("Unavailable");
     }
   }
+
+  const resetBenchmarkState = () => {
+    setBenchmarkRunId("");
+    setConsensusScore(null);
+    setConsensusPosture("");
+    setCompletedCount(0);
+    setModels(INITIAL_MODELS);
+    setRagHash("");
+    setTargetUrl("");
+  };
 
   const handleSelectHistoryRun = async (runId: string) => {
     if (!runId) return;
@@ -513,9 +526,12 @@ export function ModelBenchmarkPage() {
       const data = await getBenchmarkByIdApi(runId);
       if (data && data.per_model_metrics) {
         applyBenchmarkData(data);
+      } else {
+        resetBenchmarkState();
       }
     } catch (e: any) {
       console.error("Failed to load historical benchmark run:", e);
+      resetBenchmarkState();
       alert(`Failed to load benchmark run ${runId} (${e?.status || 500}): ${e?.detail || e?.message}`);
     }
   };

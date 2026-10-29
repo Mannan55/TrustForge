@@ -25,10 +25,14 @@ function createTestApp() {
 }
 
 test('Stage 3 - Tenant Isolation: Tenant Beta cannot access Tenant Alpha benchmark via /latest', async () => {
+  const orgAlpha = `org_alpha_iso_${Date.now()}`;
+  const orgBeta = `org_beta_iso_${Date.now()}`;
+  const benchId = `bench_alpha_test_${Date.now()}`;
+
   // Setup: Alpha has a benchmark
   const alphaBench = {
-    benchmark_id: 'bench_alpha_test_001',
-    org_id: 'org_alpha',
+    benchmark_id: benchId,
+    org_id: orgAlpha,
     target_url: 'https://alpha.example.com',
     per_model_metrics: {
       M01: { model_id: 'M01', status: 'COMPLETED', trust_score: 85 },
@@ -36,13 +40,13 @@ test('Stage 3 - Tenant Isolation: Tenant Beta cannot access Tenant Alpha benchma
   };
   durableStore.setBenchmark(alphaBench.benchmark_id, alphaBench);
 
-  // Tenant Beta calls getBenchmark('latest', 'org_beta')
-  const betaLatest = durableStore.getBenchmark('latest', 'org_beta');
+  // Tenant Beta calls getBenchmark('latest', orgBeta)
+  const betaLatest = durableStore.getBenchmark('latest', orgBeta);
   assert.equal(betaLatest, undefined, 'Tenant Beta must receive undefined/404 for latest benchmark when Beta has none');
 
-  // Verify that Alpha calling getBenchmark('latest', 'org_alpha') gets Alpha's benchmark
-  const alphaLatest = durableStore.getBenchmark('latest', 'org_alpha');
-  assert.equal(alphaLatest?.benchmark_id, 'bench_alpha_test_001', 'Tenant Alpha must receive its own benchmark');
+  // Verify that Alpha calling getBenchmark('latest', orgAlpha) gets Alpha's benchmark
+  const alphaLatest = durableStore.getBenchmark('latest', orgAlpha);
+  assert.equal(alphaLatest?.benchmark_id, benchId, 'Tenant Alpha must receive its own benchmark');
 });
 
 test('Stage 3 - Tenant Isolation: Cross-tenant GET /benchmark/:id and CSV download are rejected with HTTP 403', async () => {
