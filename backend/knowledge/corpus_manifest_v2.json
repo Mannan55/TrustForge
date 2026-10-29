@@ -1,0 +1,57 @@
+{
+  "manifest_version": "2.0.0-phase3",
+  "generated_at": "2026-10-28T14:45:00Z",
+  "taxonomy_framework": "DPDP-C1-C10-PROTIVITI-2025",
+  "total_chunks": 83,
+  "previous_corpus_sha256": "c79c0fb3eb811e69d0e45ea6f1ac5ceaee06ea1937463fe6cc4ac50c4f6901f8",
+  "current_corpus_sha256": "c79c0fb3eb811e69d0e45ea6f1ac5ceaee06ea1937463fe6cc4ac50c4f6901f8",
+  "statutory_sources": [
+    {
+      "document_id": "dpdp-act-2023",
+      "title": "The Digital Personal Data Protection Act, 2023 (Act No. 22 of 2023)",
+      "authority": "Ministry of Law and Justice / MeitY",
+      "gazette_date": "2023-08-11",
+      "enforceability": "CURRENTLY_ENFORCEABLE",
+      "chunks_count": 53
+    },
+    {
+      "document_id": "dpdp-rules-2025",
+      "title": "The Digital Personal Data Protection Rules, 2025 (G.S.R. 846(E))",
+      "authority": "Ministry of Electronics and Information Technology",
+      "gazette_date": "2025-11-13",
+      "enforceability": "NOTIFIED_PROCEDURAL_RULES",
+      "chunks_count": 29
+    },
+    {
+      "document_id": "dpdp-act-commencement-2025",
+      "title": "Commencement Notification for DPDP Act, 2023 (G.S.R. 843(E))",
+      "authority": "Ministry of Electronics and Information Technology",
+      "gazette_date": "2025-11-13",
+      "enforceability": "COMMENCEMENT_ORDER",
+      "chunks_count": 1
+    }
+  ],
+  "category_chunk_distribution": {
+    "C1": 7,
+    "C2": 11,
+    "C3": 5,
+    "C4": 14,
+    "C5": 7,
+    "C6": 8,
+    "C7": 9,
+    "C8": 7,
+    "C9": 7,
+    "C10": 7,
+    "GENERAL": 42
+  },
+  "mandatory_fields_present": [
+    "source_document",
+    "section_number",
+    "rule_number",
+    "obligation_category",
+    "obligation_categories",
+    "penalty_reference",
+    "source_notification",
+    "applicability"
+  ]
+}

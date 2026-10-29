@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Printer, Download, ShieldCheck, FileText, Hash, Calendar, CircleCheck, CircleDot, CircleAlert } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Button } from "@/components/common/Button";
@@ -7,13 +7,14 @@ import { BrandLogo } from "@/components/common/BrandLogo";
 import { useOrg } from "@/context/OrgContext";
 import { useToast } from "@/context/ToastContext";
 import { useAsync } from "@/hooks/useAsync";
-import { orgService, findingsService, evidenceService } from "@/services";
+import { orgService, findingsService, evidenceService, getLatestAssessmentId } from "@/services";
 import { PILLARS, FINDINGS, EVIDENCE, REPORT_META } from "@/data/assessmentData";
 import { cn } from "@/lib/cn";
 
 export function ReportsPage() {
   const { org } = useOrg();
   const { notify } = useToast();
+  const [isExporting, setIsExporting] = useState(false);
   const { data: pillars } = useAsync(() => orgService.getPillars(), []);
   const { data: findings } = useAsync(() => findingsService.list(), []);
   const { data: evidence } = useAsync(() => evidenceService.list(), []);
@@ -25,6 +26,33 @@ export function ReportsPage() {
   const open = activeFindings.filter((f) => f.status !== "REMEDIATED").length;
   const verified = activeEvidence.filter((e) => e.status === "VERIFIED" || e.status === "DETECTED").length;
 
+  const handleExportPdf = async () => {
+    setIsExporting(true);
+    try {
+      const aid = getLatestAssessmentId() || "latest";
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}/api/reports/${aid}/pdf`);
+      if (!res.ok) {
+        throw new Error(`Failed to generate PDF report (HTTP ${res.status})`);
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `TrustForge_DPDP_Report_${aid}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      notify("Downloaded DPDP compliance assessment report.", "success");
+    } catch (err: any) {
+      console.error("PDF download failed:", err);
+      notify(err?.message || "Failed to download PDF report. Check backend connection.", "warning");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="no-print">
@@ -34,8 +62,14 @@ export function ReportsPage() {
           subtitle="A shareable summary of your current posture. Print to PDF for your records or to send to a stakeholder."
           actions={
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => notify("PDF export is mocked. Use Print to save as PDF.", "info")}>
-                <Download className="h-4 w-4" /> Export
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportPdf}
+                disabled={isExporting}
+              >
+                <Download className={cn("h-4 w-4", isExporting && "animate-spin")} />
+                {isExporting ? "Generating PDF..." : "Export PDF"}
               </Button>
               <Button size="sm" onClick={() => window.print()}>
                 <Printer className="h-4 w-4" /> Print

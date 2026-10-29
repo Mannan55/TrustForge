@@ -22,6 +22,7 @@ import {
   Info,
   Paperclip,
   Trash2,
+  Activity,
 } from "lucide-react";
 import { Card } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
@@ -122,9 +123,15 @@ export function AssessmentPage() {
       setRunning(true);
       setResultReady(false);
       setSubmitError(null);
-      // Submit to real backend
+      // Submit to real backend with website URL and complete wizard responses
+      const primaryUrl = org.primaryDomain
+        ? (org.primaryDomain.startsWith('http') ? org.primaryDomain : `https://${org.primaryDomain}`)
+        : undefined;
+
       assessmentService.submit({
         org_id: org.id ?? "demo-org",
+        website_url: primaryUrl,
+        collections: state.collections,
         categories: state.categories,
         purposes: state.purposes,
         languages: state.languages,
@@ -235,7 +242,25 @@ export function AssessmentPage() {
                 setResultReady(false);
                 setSubmitError(null);
                 setAssessmentId(null);
-                goNext();
+                assessmentService.submit({
+                  org_id: org.id ?? "demo-org",
+                  categories: state.categories,
+                  purposes: state.purposes,
+                  languages: state.languages,
+                  rights: state.rights,
+                  processors: state.processors,
+                  retention: state.retention,
+                  erasure_automated: state.erasureAutomated,
+                  breach_plan: state.breachPlan,
+                  grievance_officer_named: Boolean(org.grievanceOfficer),
+                  grievance_contact_published: Boolean(org.grievanceEmail),
+                }).then((resp) => {
+                  setAssessmentId(resp.assessment_id);
+                  storeLatestAssessmentId(resp.assessment_id);
+                }).catch((err) => {
+                  setSubmitError(String(err));
+                  notify("Assessment retry submission failed. Check backend connection.", "warning");
+                });
               }}
               onBackToReview={() => {
                 setRunning(false);
@@ -731,6 +756,8 @@ function ResultStep({
   const [pollError, setPollError] = useState<string | null>(null);
   const [pollCount, setPollCount] = useState<number>(0);
   const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [backendProgress, setBackendProgress] = useState<number | null>(null);
+  const [backendStep, setBackendStep] = useState<string | null>(null);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
@@ -739,19 +766,42 @@ function ResultStep({
     if (!assessmentId || resultReady) return;
     let cancelled = false;
     let navTimer: ReturnType<typeof setTimeout> | null = null;
+    let isPolling = false;
 
     const poll = async () => {
       let count = 0;
-      while (!cancelled && count < 90) {
+      const MAX_POLLS = 60; // 60 iterations (~2 minutes max)
+
+      while (!cancelled && count < MAX_POLLS) {
+        if (isPolling) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          continue;
+        }
+
         count++;
         setPollCount(count);
+        isPolling = true;
+
         try {
           const r = await apiClient.getAssessmentResult(assessmentId);
+          isPolling = false;
           if (cancelled) break;
-          if (r.status === "complete") {
+
+          if (r.progress != null && typeof r.progress === "number") {
+            setBackendProgress(r.progress);
+          }
+          if (r.current_step) {
+            setBackendStep(r.current_step);
+          }
+
+          const status = (r.status || "").toLowerCase().trim();
+
+          // Completed terminal state
+          if (status === "complete" || status === "completed") {
             storeLatestAssessmentId(assessmentId);
             setResult(r);
             setIsComplete(true);
+            setBackendProgress(100);
             if (r.trust_score != null && r.posture != null) {
               updateOrg({
                 trustScore: Math.round(r.trust_score),
@@ -772,17 +822,43 @@ function ResultStep({
             }, 800);
             break;
           }
-          if (r.status === "error") {
-            setPollError(r.error || "Assessment evaluation encountered an error. Check backend logs.");
+
+          // Failed or Error terminal state
+          if (status === "failed" || status === "error") {
+            setPollError(r.error || "Assessment evaluation encountered an error. Please retry.");
             break;
           }
+
+          // Cancelled terminal state
+          if (status === "cancelled") {
+            setPollError("Assessment was cancelled.");
+            break;
+          }
+
+          // Timed out terminal state
+          if (status === "timed_out") {
+            setPollError("Assessment evaluation timed out on backend. Please retry.");
+            break;
+          }
+
+          // In-progress / Pending / Running: continue polling
         } catch (err: any) {
+          isPolling = false;
+          const msg = err?.detail || err?.message || String(err);
+          if (msg.includes("404") || msg.includes("not found")) {
+            setPollError("Assessment record not found on server (session may have restarted). Please click 'Retry evaluation' to start a fresh assessment.");
+            break;
+          }
           if (!cancelled && count > 10) {
-            setPollError(err?.message || "Failed to communicate with assessment backend.");
+            setPollError(msg || "Failed to communicate with assessment backend.");
             break;
           }
         }
         await new Promise((resolve) => setTimeout(resolve, count <= 2 ? 1000 : 2000));
+      }
+
+      if (!cancelled && count >= MAX_POLLS && !isComplete) {
+        setPollError("Assessment processing timed out after 2 minutes. The backend may still be running. You can check back shortly or retry.");
       }
     };
 
@@ -805,6 +881,11 @@ function ResultStep({
               <p className="mt-1 text-sm text-ink-soft">
                 {submitError || pollError}
               </p>
+              {assessmentId && (
+                <p className="mt-2 text-xs font-mono text-ink-muted">
+                  Assessment ID: {assessmentId}
+                </p>
+              )}
             </div>
           </div>
           <div className="mt-5 flex items-center gap-3">
@@ -818,10 +899,17 @@ function ResultStep({
 
   // Show processing animation while polling or completing
   if (running && !resultReady) {
-    const currentStage = isComplete ? 4 : Math.min(3, Math.floor(pollCount / 2));
-    const currentProgress = isComplete ? 100 : Math.min(92, 10 + pollCount * 12);
+    const rawProgress = backendProgress ?? Math.min(92, 10 + pollCount * 8);
+    const currentProgress = isComplete ? 100 : Math.min(isComplete ? 100 : 95, rawProgress);
+    const maxStageIdx = Math.max(0, ANALYSIS_STAGES.length - 1);
+    const currentStage = isComplete
+      ? maxStageIdx
+      : Math.min(maxStageIdx - 1, Math.floor((currentProgress / 100) * maxStageIdx));
+
     const statusLabel = isComplete
       ? "Analysis complete"
+      : backendStep
+      ? backendStep
       : pollCount === 0
       ? "Submitting responses…"
       : `Evaluating 20 DPDP controls (${pollCount * 2}s)`;
@@ -853,31 +941,70 @@ function ResultStep({
     );
   }
 
-  // Use real result if available, else fall back to org mock data
-  const trustScore = result?.trust_score ?? org.trustScore;
-  const posture = result?.posture ?? org.posture;
-  const displayPillars = result?.pillar_scores?.length
-    ? result.pillar_scores.slice(0, 3).map((ps) => ({
-        id: ps.pillar,
-        name: ps.pillar.replace(/_/g, " "),
-        score: Math.round(ps.score),
-        evidenceCoverage: ps.evidence_coverage > 1
-          ? Math.min(100, Math.round(ps.evidence_coverage))
-          : Math.min(100, Math.round(ps.evidence_coverage * 100)),
-      }))
-    : [];
-  const priorities = result?.findings
-    ? [...result.findings]
-        .filter((f) => f.status !== "PASS")
-        .sort((a, b) => severityRank(b.severity) - severityRank(a.severity))
-        .slice(0, 3)
-    : [];
+// Use real calculated Trust Score from assessment result; handle unscoreable state gracefully
+const isScorable = typeof result?.trust_score === "number" && result.trust_score !== null;
+const trustScore: number = isScorable ? result.trust_score! : (result ? 0 : (org.trustScore ?? 0));
+const isNotScorable = result?.posture === "NOT_SCORABLE" || result?.posture === "Not Scorable";
+const posture = isScorable
+  ? result.posture
+  : (isNotScorable ? "Not Scorable (Insufficient Evidence)" : org.posture);
+
+const displayPillars = result?.pillar_scores?.length
+  ? result.pillar_scores.slice(0, 6).map((ps: any, index: number) => {
+      const rawName =
+        (typeof ps?.pillar_name === "string" && ps.pillar_name.trim()) ||
+        (typeof ps?.name === "string" && ps.name.trim()) ||
+        (typeof ps?.pillar === "string" && ps.pillar.trim()) ||
+        (typeof ps?.pillar_id === "string" && ps.pillar_id.trim()) ||
+        `Pillar ${index + 1}`;
+
+      const pillarName = rawName.replace(/_/g, " ");
+      const rawCoverage = ps?.evidence_coverage !== undefined && ps?.evidence_coverage !== null
+        ? Number(ps.evidence_coverage)
+        : Number(result?.evidence_coverage ?? 0);
+
+      return {
+        id: ps?.pillar_id || pillarName,
+        name: pillarName,
+        score: Math.round(Number(ps?.score ?? 0)),
+        evidenceCoverage: Number.isFinite(rawCoverage)
+          ? rawCoverage > 1
+            ? Math.min(100, Math.round(rawCoverage))
+            : Math.min(100, Math.round(rawCoverage * 100))
+          : 0,
+      };
+    })
+  : [];
+
+const priorities = result?.findings
+  ? [...result.findings]
+      .filter((f: any) => f.status !== "PASS" && f.verdict !== "SUPPORTED")
+      .sort((a: any, b: any) => {
+        const sevA = a.severity || (a.verdict === "NOT_SUPPORTED" ? "HIGH" : "MEDIUM");
+        const sevB = b.severity || (b.verdict === "NOT_SUPPORTED" ? "HIGH" : "MEDIUM");
+        return severityRank(sevB) - severityRank(sevA);
+      })
+      .slice(0, 3)
+  : [];
 
   return (
     <div className="animate-fade-in space-y-6">
       {pollError && (
         <div className="rounded-xl border border-warning/30 bg-warning/5 p-4 text-sm text-warning">
           <strong>Evaluation note:</strong> {pollError}
+        </div>
+      )}
+      {result && !isScorable && isNotScorable && (
+        <div className="rounded-xl border border-warning/40 bg-warning/10 p-5 text-sm text-warning">
+          <div className="flex items-start gap-3">
+            <span className="text-xl">⚠️</span>
+            <div>
+              <strong className="font-semibold text-bone">Assessment Notice — Insufficient Evidence:</strong>
+              <p className="mt-1 text-ink-muted">
+                No verifiable compliance signals were observed for the selected controls. When no evidence is available across any category, the framework designates the assessment as <em>Not Scorable</em> rather than penalizing with a zero score. Please provide a live website domain or complete questionnaire sections to generate verifiable evidence.
+              </p>
+            </div>
+          </div>
         </div>
       )}
       <Card className="bg-emerald-deep text-bone" padded={false}>
@@ -936,25 +1063,55 @@ function ResultStep({
 
       {priorities.length > 0 && (
         <Card>
-          <p className="font-display font-semibold text-ink">What to fix first</p>
-          <div className="mt-3 space-y-2.5">
-            {priorities.map((f) => (
-              <div key={f.control_id} className="flex items-center gap-3 rounded-xl border border-line bg-canvas px-4 py-3">
-                <span
-                  className={cn(
-                    "h-2 w-2 shrink-0 rounded-full",
-                    f.severity === "HIGH" ? "bg-danger" : f.severity === "MEDIUM" ? "bg-warning" : "bg-info",
-                  )}
-                />
-                <span className="flex-1 text-sm text-ink">{f.finding}</span>
-                <Badge tone="neutral">{f.control_id}</Badge>
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-display font-semibold text-ink">What to fix first</p>
+            <span className="text-xs text-ink-muted">Top priority remediation items</span>
+          </div>
+          <div className="space-y-3">
+            {priorities.map((f: any) => {
+              const title = f.title || f.name || f.control_name || f.control_id;
+              const description = f.finding || f.description || f.reasoning_summary || (f.identified_gaps && f.identified_gaps[0]) || "Statutory compliance gap identified under DPDP Act 2023.";
+              const severity = f.severity || (f.status === "FAIL" || f.verdict === "NOT_SUPPORTED" ? "HIGH" : "MEDIUM");
+              const statutoryRef = f.dpdp_reference || f.statutory_ref || (f.citations?.[0]?.section ? `Section ${f.citations[0].section}` : undefined);
+              return (
+                <div key={f.control_id} className="flex items-start justify-between gap-3 rounded-xl border border-line bg-canvas p-4">
+                  <div className="flex items-start gap-3">
+                    <span
+                      className={cn(
+                        "mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full",
+                        severity === "HIGH" ? "bg-danger" : severity === "MEDIUM" ? "bg-warning" : "bg-info",
+                      )}
+                    />
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-sm text-ink">{title}</span>
+                        <Badge tone="neutral">{f.control_id}</Badge>
+                        {statutoryRef && (
+                          <span className="text-xs text-ink-muted font-mono bg-beige-light px-2 py-0.5 rounded">
+                            {statutoryRef}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-ink-soft">{description}</p>
+                      {f.recommendation && (
+                        <p className="mt-1 text-xs text-emerald-deep font-medium">
+                          Remediation: {f.recommendation}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <Badge tone={severity === "HIGH" ? "danger" : "warning"}>{severity}</Badge>
+                </div>
+              );
+            })}
           </div>
         </Card>
       )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <Button variant="outline" onClick={() => navigate("/rag-monitor")}>
+          <Activity className="h-4 w-4 mr-1 text-emerald-deep" /> Live RAG Monitor
+        </Button>
         <Button variant="outline" onClick={() => navigate("/trust-score")}>
           View Trust Score
         </Button>

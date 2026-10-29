@@ -34,6 +34,7 @@ router.post('/scans', async (req: Request, res: Response): Promise<void> => {
       checks: scanResult.checks,
       evidence: scanResult.evidence,
       score: scanResult.preliminaryScore,
+      preliminary_readiness_score: scanResult.preliminaryScore,
       posture: scanResult.posture,
       scanned_at: scanResult.scannedAt,
       duration_ms: scanResult.durationMs,
@@ -46,11 +47,17 @@ router.post('/scans', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+import { validateTenantAccess } from '../middleware/authMiddleware.js';
+
 router.get('/scans/:id', async (req: Request, res: Response): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const scan = await db.getScan(id);
   if (!scan) {
     res.status(404).json({ error: `Scan ${id} not found.` });
+    return;
+  }
+  // Enforce tenant isolation if scan is associated with a private tenant
+  if (scan.organisation_id && !validateTenantAccess(scan.organisation_id, req, res)) {
     return;
   }
   res.json(scan);

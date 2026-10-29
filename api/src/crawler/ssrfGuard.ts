@@ -1,9 +1,19 @@
 /**
  * SSRF and Network Security Guard for TrustForge Crawler.
  * Ensures the Playwright crawler only accesses public, safe HTTP/HTTPS destinations.
+ * Supports injectable DNS resolver for deterministic unit testing without network access.
  */
 import dns from 'node:dns/promises';
 import { URL } from 'node:url';
+
+// DNS resolver abstraction: uses real dns.lookup by default, can be overridden for testing.
+type DnsLookupFn = (hostname: string, opts?: { all?: boolean }) => Promise<Array<{ address: string; family: number }> | { address: string; family: number }>;
+let _dnsLookup: DnsLookupFn = dns.lookup as unknown as DnsLookupFn;
+
+/** Override the DNS lookup function (for deterministic testing only). */
+export function setDnsLookupOverride(fn: DnsLookupFn | null): void {
+  _dnsLookup = fn || (dns.lookup as unknown as DnsLookupFn);
+}
 
 interface ValidationResult {
   isValid: boolean;
@@ -93,7 +103,7 @@ export async function validateTargetUrl(rawUrl: string): Promise<ValidationResul
 
   // Resolve DNS to verify IP
   try {
-    const lookup = await dns.lookup(hostname, { all: true });
+    const lookup = await _dnsLookup(hostname, { all: true }) as Array<{ address: string; family: number }>;
     if (!lookup || lookup.length === 0) {
       return { isValid: false, error: `Could not resolve hostname '${hostname}'.` };
     }

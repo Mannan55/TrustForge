@@ -144,12 +144,15 @@ export interface ApiAssessmentResponse {
 }
 
 export interface ApiPillarScoreRaw {
-  pillar: string;
+  pillar?: string;
+  pillar_id?: string;
+  pillar_name?: string;
+  name?: string;
   score: number;
   weight: number;
-  evidence_coverage: number;
-  control_count: number;
-  applicable_control_count: number;
+  evidence_coverage?: number;
+  control_count?: number;
+  applicable_control_count?: number;
 }
 
 export interface ApiCitationRaw {
@@ -163,39 +166,54 @@ export interface ApiCitationRaw {
 
 export interface ApiFindingRaw {
   control_id: string;
-  status: string;
-  severity: string;
-  finding: string;
-  explanation: string;
-  recommendation: string;
-  evidence_ids: string[];
-  citations: ApiCitationRaw[];
-  confidence: number;
-  evaluation_method: string;
+  status?: string;
+  verdict?: string;
+  severity?: string;
+  title?: string;
+  name?: string;
+  control_name?: string;
+  finding?: string;
+  description?: string;
+  explanation?: string;
+  recommendation?: string;
+  evidence_ids?: string[];
+  citations?: ApiCitationRaw[];
+  confidence?: number;
+  evaluation_method?: string;
   error?: string | null;
+  dpdp_reference?: string;
+  statutory_ref?: string;
 }
 
 export interface ApiEvidenceRaw {
-  evidence_id: string;
-  source: string;
-  key: string;
-  title: string;
+  id?: string;
+  evidence_id?: string;
+  source?: string;
+  source_type?: string;
+  key?: string;
+  label?: string;
+  title?: string;
   status: string;
-  observed: boolean | null;
+  observed?: boolean | null;
   value?: unknown;
   url?: string;
-  confidence: string;
-  notes: string;
-  method: string;
+  source_url?: string;
+  confidence?: string | number;
+  notes?: string;
+  method?: string;
+  extracted_at?: string;
 }
 
 export interface ApiAssessmentResult {
   assessment_id: string;
   org_id: string;
-  status: "pending" | "running" | "complete" | "error";
+  status: "pending" | "running" | "in_progress" | "complete" | "completed" | "error" | "failed" | "timed_out" | "cancelled" | string;
+  progress?: number;
+  current_step?: string;
   website_url?: string;
   trust_score: number | null;
   posture: string | null;
+  evidence_coverage?: number;
   findings: ApiFindingRaw[];
   evidence: ApiEvidenceRaw[];
   pillar_scores: ApiPillarScoreRaw[];
@@ -371,3 +389,180 @@ export async function uploadEvidenceFile(
 
   return res.json() as Promise<ApiUploadEvidenceResponse>;
 }
+
+// ── Phase 7: RAG Framework Monitor & Retrieval Explorer ────────────────────────
+
+export interface ApiRAGStageEvent {
+  stage_id: number;
+  stage_name: string;
+  stage_key: string;
+  status: "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "SKIPPED";
+  started_at: string;
+  completed_at?: string;
+  duration_ms: number;
+  details: Record<string, any>;
+  error?: string;
+}
+
+export interface ApiRAGExecutionTrace {
+  assessment_id: string;
+  target_url: string;
+  status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+  started_at: string;
+  completed_at?: string;
+  total_duration_ms: number;
+  corpus_version: string;
+  corpus_hash: string;
+  frozen_snapshot_hash: string;
+  stages: ApiRAGStageEvent[];
+}
+
+export interface ApiLegalRetrievalPassage {
+  rank: number;
+  chunk_id: string;
+  section: string;
+  heading: string;
+  source_document: string;
+  enforceability: string;
+  effective_date: string;
+  penalty_reference: string;
+  bm25_rank: number | null;
+  bm25_score: number | null;
+  vector_rank: number | null;
+  vector_similarity: number | null;
+  rrf_score: number;
+  text: string;
+  retrieval_rationale: string;
+}
+
+export interface ApiLegalRetrievalExplorerRecord {
+  control_id: string;
+  c10_obligation_id: string;
+  c10_obligation_name: string;
+  statutory_ref: string;
+  query: string;
+  retrieval_mode: string;
+  fusion_constant: number;
+  retrieval_latency_ms: {
+    bm25: number;
+    vector_embedding: number;
+    vector_rpc: number;
+    total: number;
+  };
+  context_hash: string;
+  corpus_version: string;
+  retrieved_passages: ApiLegalRetrievalPassage[];
+}
+
+export interface ApiEvidenceSnippet {
+  id: string;
+  source_type: string;
+  source_url?: string;
+  captured_at: string;
+  snippet: string;
+}
+
+export interface ApiEvidenceToVerdictTraceItem {
+  control_id: string;
+  control_name: string;
+  c10_obligation_id: string;
+  c10_obligation_name: string;
+  statutory_ref: string;
+  statutory_chunk_id: string;
+  evidence_ids: string[];
+  evidence_snippets: ApiEvidenceSnippet[];
+  model_id: string;
+  model_verdict: string;
+  confidence: number;
+  is_grounded: boolean;
+  grounding_reason?: string;
+  effective_verdict: string;
+  control_weight: number;
+  raw_score: number;
+  weighted_score_contribution: number;
+  remediation_advice: string;
+}
+
+export interface ApiModelExecutionTraceItem {
+  model_id: string;
+  name: string;
+  provider: string;
+  requested_model_id: string;
+  actual_model_id?: string;
+  request_id?: string;
+  status: "COMPLETED" | "RATE_LIMITED" | "INSUFFICIENT_CREDITS" | "LOCAL_OFFLINE" | "UNAVAILABLE";
+  is_verified_live: boolean;
+  latency_ms: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  estimated_cost_usd: number;
+  trust_score: number | null;
+  posture: string;
+  grounding_rate_pct: number;
+  hallucination_rate_pct: number;
+  citation_precision_pct: number;
+  evidence_faithfulness_pct: number;
+  blocker_reason?: string;
+}
+
+export async function getAssessmentRAGTrace(id = "latest"): Promise<{
+  assessment_id: string;
+  target_url: string;
+  rag_execution_trace: ApiRAGExecutionTrace;
+}> {
+  return _request<{
+    assessment_id: string;
+    target_url: string;
+    rag_execution_trace: ApiRAGExecutionTrace;
+  }>("GET", `/api/assessments/${encodeURIComponent(id)}/rag-trace`);
+}
+
+export async function getAssessmentRetrievalExplorer(id = "latest"): Promise<{
+  assessment_id: string;
+  target_url: string;
+  total_obligations: number;
+  corpus_version: string;
+  frozen_snapshot_hash: string;
+  retrieval_explorer: ApiLegalRetrievalExplorerRecord[];
+}> {
+  return _request<{
+    assessment_id: string;
+    target_url: string;
+    total_obligations: number;
+    corpus_version: string;
+    frozen_snapshot_hash: string;
+    retrieval_explorer: ApiLegalRetrievalExplorerRecord[];
+  }>("GET", `/api/assessments/${encodeURIComponent(id)}/retrieval-explorer`);
+}
+
+export async function getAssessmentEvidenceTrace(id = "latest"): Promise<{
+  assessment_id: string;
+  target_url: string;
+  total_findings: number;
+  evidence_to_verdict_trace: ApiEvidenceToVerdictTraceItem[];
+}> {
+  return _request<{
+    assessment_id: string;
+    target_url: string;
+    total_findings: number;
+    evidence_to_verdict_trace: ApiEvidenceToVerdictTraceItem[];
+  }>("GET", `/api/assessments/${encodeURIComponent(id)}/evidence-trace`);
+}
+
+export async function getAssessmentModelExecutions(id = "latest"): Promise<{
+  assessment_id: string;
+  target_url: string;
+  total_slots: number;
+  verified_models_count: number;
+  model_executions: ApiModelExecutionTraceItem[];
+}> {
+  return _request<{
+    assessment_id: string;
+    target_url: string;
+    total_slots: number;
+    verified_models_count: number;
+    model_executions: ApiModelExecutionTraceItem[];
+  }>("GET", `/api/assessments/${encodeURIComponent(id)}/model-executions`);
+}
+

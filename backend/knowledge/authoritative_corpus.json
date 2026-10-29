@@ -14,7 +14,15 @@
     "text": "THE DIGITAL PERSONAL DATA PROTECTION ACT, 2023\n(NO. 22 OF 2023)\n[11th August, 2023.]\nAn Act to provide for the processing of digital personal data in a manner that\nrecognises both the right of individuals to protect their personal data and the\nneed to process such personal data for lawful purposes and for matters\nconnected therewith or incidental thereto.\nBE it enacted by Parliament in the Seventy-fourth Year of the Republic of India as\nfollows:––\nCHAPTER I\nPRELIMINARY",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": null,
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-1",
@@ -31,7 +39,15 @@
     "text": "1. (1) This Act may be called the Digital Personal Data Protection Act, 2023.\n(2)  It shall come into force on such date as the Central Government may, by notification\nin the Official Gazette, appoint and different dates may be appointed for different provisions\nof this Act and any reference in any such provision to the commencement of this Act shall\nbe construed as a reference to the coming into force of that provision.\nShort title and\ncommencement.\nvlk/kkj.k\nEXTRAORDINARY\nHkkx  II — [k.M 1\nPART II — Section 1\nizkf/kdkj ls izdkf'kr\nPUBLISHED  BY  AUTHORITY\nlañ   25]\nubZ fnYyh] 'kqØokj] vxLr 11] 2023@Jko.k 20] 1945 ¼'kd½\nNo. 25]\nNEW DELHI, FRIDAY, AUGUST 11, 2023/SRAVANA 20, 1945 (SAKA)\nbl Hkkx esa fHkUu i`\"B la[;k nh tkrh gS ftlls fd ;g vyx ladyu ds :i esa j[kk tk ldsA\nSeparate paging is given to this Part in order that it may be filed as a separate compilation.\nxxxGIDHxxx\nxxxGIDExxx\njftLVªh lañ Mhñ ,yñ—(,u)04@0007@2003—23\nREGISTERED NO. DL—(N)04/0007/2003—23\nMINISTRY OF LAW AND JUSTICE\n(Legislative Department)\nNew Delhi, the 11th August, 2023/Sravana 20, 1945  (Saka)\nThe following Act of Parliament received the assent of the President on the\n11th August, 2023 and is hereby published for general information:—\nसी.जी.-डी.एल.-अ.-12082023-248045",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 1",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-2-clauses-a-to-g",
@@ -48,7 +64,19 @@
     "text": "2. In this Act, unless the context otherwise requires,—\n(a) “Appellate Tribunal” means the Telecom Disputes Settlement and  Appellate\nTribunal established under section 14 of the Telecom Regulatory Authority of India\nAct, 1997;\n(b) “automated” means any digital process capable of operating automatically\nin response to instructions given or otherwise for the purpose of processing data;\n(c) “Board” means the Data Protection Board of India established by the Central\nGovernment under section 18;\n(d) “certain legitimate uses” means the uses referred to in section 7;\n(e) “Chairperson” means the Chairperson of the Board;\n(f) “child” means an individual who has not completed the age of eighteen\nyears;\n(g) “Consent Manager” means a person registered with the Board, who acts as\na single point of contact to enable a Data Principal to give, manage, review and\nwithdraw her consent through an accessible, transparent and interoperable platform;",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 2",
+    "rule_number": null,
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1",
+      "C2",
+      "C4"
+    ],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-2-clauses-h-to-n",
@@ -65,7 +93,19 @@
     "text": "2. In this Act, unless the context otherwise requires,—\n(h) “data” means a representation of information, facts, concepts, opinions or\ninstructions in a manner suitable for communication, interpretation or processing by\nhuman beings or by automated means;\n(i) “Data Fiduciary” means any person who alone or in conjunction with other\npersons determines the purpose and means of processing of personal data;\n(j) “Data Principal” means the individual to whom the personal data relates and\nwhere such individual is—\n(i) a child, includes the parents or lawful guardian of such a child;\n(ii) a person with disability, includes her lawful guardian, acting on her\nbehalf;\n(k) “Data Processor” means any person who processes personal data on behalf\nof a Data Fiduciary;\n(l) “Data Protection Officer” means an individual appointed by the Significant\nData Fiduciary under clause (a) of sub-section (2) of section 10;\n(m) “digital office” means an office that adopts an online mechanism wherein\nthe proceedings, from receipt of intimation or complaint or reference or directions or\nappeal, as the case may be, to the disposal thereof, are conducted in online or digital\nmode;\n(n) “digital personal data” means personal data in digital form;",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 2",
+    "rule_number": null,
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1",
+      "C2",
+      "C4"
+    ],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-2-clauses-o-to-s",
@@ -82,7 +122,19 @@
     "text": "2. In this Act, unless the context otherwise requires,—\n(o) “gain” means—\n(i) a gain in property or supply of services, whether temporary or\npermanent; or\n(ii) an opportunity to earn remuneration or greater remuneration or to\ngain a financial advantage otherwise than by way of legitimate remuneration;\n(p) “loss” means—\n(i) a loss in property or interruption in supply of services, whether\ntemporary or permanent; or\n(ii) a loss of opportunity to earn remuneration or greater remuneration or\nto gain a financial advantage otherwise than by way of legitimate remuneration;\nDefinitions.\n24 of 1997.\n\n(q) “Member” means a Member of the Board and includes the Chairperson;\n(r) “notification” means a notification published in the Official Gazette and the\nexpressions “notify” and “notified” shall be construed accordingly;\n(s) “person” includes—\n(i) an individual;\n(ii) a Hindu undivided family;\n(iii) a company;\n(iv) a firm;\n(v) an association of persons or a body of individuals, whether\nincorporated or not;\n(vi) the State; and\n(vii) every artificial juristic person, not falling within any of the preceding\nsub-clauses;",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 2",
+    "rule_number": null,
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1",
+      "C2",
+      "C4"
+    ],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-2-clauses-t-to-zb",
@@ -99,7 +151,19 @@
     "text": "2. In this Act, unless the context otherwise requires,—\n(t) “personal data” means any data about an individual who is identifiable by or\nin relation to such data;\n(u) “personal data breach” means any unauthorised processing of personal\ndata or accidental disclosure, acquisition, sharing, use, alteration, destruction or loss\nof access to personal data, that compromises the confidentiality, integrity or availability\nof personal data;\n(v) “prescribed” means prescribed by rules made under this Act;\n(w) “proceeding” means any action taken by the Board under the provisions of\nthis Act;\n(x) “processing” in relation to personal data, means a wholly or partly automated\noperation or set of operations performed on digital personal data, and includes\noperations such as collection, recording, organisation, structuring, storage, adaptation,\nretrieval, use, alignment or combination, indexing, sharing, disclosure by transmission,\ndissemination or otherwise making available, restriction, erasure or destruction;\n(y) “she” in relation to an individual includes the reference to such individual\nirrespective of gender;\n(z) “Significant Data Fiduciary” means any Data Fiduciary or class of Data\nFiduciaries as may be notified by the Central Government under section 10;\n(za) “specified purpose” means the purpose mentioned in the notice given by\nthe Data Fiduciary to the Data Principal in accordance with the provisions of this Act\nand the rules made thereunder; and\n(zb) “State” means the State as defined under article 12 of the Constitution.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 2",
+    "rule_number": null,
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1",
+      "C2",
+      "C4"
+    ],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-3",
@@ -116,7 +180,15 @@
     "text": "3. Subject to the provisions of this Act, it shall—\n(a) apply to the processing of digital personal data within the territory of India\nwhere the personal data is collected––\n(i) in digital form; or\n(ii) in non-digital form and digitised subsequently;\n(b) also apply to processing of digital personal data outside the territory of\nIndia, if such processing is in connection with any activity related to offering of\ngoods or services to Data Principals within the territory of India;\nApplication\nof Act.\n\n(c) not apply to—\n(i) personal data processed by an individual for any personal or domestic\npurpose; and\n(ii) personal data that is made or caused to be made publicly available\nby—\n(A) the Data Principal to whom such personal data relates; or\n(B) any other person who is under an obligation under any law for\nthe time being in force in India to make such personal data publicly\navailable.\nIllustration.\nX, an individual, while blogging her views, has publicly made available her personal\ndata on social media. In such case, the provisions of this Act shall not apply.\nCHAPTER II\nOBLIGATIONS OF DATA FIDUCIARY",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 3",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-4",
@@ -133,7 +205,18 @@
     "text": "4. (1) A person may process the personal data of a Data Principal only in accordance\nwith the provisions of this Act and for a lawful purpose,—\n(a) for which the Data Principal has given her consent; or\n(b) for certain legitimate uses.\n(2) For the purposes of this section, the expression “lawful purpose” means any\npurpose which is not expressly forbidden by law.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 4",
+    "rule_number": null,
+    "obligation_category": "C2",
+    "obligation_categories": [
+      "C2",
+      "C3"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-5",
@@ -150,7 +233,17 @@
     "text": "5. (1) Every request made to a Data Principal under section 6 for consent shall be\naccompanied or preceded by a notice given by the Data Fiduciary to the Data Principal,\ninforming her,—\n  (i) the personal data and the purpose for which the same is proposed to be\nprocessed;\n  (ii) the manner in which she may exercise her rights under sub-section (4) of\nsection 6 and section 13; and\n (iii) the manner in which the Data Principal may make a complaint to the Board,\nin such manner and as may be prescribed.\nIllustration.\nX, an individual, opens a bank account using the mobile app or website of Y, a bank.\nTo complete the Know-Your-Customer requirements under law for opening of bank account,\nX opts for processing of her personal data by Y in a live, video-based customer identification\nprocess. Y shall accompany or precede the request for the personal data with notice to X,\ndescribing the personal data and the purpose of its processing.\n(2) Where a Data Principal has given her consent for the processing of her personal\ndata before the date of commencement of this Act,—\n(a) the Data Fiduciary shall, as soon as it is reasonably practicable, give to the\nData Principal a notice informing her,––\n(i) the personal data and the purpose for which the same has been\nprocessed;\n  (ii) the manner in which she may exercise her rights under sub-section (4)\nof section 6 and section 13; and\n (iii) the manner in which the Data Principal may make a complaint to the\nBoard,\nin such manner and as may be prescribed.\nGrounds for\nprocessing\npersonal data.\nNotice.\n\n(b) the Data Fiduciary may continue to process the personal data until and\nunless the Data Principal withdraws her consent.\nIllustration.\nX, an individual, gave her consent to the processing of her personal data for an online\nshopping app or website operated by Y, an e-commerce service provider, before the\ncommencement of this Act. Upon commencement of the Act, Y shall, as soon as practicable,\ngive through email, in-app notification or other effective method information to X, describing\nthe personal data and the purpose of its processing.\n(3) The Data Fiduciary shall give the Data Principal the option to access the contents\nof the notice referred to in sub-sections (1) and (2) in English or any language specified in\nthe Eighth Schedule to the Constitution.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 5",
+    "rule_number": null,
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-6-subsections-1-to-5",
@@ -167,7 +260,18 @@
     "text": "6. (1) The consent given by the Data Principal shall be free, specific, informed,\nunconditional and unambiguous with a clear affirmative action, and shall signify an\nagreement to the processing of her personal data for the specified purpose and be limited to\nsuch personal data as is necessary for such specified purpose.\nIllustration.\nX, an individual, downloads Y, a telemedicine app. Y requests the consent of X for (i)\nthe processing of her personal data for making available telemedicine services, and (ii)\naccessing her mobile phone contact list, and X signifies her consent to both. Since phone\ncontact list is not necessary for making available telemedicine services, her consent shall be\nlimited to the processing of her personal data for making available telemedicine services.\n(2) Any part of consent referred in sub-section (1) which constitutes an infringement\nof the provisions of this Act or the rules made thereunder or any other law for the time being\nin force shall be invalid to the extent of such infringement.\nIllustration.\nX, an individual, buys an insurance policy using the mobile app or website of Y, an\ninsurer. She gives to Y her consent for (i) the processing of her personal data by Y for the\npurpose of issuing the policy, and (ii) waiving her right to file a complaint to the Data\nProtection Board of India. Part (ii) of the consent, relating to waiver of her right to file a\ncomplaint, shall be invalid.\n(3) Every request for consent under the provisions of this Act or the rules made\nthereunder shall be presented to the Data Principal in a clear and plain language, giving her\nthe option to access such request in English or any language specified in the Eighth\nSchedule to the Constitution and providing the contact details of a Data Protection Officer,\nwhere applicable, or of any other person authorised by the Data Fiduciary to respond to\nany communication from the Data Principal for the purpose of exercise of  her rights under\nthe provisions of this Act.\n(4) Where consent given by the Data Principal is the basis of processing of personal\ndata, such Data Principal shall have the right to withdraw her consent at any time, with the\nease of doing so being comparable to the ease with which such consent was given.\n(5) The consequences of the withdrawal referred to in sub-section (4) shall be borne\nby the Data Principal, and such withdrawal shall not affect the legality of processing of the\npersonal data based on consent before its withdrawal.\nIllustration.\nX, an individual, is the user of an online shopping app or website operated by Y, an\ne-commerce service provider. X consents to the processing of her personal data by Y for the\npurpose of fulfilling her supply order and places an order for supply of a good while making\npayment for the same. If X withdraws her consent, Y may stop enabling X to use the app or\nwebsite for placing orders, but may not stop the processing for supply of the goods already\nordered and paid for by X.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 6",
+    "rule_number": null,
+    "obligation_category": "C2",
+    "obligation_categories": [
+      "C2",
+      "C3"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-6-subsections-6-to-10",
@@ -184,7 +288,18 @@
     "text": "Section 6 (Continued):\n(6) If a Data Principal withdraws her consent to the processing of personal data under\nsub-section (5), the Data Fiduciary shall, within a reasonable time, cease and cause its Data\nProcessors to cease processing the personal data of such Data Principal unless such\nprocessing without her consent is required or authorised under the provisions of this Act\nor the rules made thereunder or any other law for the time being in force in India.\nConsent.\n\nIllustration.\nX, a telecom service provider, enters into a contract with Y, a Data Processor, for\nemailing telephone bills to the customers of X. Z, a customer of X, who had earlier given her\nconsent to X for the processing of her personal data for emailing of bills, downloads the\nmobile app of X and opts to receive bills only on the app. X shall itself cease, and shall\ncause Y to cease, the processing of the personal data of Z for emailing bills.\n(7) The Data Principal may give, manage, review or withdraw her consent to the Data\nFiduciary through a Consent Manager.\n(8) The Consent Manager shall be accountable to the Data Principal and shall act on\nher behalf in such manner and subject to such obligations as may be prescribed.\n(9) Every Consent Manager shall be registered with the Board in such manner and\nsubject to such technical, operational, financial and other conditions as may be prescribed.\n(10) Where a consent given by the Data Principal is the basis of processing of\npersonal data and a question arises in this regard in a proceeding, the Data Fiduciary shall\nbe obliged to prove that a notice was given by her to the Data Principal and consent was\ngiven by such Data Principal to the Data Fiduciary in accordance with the provisions of this\nAct and the rules made thereunder.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 6",
+    "rule_number": null,
+    "obligation_category": "C2",
+    "obligation_categories": [
+      "C2",
+      "C3"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-7",
@@ -201,7 +316,17 @@
     "text": "7. A Data Fiduciary may process personal data of a Data Principal for any of following\nuses, namely:—\n(a) for the specified purpose for which the Data Principal has voluntarily\nprovided her personal data to the Data Fiduciary, and in respect of which she has not\nindicated to the Data Fiduciary that she does not consent to the use of her personal\ndata.\nIllustrations.\n(I) X, an individual, makes a purchase at Y, a pharmacy. She voluntarily provides Y her\npersonal data and requests Y to acknowledge receipt of the payment made for the purchase\nby sending a message to her mobile phone. Y may process the personal data of X for the\npurpose of sending the receipt.\n(II) X, an individual, electronically messages Y, a real estate broker, requesting Y to\nhelp identify a suitable rented accommodation for her and shares her personal data for this\npurpose. Y may process her personal data to identify and intimate to her the details of\naccommodation available on rent. Subsequently, X informs Y that X no longer needs help\nfrom Y. Y shall cease to process the personal data of X;\n  (b) for the State and any of its instrumentalities to provide or issue to the Data\nPrincipal such subsidy, benefit, service, certificate, licence or permit as may be\nprescribed, where––\n(i) she has previously consented to the processing of her personal data\nby the State or any of its instrumentalities for any subsidy, benefit, service,\ncertificate, licence or permit; or\n(ii) such personal data is available in digital form in, or in non-digital form\nand digitised subsequently from, any database, register, book or other document\nwhich is maintained by the State or any of its instrumentalities and is notified\nby the Central Government,\nsubject to standards followed for processing being in accordance with the policy\nissued by the Central Government or any law for the time being in force for governance\nof personal data.\nIllustration.\nX. a pregnant woman, enrols herself on an app or website to avail of government’s\nmaternity benefits programme, while consenting to provide her personal data for the purpose\nof availing of such benefits. Government may process the personal data of X processing to\ndetermine her eligibility to receive any other prescribed benefit from the government;\nCertain\nlegitimate uses.\n\n(c) for the performance by the State or any of its instrumentalities of any function\nunder any law for the time being in force in India or in the interest of sovereignty and\nintegrity of India or security of the State;\n(d) for fulfilling any obligation under any law for the time being in force in India\non any person to disclose any information to the State or any of its instrumentalities,\nsubject to such processing being in accordance with the provisions regarding\ndisclosure of such information in any other law for the time being in force;\n(e) for compliance with any judgment or decree or order issued under any law\nfor the time being in force in India, or any judgment or order relating to claims of a\ncontractual or civil nature under any law for the time being in force outside India;\n(f) for responding to a medical emergency involving a threat to the life or\nimmediate threat to the health of the Data Principal or any other individual;\n (g) for taking measures to provide medical treatment or health services to any\nindividual during an epidemic, outbreak of disease, or any other threat to public\nhealth;\n(h) for taking measures to ensure safety of, or provide assistance or services to,\nany individual during any disaster, or any breakdown of public order.\nExplanation.—For the purposes of this clause, the expression “disaster” shall\nhave the same meaning as assigned to it in clause (d) of section 2 of the Disaster\nManagement Act, 2005; or\n(i) for the purposes of employment or those related to safeguarding the employer\nfrom loss or liability, such as prevention of corporate espionage, maintenance of\nconfidentiality of trade secrets, intellectual property, classified information or provision\nof any service or benefit sought by a Data Principal who is an employee.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 7",
+    "rule_number": null,
+    "obligation_category": "C3",
+    "obligation_categories": [
+      "C3"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-8-subsections-1-to-2",
@@ -218,7 +343,21 @@
     "text": "8. (1) A Data Fiduciary shall, irrespective of any agreement to the contrary or failure of\na Data Principal to carry out the duties provided under this Act, be responsible for complying\nwith the provisions of this Act and the rules made thereunder in respect of any processing\nundertaken by it or on its behalf by a Data Processor.\n(2) A Data Fiduciary may engage, appoint, use or otherwise involve a Data Processor\nto process personal data on its behalf for any activity related to offering of goods or\nservices to Data Principals only under a valid contract.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 8",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore. / Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore. / Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-8-subsections-3-to-4",
@@ -235,7 +374,21 @@
     "text": "Section 8 (Continued):\n(3) Where personal data processed by a Data Fiduciary is likely to be—\n(a) used to make a decision that affects the Data Principal; or\n(b) disclosed to another Data Fiduciary,\nthe Data Fiduciary processing such personal data shall ensure its completeness,\naccuracy and consistency.\n(4) A Data Fiduciary shall implement appropriate technical and organisational measures\nto ensure effective observance of  the provisions of this Act and the rules made thereunder.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 8",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore. / Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore. / Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-8-subsections-5-to-6",
@@ -252,7 +405,21 @@
     "text": "Section 8 (Continued):\n(5) A Data Fiduciary shall protect personal data in its possession or under its control,\nincluding in respect of any processing undertaken by it or on its behalf by a Data Processor,\nby taking reasonable security safeguards to prevent personal data breach.\n(6) In the event of a personal data breach, the Data Fiduciary shall give the Board and\neach affected Data Principal, intimation of such breach in such form and manner as may be\nprescribed.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 8",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore. / Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore. / Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-8-subsections-7-to-8",
@@ -269,7 +436,21 @@
     "text": "Section 8 (Continued):\n(7) A Data Fiduciary shall, unless retention is necessary for compliance with any law\nfor the time being in force,—\n(a) erase personal data, upon the Data Principal withdrawing her consent or as\nGeneral\nobligations of\nData\nFiduciary.\n53 of 2005.\n\nsoon as it is reasonable to assume that the specified purpose is no longer being\nserved, whichever is earlier; and\n(b) cause its Data Processor to erase any personal data that was made available\nby the Data Fiduciary for processing to such Data Processor.\nIllustrations.\n(I) X, an individual, registers herself on an online marketplace operated by Y, an\ne-commerce service provider. X gives her consent to Y for the processing of her personal\ndata for selling her used car. The online marketplace helps conclude the sale. Y shall no\nlonger retain her personal data.\n(II) X, an individual, decides to close her savings account with Y, a bank. Y is required\nby law applicable to banks to maintain the record of the identity of its clients for a period of\nten years beyond closing of accounts. Since retention is necessary for compliance with law,\nY shall retain X’s personal data for the said period.\n(8) The purpose referred to in clause (a) of sub-section (7) shall be deemed to no\nlonger be served, if the Data Principal does not––\n(a) approach the Data Fiduciary for the performance of the specified purpose;\nand\n(b) exercise any of her rights in relation to such processing,\nfor such time period as may be prescribed, and different time periods may be prescribed for\ndifferent classes of Data Fiduciaries and for different purposes.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 8",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore. / Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore. / Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-8-subsections-9-to-11",
@@ -286,7 +467,21 @@
     "text": "Section 8 (Continued):\n(9) A Data Fiduciary shall publish, in such manner as may be prescribed, the business\ncontact information of a Data Protection Officer, if applicable, or a person who is able to\nanswer on behalf of the Data Fiduciary, the questions, if any, raised by the Data Principal\nabout the processing of her personal data.\n(10) A Data Fiduciary shall establish an effective mechanism to redress the grievances\nof Data Principals.\n(11) For the purposes of this section, it is hereby clarified that a Data Principal shall be\nconsidered as not having approached the Data Fiduciary for the performance of the specified\npurpose, in any period during which she has not initiated contact with the Data Fiduciary\nfor such performance, in person or by way of communication in electronic or physical form.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 8",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore. / Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore. / Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-9",
@@ -303,7 +498,17 @@
     "text": "9. (1) The Data Fiduciary shall, before processing any personal data of a child or a\nperson with disability who has a lawful guardian obtain verifiable consent of the parent of\nsuch child or the lawful guardian, as the case may be, in such manner as may be prescribed.\nExplanation.—For the purpose of this sub-section, the expression “consent of the\nparent” includes the consent of lawful guardian, wherever applicable.\n(2) A Data Fiduciary shall not undertake such processing of personal data that is\nlikely to cause any detrimental effect on the well-being of a child.\n(3) A Data Fiduciary shall not undertake tracking or behavioural monitoring of children\nor targeted advertising directed at children.\n(4) The provisions of sub-sections (1) and (3) shall not be applicable to processing of\npersonal data of a child by such classes of Data Fiduciaries or for such purposes, and\nsubject to such conditions, as may be prescribed.\n(5) The Central Government may, if satisfied that a Data Fiduciary has ensured that its\nprocessing of personal data of children is done in a manner that is verifiably safe, notify for\nsuch processing by such Data Fiduciary the age above which that Data Fiduciary shall be\nexempt from the applicability of all or any of the obligations under sub-sections (1) and (3)\nin respect of processing by that Data Fiduciary as the notification may specify.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 9",
+    "rule_number": null,
+    "obligation_category": "C9",
+    "obligation_categories": [
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 3: Breach in observance of additional obligations in relation to children under section 9 — May extend to ₹200 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-10",
@@ -320,7 +525,19 @@
     "text": "10. (1) The Central Government may notify any Data Fiduciary or class of Data\nFiduciaries as Significant Data Fiduciary, on the basis of an assessment of such relevant\nfactors as it may determine, including—\nProcessing of\npersonal data\nof children.\nAdditional\nobligations of\nSignificant\nData\nFiduciary.\n\n(a) the volume and sensitivity of personal data processed;\n(b) risk to the rights of  Data Principal;\n(c) potential impact on the sovereignty and integrity of India;\n(d) risk to electoral democracy;\n(e) security of the State; and\n(f) public order.\n(2) The Significant Data Fiduciary shall—\n(a) appoint a Data Protection Officer who shall—\n(i) represent the Significant Data Fiduciary under the provisions of this\nAct;\n(ii) be based in India;\n(iii) be an individual responsible to the Board of Directors or similar\ngoverning body of the Significant Data Fiduciary; and\n(iv) be the point of contact for the grievance redressal mechanism under\nthe provisions of this Act;\n(b) appoint an independent data auditor to carry out data audit, who shall\nevaluate the compliance of the Significant Data Fiduciary in accordance with the\nprovisions of this Act; and\n(c) undertake the following other measures, namely:—\n(i) periodic Data Protection Impact Assessment, which shall be a process\ncomprising a description of the rights of Data Principals and the purpose of\nprocessing of their personal data, assessment and management of the risk to\nthe rights of the Data Principals, and such other matters regarding such process\nas may be prescribed;\n(ii) periodic audit; and\n(iii) such other measures, consistent with the provisions of this Act, as\nmay be prescribed.\nCHAPTER III\nRIGHTS AND DUTIES OF DATA PRINCIPAL",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 10",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C7",
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 4: Breach in observance of additional obligations of Significant Data Fiduciary under section 10 — May extend to ₹150 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "SIGNIFICANT_DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-11",
@@ -337,7 +554,17 @@
     "text": "11. (1) The Data Principal shall have the right to obtain from the Data Fiduciary to\nwhom she has previously given consent, including consent as referred to in clause (a) of\nsection 7 (hereinafter referred to as the said Data Fiduciary), for processing of personal\ndata, upon making to it a request in such manner as may be prescribed,—\n(a) a summary of personal data which is being processed by such Data Fiduciary\nand the processing activities undertaken by that Data Fiduciary with respect to such\npersonal data;\n(b) the identities of all other Data Fiduciaries and Data Processors with whom\nthe personal data has been shared by such Data Fiduciary, along with a description of\nthe personal data so shared; and\n(c) any other information related to the personal data of such Data Principal and\nits processing, as may be prescribed.\n(2) Nothing contained in clause (b) or clause (c) of sub-section (1) shall apply in\nrespect of the sharing of any personal data by the said Data Fiduciary with any other Data\nFiduciary authorised by law to obtain such personal data, where such sharing is pursuant\nRight to\naccess\ninformation\nabout personal\ndata.\n\nto a request made in writing by such other Data Fiduciary for the purpose of prevention or\ndetection or investigation of offences or cyber incidents, or for prosecution or punishment\nof offences.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 11",
+    "rule_number": null,
+    "obligation_category": "C8",
+    "obligation_categories": [
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-12",
@@ -354,7 +581,18 @@
     "text": "12. (1) A Data Principal shall have the right to correction, completion, updating and\nerasure of her personal data for the processing of which she has previously given consent,\nincluding consent as referred to in clause (a) of section 7, in accordance with any requirement\nor procedure under any law for the time being in force.\n(2) A Data Fiduciary shall, upon receiving a request for correction, completion or\nupdating from a Data Principal,—\n(a) correct the inaccurate or misleading personal data;\n(b) complete the incomplete personal data; and\n(c) update the personal data.\n(3) A Data Principal shall make a request in such manner as may be prescribed to the\nData Fiduciary for erasure of her personal data, and upon receipt of such a request, the Data\nFiduciary shall erase her personal data unless retention of the same is necessary for the\nspecified purpose or for compliance with any law for the time being in force.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 12",
+    "rule_number": null,
+    "obligation_category": "C6",
+    "obligation_categories": [
+      "C6",
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-13",
@@ -371,7 +609,18 @@
     "text": "13. (1) A Data Principal shall have the right to have readily available means of grievance\nredressal provided by a Data Fiduciary or Consent Manager in respect of any act or omission\nof such Data Fiduciary or Consent Manager regarding the performance of its obligations in\nrelation to the personal data of such Data Principal or the exercise of her rights under the\nprovisions of this Act and the rules made thereunder.\n(2) The Data Fiduciary or Consent Manager shall respond to any grievances referred\nto in sub-section (1) within such period as may be prescribed from the date of its receipt for\nall or any class of Data Fiduciaries.\n(3) The Data Principal shall exhaust the opportunity of redressing her grievance\nunder this section before approaching the Board.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 13",
+    "rule_number": null,
+    "obligation_category": "C7",
+    "obligation_categories": [
+      "C7",
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-14",
@@ -388,7 +637,17 @@
     "text": "14. (1) A Data Principal shall have the right to nominate, in such manner as may be\nprescribed, any other individual, who shall, in the event of death or incapacity of the Data\nPrincipal, exercise the rights of the Data Principal in accordance with the provisions of this\nAct and the rules made thereunder.\n(2) For the purposes of this section, the expression “incapacity” means inability to\nexercise the rights of the Data Principal under the provisions of this Act or the rules made\nthereunder due to unsoundness of mind or infirmity of  body.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 14",
+    "rule_number": null,
+    "obligation_category": "C8",
+    "obligation_categories": [
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-15",
@@ -405,7 +664,15 @@
     "text": "15.  A Data Principal shall perform the following duties, namely:—\n(a) comply with the provisions of all applicable laws for the time being in force\nwhile exercising rights under the provisions of this Act;\n(b) to ensure not to impersonate another person while providing her personal\ndata for a specified purpose;\n(c) to ensure not to suppress any material information while providing her\npersonal data for any document, unique identifier, proof of identity or proof of address\nissued by the State or any of its instrumentalities;\n(d) to ensure not to register a false or frivolous grievance or complaint with a\nData Fiduciary or the Board; and\n(e) to furnish only such information as is verifiably authentic, while exercising\nthe right to correction or erasure under the provisions of this Act or the rules made\nthereunder.\nRight to\ncorrection and\nerasure of\npersonal data.\nRight of\ngrievance\nredressal.\nRight to\nnominate.\nDuties of Data\nPrincipal.\n\nCHAPTER IV\nSPECIAL PROVISIONS",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 15",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Schedule Item 5: Breach in observance of duties of Data Principal under section 15 — May extend to ₹10,000.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PRINCIPAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-16",
@@ -422,7 +689,17 @@
     "text": "16. (1) The Central Government may, by notification, restrict the transfer of personal\ndata by a Data Fiduciary for processing to such country or territory outside India as may be\nso notified.\n(2) Nothing contained in this section shall restrict the applicability of any law for the\ntime being in force in India that provides for a higher degree of protection for or restriction\non transfer of personal data by a Data Fiduciary outside India in relation to any personal\ndata or Data Fiduciary or class thereof.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 16",
+    "rule_number": null,
+    "obligation_category": "C10",
+    "obligation_categories": [
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-2023-section-17",
@@ -439,7 +716,15 @@
     "text": "17. (1) The provisions of Chapter II, except sub-sections (1) and (5) of section 8, and\nthose of Chapter III and section 16 shall not apply where—\n(a) the processing of personal data is necessary for enforcing any legal right or\nclaim;\n(b) the processing of personal data by any court or tribunal or any other body\nin India which is entrusted by law with the performance of any judicial or quasi-judicial\nor regulatory or supervisory function, where such processing is necessary for the\nperformance of such function;\n(c) personal data is processed in the interest of prevention, detection,\ninvestigation or prosecution of any offence or contravention of any law for the time\nbeing in force in India;\n(d) personal data of Data Principals not within the territory of India is processed\npursuant to any contract entered into with any person outside the territory of India\nby any person based in India;\n(e) the processing is necessary for a scheme of compromise or arrangement or\nmerger or amalgamation of two or more companies or a reconstruction by way of\ndemerger or otherwise of a company, or transfer of undertaking of one or more company\nto another company, or involving division of one or more companies, approved by a\ncourt or tribunal or other authority competent to do so by any law for the time being\nin force; and\n(f) the processing is for the purpose of ascertaining the financial information\nand assets and liabilities of any person who has defaulted in payment due on account\nof a loan or advance taken from a financial institution, subject to such processing\nbeing in accordance with the provisions regarding disclosure of information or data\nin any other law for the time being in force.\nExplanation.—For the purposes of this clause, the expressions “default” and\n“financial institution” shall have the meanings respectively assigned to them in\nsub-sections (12) and (14) of section 3 of the Insolvency and Bankruptcy Code, 2016.\nIllustration.\nX, an individual, takes a loan from Y, a bank.  X defaults in paying her monthly loan\nrepayment instalment on the date on which it falls due. Y may process the personal data of\nX for ascertaining her financial information and assets and liabilities.\n(2) The provisions of this Act shall not apply in respect of the processing of personal\ndata—\n(a) by such instrumentality of the State as the Central Government may notify,\nin the interests of sovereignty and integrity of India, security of the State, friendly\nrelations with foreign States, maintenance of public order or preventing incitement to\nany cognizable offence relating to any of these, and the processing by the Central\nGovernment of any personal data that such instrumentality may furnish to it; and\nProcessing of\npersonal data\noutside India.\nExemptions.\n31 of 2016.\n\n(b) necessary for research, archiving or statistical purposes if the personal data\nis not to be used to take any decision specific to a Data Principal and such processing\nis carried on in accordance with such standards as may be prescribed.\n(3) The Central Government may, having regard to the volume and nature of personal\ndata processed, notify certain Data Fiduciaries or class of Data Fiduciaries, including startups,\nas Data Fiduciaries to whom the provisions of section 5, sub-sections (3) and (7) of\nsection 8 and sections 10 and 11 shall not apply.\nExplanation.—For the purposes of this sub-section, the term “startup” means a\nprivate limited company or a partnership firm or a limited liability partnership incorporated\nin India, which is eligible to be and is recognised as such in accordance with the criteria and\nprocess notified by the department to which matters relating to startups are allocated in the\nCentral Government.\n(4)  In respect of processing by the State or any instrumentality of the State, the\nprovisions of sub-section (7) of section 8 and sub-section (3) of section 12 and, where such\nprocessing is for a purpose that does not include making of a decision that affects the Data\nPrincipal, sub-section (2) of section 12 shall not apply.\n(5) The Central Government may, before expiry of five years from the date of\ncommencement of this Act, by notification, declare that any provision of this Act shall not\napply to such Data Fiduciary or classes of Data Fiduciaries for such period as may be\nspecified in the notification.\nCHAPTER V\nDATA PROTECTION BOARD OF INDIA",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 17",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-18",
@@ -456,7 +741,15 @@
     "text": "18. (1) With effect from such date as the Central Government may, by notification,\nappoint, there shall be established, for the purposes of this Act, a Board to be called the\nData Protection Board of India.\n(2) The Board shall be a body corporate by the name aforesaid, having perpetual\nsuccession and a common seal, with power, subject to the provisions of this Act, to acquire,\nhold and dispose of property, both movable and immovable, and to contract and shall, by\nthe said name, sue or be sued.\n(3) The headquarters of the Board shall be at such place as the Central Government\nmay notify.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 18",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-19",
@@ -473,7 +766,15 @@
     "text": "19. (1) The Board shall consist of a Chairperson and such number of other Members\nas the Central Government may notify.\n(2) The Chairperson and other Members shall be appointed by the Central Government\nin such manner as may be prescribed.\n(3) The Chairperson and other Members shall be a person of ability, integrity and\nstanding who possesses special knowledge or practical experience in the fields of data\ngovernance, administration or implementation of laws related to social or consumer\nprotection, dispute resolution, information and communication technology, digital economy,\nlaw, regulation or techno-regulation, or in any other field which in the opinion of the Central\nGovernment may be useful to the Board, and at least one among them shall be an expert in\nthe field of law.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 19",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-20",
@@ -490,7 +791,15 @@
     "text": "20. (1) The salary, allowances and other terms and conditions of service of the\nChairperson and other Members shall be such as may be prescribed, and shall not be varied\nto their disadvantage after their appointment.\n(2) The Chairperson and other Members shall hold office for a term of two years and\nshall be eligible for re-appointment.\nEstablishment\nof Board.\nComposition\nand\nqualifications\nfor\nappointment\nof\nChairperson\nand Members.\nSalary,\nallowances\npayable to and\nterm of\noffice.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 20",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-21",
@@ -507,7 +816,15 @@
     "text": "21. (1) A person shall be disqualified for being appointed and continued as the\nChairperson or a Member, if she—\n(a) has been adjudged as an insolvent;\n(b) has been convicted of an offence, which in the opinion of the Central\nGovernment, involves moral turpitude;\n(c) has become physically or mentally incapable of acting as a Member;\n(d) has acquired such financial or other interest, as is likely to affect prejudicially\nher functions as a Member; or\n(e) has so abused her position as to render her continuance in office prejudicial\nto the public interest.\n(2) The Chairperson or Member shall not be removed from her office by the Central\nGovernment unless she has been given an opportunity of being heard in the matter.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 21",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-22",
@@ -524,7 +841,15 @@
     "text": "22. (1) The Chairperson or any other Member may give notice in writing to the Central\nGovernment of resigning from her office, and such resignation shall be effective from the\ndate on which the Central Government permits her to relinquish office, or upon expiry of a\nperiod of three months from the date of receipt of such notice, or upon a duly appointed\nsuccessor entering upon her office, or upon the expiry of the term of her office, whichever\nis earliest.\n(2) A vacancy caused by the resignation or removal or death of the Chairperson or\nany other Member, or otherwise, shall be filled by fresh appointment in accordance with the\nprovisions of this Act.\n(3) The Chairperson and any other Member shall not, for a period of one year from the\ndate on which they cease to hold such office, except with the previous approval of the\nCentral Government, accept any employment, and shall also disclose to the Central\nGovernment any subsequent acceptance of employment with any Data Fiduciary against\nwhom proceedings were initiated by or before such Chairperson or other Member.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 22",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-23",
@@ -541,7 +866,15 @@
     "text": "23. (1) The Board shall observe such procedure in regard to the holding of and\ntransaction of business at its meetings, including by digital means, and authenticate its\norders, directions and instruments in such manner as may be prescribed.\n(2) No act or proceeding of the Board shall be invalid merely by reason of—\n(a) any vacancy in or any defect in the constitution of the Board;\n(b) any defect in the appointment of a person acting as the Chairperson or other\nMember of the Board; or\n(c) any irregularity in the procedure of the Board, which does not affect the\nmerits of the case.\n(3) When the Chairperson is unable to discharge her functions owing to absence,\nillness or any other cause, the senior-most Member shall discharge the functions of the\nChairperson until the date on which the Chairperson resumes her duties.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 23",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-24",
@@ -558,7 +891,15 @@
     "text": "24. The Board may, with previous approval of the Central Government, appoint such\nofficers and employees as it may deem necessary for the efficient discharge of its functions\nunder the provisions of this Act, on such terms and conditions of appointment and service\nas may be prescribed.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 24",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-25",
@@ -575,7 +916,15 @@
     "text": "25. The Chairperson, Members, officers and employees of the Board shall be deemed,\nwhen acting or purporting to act in pursuance of provisions of this Act, to be public\nservants within the meaning of section 21 of the Indian Penal Code.\nDisqualifications\nfor\nappointment\nand\ncontinuation\nas\nChairperson\nand Members\nof Board.\nResignation\nby Members\nand filling of\nvacancy.\nProceedings\nof Board.\nOfficers and\nemployees of\nBoard.\nMembers and\nofficers to be\npublic\nservants.\n45 of 1860.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 25",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-26",
@@ -592,7 +941,15 @@
     "text": "26. The Chairperson shall exercise the following powers, namely:—\n(a) general superintendence and giving direction in respect of all administrative\nmatters of the Board;\n(b) authorise any officer of the Board to scrutinise any intimation, complaint,\nreference or correspondence addressed to the Board; and\n(c) authorise performance of any of the functions of the Board and conduct any\nof its proceedings, by an individual Member or groups of Members and to allocate\nproceedings among them.\nCHAPTER VI\nPOWERS, FUNCTIONS AND PROCEDURE TO BE FOLLOWED BY BOARD",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 26",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-27",
@@ -609,7 +966,15 @@
     "text": "27. (1) The Board shall exercise and perform the following powers and functions,\nnamely:—\n(a) on receipt of an intimation of personal data breach under sub-section (6) of\nsection 8, to direct any urgent remedial or mitigation measures in the event of a\npersonal data breach, and to inquire into such personal data breach and impose\npenalty as provided in this Act;\n(b) on a complaint made by a Data Principal in respect of a personal data breach\nor a breach in observance by a Data Fiduciary of its obligations in relation to her\npersonal data or the exercise of her rights under the provisions of this Act, or on a\nreference made to it by the Central Government or a State Government, or in compliance\nof the directions of any court, to inquire into such breach and impose penalty as\nprovided in this Act;\n(c) on a complaint made by a Data Principal in respect of a breach in observance\nby a Consent Manager of its obligations in relation to her personal data, to inquire\ninto such breach and impose penalty as provided in this Act;\n(d) on receipt of an intimation of breach of any condition of registration of a\nConsent Manager, to inquire into such breach and impose penalty as provided in this\nAct; and\n(e) on a reference made by the Central Government in respect of the breach in\nobservance of the provisions of sub-section (2) of section 37 by an intermediary, to\ninquire into such breach and impose penalty as provided in this Act.\n(2) The Board may, for the effective discharge of its functions under the provisions of\nthis Act, after giving the person concerned an opportunity of being heard and after recording\nreasons in writing, issue such directions as it may consider necessary to such person, who\nshall be bound to comply with the same.\n(3) The Board may, on a representation made to it by a person affected by a direction\nissued under sub-section (1) or sub-section (2), or on a reference made by the Central\nGovernment, modify, suspend, withdraw or cancel such direction and, while doing so,\nimpose such conditions as it may deem fit, subject to which the modification, suspension,\nwithdrawal or cancellation shall have effect.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 27",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-28",
@@ -626,7 +991,15 @@
     "text": "28. (1) The Board shall function as an independent body and shall, as far as practicable,\nfunction as a digital office, with the receipt of complaints and the allocation, hearing and\npronouncement of decisions in respect of the same being digital by design, and adopt such\ntechno-legal measures as may be prescribed.\n(2) The Board may, on receipt of an intimation or complaint or reference or directions\nas referred to in sub-section (1) of section 27, take action in accordance with the provisions\nof this Act and the rules made thereunder.\nPowers of\nChairperson.\nPowers and\nfunctions of\nBoard.\nProcedure to\nbe followed by\nBoard.\n\n(3) The Board shall determine whether there are sufficient grounds to proceed with an\ninquiry.\n(4) In case the Board determines that there are insufficient grounds, it may, for reasons\nto be recorded in writing, close the proceedings.\n(5) In case the Board determines that there are sufficient grounds to proceed with\ninquiry, it may, for reasons to be recorded in writing, inquire into the affairs of any person for\nascertaining whether such person is complying with or has complied with the provisions of\nthis Act.\n(6) The Board shall conduct such inquiry following the principles of natural justice\nand shall record reasons for its actions during the course of such inquiry.\n(7) For the purposes of discharging its functions under this Act, the Board shall have\nthe same powers as are vested in a civil court under the Code of Civil Procedure, 1908, in\nrespect of matters relating to—\n(a) summoning and enforcing the attendance of any person and examining her\non oath;\n(b) receiving evidence of affidavit requiring the discovery and production of\ndocuments;\n(c) inspecting any data, book, document, register, books of account or any\nother document; and\n(d) such other matters as may be prescribed.\n(8) The Board or its officers shall not prevent access to any premises or take into\ncustody any equipment or any item that may adversely affect the day-to-day functioning of\na person.\n(9) The Board may require the services of any police officer or any officer of the\nCentral Government or a State Government to assist it for the purposes of this section and\nit shall be the duty of every such officer to comply with such requisition.\n(10) During the course of the inquiry, if the Board considers it necessary, it may for\nreasons to be recorded in writing, issue interim orders after giving the person concerned an\nopportunity of being heard.\n(11) On completion of the inquiry and after giving the person concerned an opportunity\nof being heard, the Board may for reasons to be recorded in writing, either close the\nproceedings or proceed in accordance with section 33.\n(12) At any stage after receipt of a complaint, if the Board is of the opinion that the\ncomplaint is false or frivolous, it may issue a warning or impose costs on the complainant.\nCHAPTER VII\nAPPEAL AND ALTERNATE DISPUTE RESOLUTION",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 28",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-29",
@@ -643,7 +1016,15 @@
     "text": "29. (1) Any person aggrieved by an order or direction made by the Board under this\nAct may prefer an appeal before the Appellate Tribunal.\n(2) Every appeal under sub-section (1) shall be filed within a period of sixty days from\nthe date of receipt of the order or direction appealed against and it shall be in such form and\nmanner and shall be accompanied by such fee as may be prescribed.\n(3) The Appellate Tribunal may entertain an appeal after the expiry of the period\nspecified in sub-section (2), if it is satisfied that there was sufficient cause for not preferring\nthe appeal within that period.\n(4) On receipt of an appeal under sub-section (1), the Appellate Tribunal may, after\ngiving the parties to the appeal, an opportunity of being heard, pass such orders thereon as\nit thinks fit, confirming, modifying or setting aside the order appealed against.\nAppeal to\nAppellate\nTribunal.\n5 of 1908.\n\n(5) The Appellate Tribunal shall send a copy of every order made by it to the Board\nand to the parties to the appeal.\n(6) The appeal filed before the Appellate Tribunal under sub-section (1) shall be dealt\nwith by it as expeditiously as possible and endeavour shall be made by it to dispose of the\nappeal finally within six months from the date on which the appeal is presented to it.\n(7) Where any appeal under sub-section (6) could not be disposed of within the\nperiod of six months, the Appellate Tribunal shall record its reasons in writing for not\ndisposing of the appeal within that period.\n(8) Without prejudice to the provisions of section 14A and section 16 of the Telecom\nRegulatory Authority of India Act, 1997, the Appellate Tribunal shall deal with an appeal\nunder this section in accordance with such procedure as may be prescribed.\n(9) Where an appeal is filed against the orders of the Appellate Tribunal under this\nAct, the provisions of section 18 of the Telecom Regulatory Authority of India Act, 1997\nshall apply.\n(10) In respect of appeals filed under the provisions of this Act, the Appellate Tribunal\nshall, as far as practicable, function as a digital office, with the receipt of appeal, hearing and\npronouncement of decisions in respect of the same being digital by design.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 29",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-30",
@@ -660,7 +1041,15 @@
     "text": "30. (1) An order passed by the Appellate Tribunal under this Act shall be executable\nby it as a decree of civil court, and for this purpose, the Appellate Tribunal shall have all the\npowers of a civil court.\n(2) Notwithstanding anything contained in sub-section (1), the Appellate Tribunal\nmay transmit any order made by it to a civil court having local jurisdiction and such civil\ncourt shall execute the order as if it were a decree made by that court.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 30",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-31",
@@ -677,7 +1066,15 @@
     "text": "31. If the Board is of the opinion that any complaint may be resolved by mediation, it\nmay direct the parties concerned to attempt resolution of the dispute through such mediation\nby such mediator as the parties may mutually agree upon, or as provided for under any law\nfor the time being in force in India.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 31",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-32",
@@ -694,7 +1091,15 @@
     "text": "32. (1) The Board may accept a voluntary undertaking in respect of any matter related\nto observance of the provisions of this Act from any person at any stage of a proceeding\nunder section 28.\n(2) The voluntary undertaking referred to in sub-section (1) may include an\nundertaking to take such action within such time as may be determined by the Board, or\nrefrain from taking such action, and or publicising such undertaking.\n(3) The Board may, after accepting the voluntary undertaking and with the consent of\nthe person who gave the voluntary undertaking vary the terms included in the voluntary\nundertaking.\n(4) The acceptance of the voluntary undertaking by the Board shall constitute a bar\non proceedings under the provisions of this Act as regards the contents of the voluntary\nundertaking, except in cases covered by sub-section (5).\n(5) Where a person fails to adhere to any term of the voluntary undertaking accepted\nby the Board, such breach shall be deemed to be breach of the provisions of this Act and\nthe Board may, after giving such person an opportunity of being heard, proceed in accordance\nwith the provisions of section 33.\nCHAPTER VIII\nPENALTIES AND ADJUDICATION",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 32",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-33",
@@ -711,7 +1116,15 @@
     "text": "33. (1) If the Board determines on conclusion of an inquiry that breach of the provisions\nof this Act or the rules made thereunder by a person is significant, it may, after giving the\nOrders passed\nby Appellate\nTribunal to be\nexecutable as\ndecree.\nAlternate\ndispute\nresolution.\nVoluntary\nundertaking.\nPenalties.\n24 of 1997.\n24 of 1997.\n\nperson an opportunity of being heard, impose such monetary penalty specified in the\nSchedule.\n(2) While determining the amount of monetary penalty to be imposed under\nsub-section (1), the Board shall have regard to the following matters, namely:—\n(a) the nature, gravity and duration of the breach;\n(b) the type and nature of the personal data affected by the breach;\n(c) repetitive nature of the breach;\n(d) whether the person, as a result of the breach, has realised a gain or avoided\nany loss;\n(e) whether the person took any action to mitigate the effects and consequences\nof the breach, and the timeliness and effectiveness of such action;\n(f) whether the monetary penalty to be imposed is proportionate and effective,\nhaving regard to the need to secure observance of and deter breach of the provisions\nof this Act; and\n(g) the likely impact of the imposition of the monetary penalty on the person.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 33",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-34",
@@ -728,7 +1141,15 @@
     "text": "34. All sums realised by way of penalties imposed by the Board under this Act, shall\nbe credited to the Consolidated Fund of India.\nCHAPTER IX\nMISCELLANEOUS",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 34",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-act-2023-section-35",
@@ -745,7 +1166,15 @@
     "text": "35. No suit, prosecution or other legal proceedings shall lie against the Central\nGovernment, the Board, its Chairperson and any Member, officer or employee thereof for\nanything which is done or intended to be done in good faith under the provisions of this\nAct or the rules made thereunder.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 35",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-36",
@@ -762,7 +1191,15 @@
     "text": "36. The Central Government may, for the purposes of this Act, require the Board and\nany Data Fiduciary or intermediary to furnish such information as it may call for.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 36",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-37",
@@ -779,7 +1216,15 @@
     "text": "37. (1) The Central Government or any of its officers specially authorised by it in this\nbehalf may, upon receipt of a reference in writing from the Board that—\n(a) intimates the imposition of monetary penalty by the Board on a Data Fiduciary\nin two or more instances; and\n(b) advises, in the interests of the general public, the blocking for access by the\npublic to any information generated, transmitted, received, stored or hosted, in any\ncomputer resource that enables such Data Fiduciary to carry on any activity relating\nto offering of goods or services to Data Principals within the territory of India,\nafter giving an opportunity of being heard to that Data Fiduciary, on being satisfied that it\nis necessary or expedient so to do, in the interests of the general public, for reasons to be\nrecorded in writing, by order, direct any agency of the Central Government or any intermediary\nto block for access by the public or cause to be blocked for access by the public any such\ninformation.\n(2) Every intermediary who receives a direction issued under sub-section (1) shall be\nbound to comply with the same.\n(3) For the purposes of this section, the expressions “computer resource”,\n“information” and “intermediary” shall have the meanings respectively assigned to them in\nthe Information Technology Act, 2000.\nCrediting sums\nrealised by\nway of\npenalties to\nConsolidated\nFund of India.\nProtection of\naction taken\nin good faith.\nPower to call\nfor\ninformation.\nPower of\nCentral\nGovernment\nto issue\ndirections.\n21 of 2000.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 37",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-38",
@@ -796,7 +1241,15 @@
     "text": "38. (1) The provisions of this Act shall be in addition to and not in derogation of any\nother law for the time being in force.\n(2) In the event of any conflict between a provision of this Act and a provision of any\nother law for the time being in force, the provision of this Act shall prevail to the extent of\nsuch conflict.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 38",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-39",
@@ -813,7 +1266,15 @@
     "text": "39. No civil court shall have the jurisdiction to entertain any suit or proceeding in\nrespect of any matter for which the Board is empowered under the provisions of this Act\nand no injunction shall be granted by any court or other authority in respect of any action\ntaken or to be taken in pursuance of any power under the provisions of this Act.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 39",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-40",
@@ -830,7 +1291,15 @@
     "text": "40. (1) The Central Government may, by notification, and subject to the condition of\nprevious publication, make rules not inconsistent with the provisions of this Act, to carry\nout the purposes of this Act.\n(2) In particular and without prejudice to the generality of the foregoing power, such\nrules may provide for all or any of the following matters, namely:—\n(a) the manner in which the notice given by the Data Fiduciary to a Data Principal\nshall inform her, under sub-section (1) of section 5;\n(b) the manner in which the notice given by the Data Fiduciary to a Data Principal\nshall inform her, under sub-section (2) of section 5;\n(c) the manner of accountability and the obligations of Consent Manager under\nsub-section (8) of section 6;\n(d) the manner of registration of Consent Manager and the conditions relating\nthereto, under sub-section (9) of section 6;\n(e) the subsidy, benefit, service, certificate, licence or permit for the provision or\nissuance of which, personal data may be processed under clause (b) of section 7;\n(f) the form and manner of intimation of personal data breach to the Board under\nsub-section (6) of section 8;\n(g) the time period for the specified purpose to be deemed as no longer being\nserved, under sub-section (8) of section 8;\n(h) the manner of publishing the business contact information of a Data\nProtection Officer under sub-section (9) of section 8;\n(i) the manner of obtaining verifiable consent under sub-section (1) of\nsection 9;\n(j) the classes of Data Fiduciaries, the purposes of processing of personal data\nof a child and the conditions relating thereto, under sub-section (4) of section 9;\n(k) the other matters comprising the process of Data Protection Impact\nAssessment under sub-clause (i) of clause (c) of sub-section (2) of section 10;\n(l) the other measures that the Significant Data Fiduciary shall undertake under\nsub-clause (iii) of clause (c) of sub-section (2) of section 10;\n(m) the manner in which a Data Principal shall make a request to the Data\nFiduciary to obtain information and any other information related to the personal data\nof such Data Principal and its processing, under sub-section (1) of section 11;\n(n) the manner in which a Data Principal shall make a request to the Data\nFiduciary for erasure of her personal data under sub-section (3) of section 12;\n(o) the period within which the Data Fiduciary shall respond to any grievances\nunder sub-section (2) of section 13;\nConsistency\nwith other\nlaws.\nBar of\njurisdiction.\nPower to\nmake rules.\n\n(p) the manner of nomination of any other individual by the Data Principal\nunder sub-section (1) of section 14;\n(q) the standards for processing the personal data for exemption under clause (b)\nof sub-section (2) of section 17;\n(r) the manner of appointment of the Chairperson and other Members of the\nBoard under sub-section (2) of section 19;\n(s) the salary, allowances and other terms and conditions of services of the\nChairperson and other Members of the Board under sub-section (1) of section 20;\n(t) the manner of authentication of orders, directions and instruments under\nsub-section (1) of section 23;\n(u) the terms and conditions of appointment and service of officers and\nemployees of the Board under section 24;\n(v) the techno-legal measures to be adopted by the Board under sub-section (1)\nof section 28;\n(w) the other matters under clause (d) of sub-section (7) of section 28;\n(x) the form, manner and fee for filing an appeal under sub-section (2) of\nsection 29;\n(y) the procedure for dealing an appeal under sub-section (8) of section 29;\n(z) any other matter which is to be or may be prescribed or in respect of which\nprovision is to be, or may be, made by rules.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 40",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-41",
@@ -847,7 +1316,15 @@
     "text": "41. Every rule made and every notification issued under section 16 and section 42 of\nthis Act shall be laid, as soon as may be after it is made, before each House of Parliament,\nwhile it is in session, for a total period of thirty days which may be comprised in one session\nor in two or more successive sessions, and if before the expiry of the session immediately\nfollowing the session or the successive sessions aforesaid, both Houses agree in making\nany modification in the rule or notification or both Houses agree that the rule or notification\nshould not be made or issued, the rule or notification shall thereafter have effect only in\nsuch modified form or be of no effect, as the case may be; so, however, that any such\nmodification or annulment shall be without prejudice to the validity of anything previously\ndone under that rule or notification.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 41",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-42",
@@ -864,7 +1341,15 @@
     "text": "42. (1) The Central Government may, by notification, amend the Schedule, subject to\nthe restriction that no such notification shall have the effect of increasing any penalty\nspecified therein to more than twice of what was specified in it when this Act was originally\nenacted.\n(2) Any amendment notified under sub-section (1) shall have effect as if enacted in\nthis Act and shall come into force on the date of the notification.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 42",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-43",
@@ -881,7 +1366,15 @@
     "text": "43. (1) If any difficulty arises in giving effect to the provisions of this Act, the Central\nGovernment may, by order published in the Official Gazette, make such provisions not\ninconsistent with the provisions of this Act as may appear to it to be necessary or expedient\nfor removing the difficulty.\n(2) No order as referred to in sub-section (1) shall be made after the expiry of three\nyears from the date of commencement of this Act.\n(3) Every order made under this section shall be laid, as soon as may be after it is\nmade, before each House of Parliament.",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 43",
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-act-2023-section-44",
@@ -898,7 +1391,19 @@
     "text": "44. (1) In section 14 of the Telecom Regulatory Authority of India Act, 1997, in\nclause (c), for sub-clauses (i) and (ii), the following sub-clauses shall be substituted,\nnamely:—\nLaying of\nrules and\ncertain\nnotifications.\nPower to\namend\nSchedule.\nPower to\nremove\ndifficulties.\nAmendments\nto certain\nActs.\n24 of 1997.\n\n“(i) the Appellate Tribunal under the Information Technology Act, 2000;\n(ii) the Appellate Tribunal under the Airports Economic Regulatory Authority\nof  India Act, 2008; and\n(iii) the Appellate Tribunal under the Digital Personal Data Protection\nAct, 2023.”.\n(2) The Information Technology Act, 2000 shall be amended in the following manner,\nnamely:—\n(a) section 43A shall be omitted;\n(b) in section 81, in the proviso, after the words and figures “the Patents\nAct, 1970”, the words and figures “or the Digital Personal Data Protection Act, 2023”\nshall be inserted; and\n(c) in section 87, in sub-section (2), clause (ob) shall be omitted.\n(3) In section 8 of the Right to Information Act, 2005, in sub-section (1), for clause (j),\nthe following clause shall be substituted, namely:—\n“(j) information which relates to personal information;”.\n21 of 2000.\n27 of 2008.\n21 of 2000.\n39 of 1970.\n22 of 2005.\n\nBreach of provisions of  this Act or rules made thereunder\n(2)\nBreach in observing the obligation of Data Fiduciary to\ntake reasonable security safeguards to prevent personal\ndata breach under sub-section (5) of section 8.\nBreach in observing the obligation to give the Board or\naffected Data Principal notice of a personal data breach\nunder sub-section (6) of section 8.\nBreach in observance of additional obligations in relation\nto children under section 9.\nBreach in observance of additional obligations of\nSignificant Data Fiduciary under section 10.\nBreach in observance of the duties under section 15.\nBreach of any term of voluntary undertaking accepted by\nthe Board under section 32.\nBreach of any other provision of this Act or the rules\nmade thereunder.\nSl. No.\n(1)\n1.\n2.\n3.\n4.\n5.\n6.\n7.\nPenalty\n(3)\nMay extend to two\nhundred and fifty\ncrore rupees.\nMay extend to two\nhundred \ncrore\nrupees.\nMay extend to two\nhundred \ncrore\nrupees.\nMay extend to one\nhundred and fifty\ncrore rupees.\nMay extend to ten\nthousand rupees.\nUp to the extent\napplicable for the\nbreach in respect\nof \nwhich \nthe\nproceedings under\nsection 28 were\ninstituted.\nMay extend to fifty\ncrore rupees.\nTHE  SCHEDULE\n[See section 33 (1)]\n————\nDR. REETA VASISHTA,\n   Secretary to the Govt. of  India.\nUPLOADED BY THE MANAGER, GOVERNMENT OF INDIA PRESS, MINTO ROAD,  NEW DELHI–110002\nAND PUBLISHED BY THE CONTROLLER OF  PUBLICATIONS, DELHI–110054.\nMGIPMRND—288GI—11-08-2023.\nKshitiz \nMohan\nDigitally signed \nby Kshitiz Mohan \nDate: 2023.08.12 \n02:14:35 +05'30'",
     "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
     "publication_date": "2023-08-11",
-    "version": "2023-Gazette-No-22"
+    "version": "2023-Gazette-No-22",
+    "source_document": "dpdp-act-2023",
+    "section_number": "Section 44",
+    "rule_number": null,
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C5",
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore. | Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore. | Schedule Item 3: Breach in observance of additional obligations in relation to children under section 9 — May extend to ₹200 crore. | Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "Act No. 22 of 2023, Ministry of Law and Justice, Gazette of India Extraordinary, Part II—Section 1, dated 11 August 2023",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-1",
@@ -915,7 +1420,15 @@
     "text": "1. Short title and commencement. — (1) These rules may be called the Digital Personal Data Protection \nRules, 2025.  \n(2) Rules 1, 2 and 17 to 21 shall come into force on the date of their publication in the Official Gazette. \n(3) Rule 4 shall come into force one year after the date of publication of this Gazette. \n(4) Rules 3, 5 to 16, 22 and 23 shall come into force eighteen months after the date of publication \nof this Gazette.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 1",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-2",
@@ -932,7 +1445,19 @@
     "text": "2. Definitions. — (1) In these rules, unless the context otherwise requires, – \n(a) “Act” means the Digital Personal Data Protection Act, 2023 (22 of 2023); \n(b) “techno-legal measures” means as referred to under rules 20 and 22; \n(c) “user account” means the online account registered by the Data Principal with the Data Fiduciary, and \nincludes any profiles, pages, handles, email address, mobile number and other similar presences by means \nof which such Data Principal is able to access the services of such Data Fiduciary; and \n(d) “verifiable consent” means a consent as specified in rule 10 or 11. \n(2) The words and expressions used in these rules and not defined, but defined in the Act, shall have the \nsame meanings respectively assigned to them in the Act.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 2",
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1",
+      "C2",
+      "C4"
+    ],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-3",
@@ -949,7 +1474,17 @@
     "text": "3. Notice given by Data Fiduciary to Data Principal. —The notice given by the Data Fiduciary to the \nData Principal shall— \n(a) be presented and be understandable independently of any other information that has been, is or may \nbe made available by such Data Fiduciary; \n(b) give, in clear and plain language, a fair account of the details necessary to enable the Data Principal \nto give specific and informed consent for the processing of her personal data, which shall include, \nat the minimum, — \n(i) an itemised description of such personal data; and \n(ii) the specified purpose or purposes of, and specific description of the goods or services to be \nprovided or uses to be enabled by, such processing; and \n(c) give, the particular communication link for accessing the website or app, or both, of such Data \nFiduciary, and a description of other means, if any, using which such Data Principal may— \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \n(i) \nwithdraw her consent, with the ease of doing so being comparable to that with which \nsuch consent was given; \n(ii) \nexercise her rights under the Act; and \n(iii) make a complaint to the Board.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 5",
+    "rule_number": "Rule 3",
+    "obligation_category": "C1",
+    "obligation_categories": [
+      "C1"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-4",
@@ -966,7 +1501,17 @@
     "text": "4. Registration and obligations of Consent Manager. — (1) A person who fulfils the conditions for \nregistration of Consent Managers set out in Part A of First Schedule may apply to the Board for registration \nas a Consent Manager by furnishing such particulars and such other information and documents as the \nBoard may publish in this behalf on its website. \n(2) On receipt of such application, the Board may make such inquiry as it may deem fit to satisfy itself \nregarding fulfilment of the conditions set out in Part A of First Schedule, and if it— \n(a) is satisfied, register the applicant as a Consent Manager, under intimation to the applicant, and \npublish on its website the particulars of such Consent Manager; or \n(b) is not satisfied, reject the application and communicate the reasons for the rejection to the \napplicant. \n(3) The Consent Manager shall have obligations as specified in Part B of First Schedule. \n(4) If the Board is of the opinion that a Consent Manager is not adhering to the conditions and obligations \nunder this rule,it may, after giving an opportunity of being heard, inform the Consent Manager of such non-\nadherence and direct the Consent Manager to take measures to ensure adherence. \n(5) The Board may, if it is satisfied that it is necessary so to do in the interests of Data Principals, after \ngiving the Consent Manager an opportunity of being heard, by order, for reasons to be recorded in writing, \n— \n(a) suspend or cancel the registration of such Consent Manager; and \n(b) give such directions as it may deem fit to that Consent Manager, to protect the interests of the Data \nPrincipals. \n(6) The Board may, for the purposes of this rule, require the Consent Manager to furnish such information \nas the Board may call for.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 6",
+    "rule_number": "Rule 4",
+    "obligation_category": "C2",
+    "obligation_categories": [
+      "C2"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-5",
@@ -983,7 +1528,17 @@
     "text": "5. Processing of personal data for provision or issue of subsidy, benefit, service, certificate, licence or \npermit by State and its instrumentalities. — (1) Processing the personal data of a Data Principal under \nthis rule shall be done following the standards specified in Second Schedule. \n(2) In this rule and the Second Schedule, the reference to any subsidy, benefit, service, certificate, licence \nor permit that is provided or issued— \n(a) under law shall be construed as a reference to provision or issuance of such subsidy, benefit, \nservice, certificate, licence or permit in exercise of any power of or the performance of any \nfunction by the State or any of its instrumentalities under any law for the time being in force; \n(b) under policy shall be construed as a reference to provision or issuance of such subsidy, benefit, \nservice, certificate, licence or permit under any policy or instruction issued by the Central \nGovernment or a State Government in exercise of its executive power; and \n(c) using public funds shall be construed as a reference to provision or issuance of such subsidy, \nbenefit, service, certificate, licence or permit by incurring expenditure on the same from, or with \naccrual of receipts to, — \n(i) in case of the Central Government or a State Government, the Consolidated Fund of India \nor the Consolidated Fund of the State or the public account of India or the public \naccount of the State; or \n(ii) in case of any local or other authority within the territory of India or under the control of \nthe Government of India or of any State, the fund or funds of such authority.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 7",
+    "rule_number": "Rule 5",
+    "obligation_category": "C3",
+    "obligation_categories": [
+      "C3"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-6",
@@ -1000,7 +1555,17 @@
     "text": "6. Reasonable security safeguards. — (1) A Data Fiduciary shall protect personal data in its possession or \nunder its control, including in respect of any processing undertaken by it or on its behalf by a Data \nProcessor, by taking reasonable security safeguards to prevent personal data breach, which shall include, at \nthe minimum, — \n(a) appropriate data security measures, such as securing of personal data through encryption, \nobfuscation, masking or the use of virtual tokens mapped to that personal data; \n(b) appropriate measures to control access to the computer resources used by such Data Fiduciary or \nsuch a Data Processor, wherever applicable; \n(c) visibility on the accessing of such personal data, through appropriate logs, monitoring and review, \nfor enabling detection of unauthorised access, its investigation and remediation to prevent \nrecurrence; \n(d) reasonable measures for continued processing in the event of confidentiality, integrity or \navailability of such personal data being compromised as a result of destruction or loss of access to \npersonal data or otherwise, such as by way of data-backups; \n(e) for enabling the detection of unauthorised access, its investigation, remediation to prevent \nrecurrence and continued processing in the event of such a compromise, retain such logs and \npersonal data for a period of one year, unless compliance with any law for the time being in force \nrequires otherwise; \n(f) appropriate provision in the contract entered into between such Data Fiduciary and such a Data \nProcessor, wherever applicable, for taking reasonable security safeguards; and \n(g) appropriate technical and organisational measures to ensure effective observance of security \nsafeguards. \n(2) In this rule, the expression “computer resource” shall have the same meaning as is assigned to it in \nInformation Technology Act, 2000 (21 of 2000).",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 8(5)",
+    "rule_number": "Rule 6",
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4"
+    ],
+    "penalty_reference": "Schedule Item 1: Breach in observing obligation of Data Fiduciary to take reasonable security safeguards under subsection (5) of section 8 — May extend to ₹250 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-7",
@@ -1017,7 +1582,17 @@
     "text": "7. Intimation of personal data breach. — (1) On becoming aware of any personal data breach, the Data \nFiduciary shall, to the best of its knowledge, intimate to each affected Data Principal, in a concise, clear and \nplain manner and without delay, through her user account or any mode of communication registered by her \nwith the Data Fiduciary, — \n(a) a description of the breach, including its nature, extent and the timing of its occurrence; \n(b) the consequences relevant to her, that are likely to arise from the breach; \n(c) the measures implemented and being implemented by the Data Fiduciary, if any, to mitigate risk; \n(d) the safety measures that she may take to protect her interests; and \n(e) business contact information of a person who is able to respond on behalf of the Data Fiduciary, to \nqueries, if any, of the Data Principal. \n(2) On becoming aware of any personal data breach, the Data Fiduciary shall intimate to the Board, — \n(a) without delay, a description of the breach, including its nature, extent, timing and location of \noccurrence and the likely impact; \n(b) within seventy-two hours of becoming aware of the breach, or within such longer period as the \nBoard may allow on a request made in writing in this behalf, — \n(i) \nupdated and detailed information in respect of such description; \n(ii) the broad facts related to the events, circumstances and reasons leading to the breach; \n(iii) measures implemented or proposed, if any, to mitigate risk;  \n(iv) any findings regarding the person who caused the breach;  \n(v) remedial measures taken to prevent recurrence of such breach; and \n(vi) a report regarding the intimations given to affected Data Principals. \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 8(6)",
+    "rule_number": "Rule 7",
+    "obligation_category": "C5",
+    "obligation_categories": [
+      "C5"
+    ],
+    "penalty_reference": "Schedule Item 2: Breach in observing obligation to give Board or affected Data Principal intimation for personal data breach under subsection (6) of section 8 — May extend to ₹200 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-8",
@@ -1034,7 +1609,17 @@
     "text": "8. Time period for specified purpose to be deemed as no longer being served.—(1) A Data Fiduciary, \nwho is of such class and is processing personal data for such corresponding purposes as are specified in \nThird Schedule, shall erase such personal data, unless its retention is necessary for compliance with any law \nfor the time being in force, or, for the corresponding time period specified in the Third Schedule, if the Data \nPrincipal neither approaches such Data Fiduciary for the performance of the specified purpose nor exercises \nher rights in relation to such processing. \n(2) At least forty-eight hours before completion of the time period for erasure of personal data under this \nrule, the Data Fiduciary shall inform the Data Principal that such personal data shall be erased upon \ncompletion of such period, unless she logs into her user account or otherwise initiates contact with the Data \nFiduciary for the performance of the specified purpose or exercises her rights in relation to the processing \nof such personal data. \n(3) Without prejudice to sub-rules (1) and (2), a Data Fiduciary shall retain, in respect of any processing of \npersonal data undertaken by it or on its behalf by a Data Processor, such personal data, associated traffic \ndata and other logs of the processing for a minimum period of one year from the date of such processing, \nfor the purposes as specified in the Seventh Schedule, after which the Data Fiduciary shall cause such \npersonal data and logs to be erased, unless further retention is required for compliance with any other law \nfor the time being in force or notified by the Government. \nIllustration. \nCase 1: X, a Data Principal purchases an e-book on an e-book platform Y. Once delivery is \ncompleted, the specified purpose of processing is served. The platform Y must retain the order details, \npersonal data, and logs of the processing (such as order confirmation, payment, and delivery events) for at \nleast one year from the date of the transaction, even if X deletes her account. \nCase 2: X, a company engages a cloud service provider C as its Data Processor to host customer \nrecords. X as the Data Fiduciary, is required to ensure that the C also retains the data and associated logs \nfor at least one year before erasure, unless any other applicable law requires a longer period.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 8(7)",
+    "rule_number": "Rule 8",
+    "obligation_category": "C6",
+    "obligation_categories": [
+      "C6"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-9",
@@ -1051,7 +1636,17 @@
     "text": "9. Contact information of person to answer questions about processing.— Every Data Fiduciary shall \nprominently publish on its website or app, and mention in every response to a communication for the \nexercise of the rights of a Data Principal under the Act, the business contact information of the Data \nProtection Officer, if applicable, or a person who is able to answer on behalf of the Data Fiduciary the \nquestions of the Data Principal about the processing of her personal data.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 8(9)",
+    "rule_number": "Rule 9",
+    "obligation_category": "C7",
+    "obligation_categories": [
+      "C7"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-10",
@@ -1068,7 +1663,17 @@
     "text": "10. Verifiable consent for processing of personal data of child.—(1) A Data Fiduciary shall adopt \nappropriate technical and organisational measures to ensure that verifiable consent of the parent is obtained \nbefore the processing of any personal data of a child and shall observe due diligence, for checking that the \nindividual identifying herself as the parent is an adult who is identifiable if required in connection with \ncompliance with any law for the time being in force in India, by reference to— \n(a) reliable details of identity and age of the individual available with the Data Fiduciary; or \n(b) details of identity and age, voluntarily provided — \n(i) by the individual; or  \n(ii) through a virtual token mapped to such details, which is issued by an authorised entity. \n(2) In this rule, the expression— \n(a) “adult” shall mean an individual who has completed the age of eighteen years; \n(b) “authorised entity\" shall mean —  \n(i) \nan entity entrusted by law or by the Central Government or by the State Government with \nthe issuance of details of the identity and age or a virtual token mapped to such details; or  \n\n \n(ii) \na person appointed or permitted by the entity specified under clause (i), for such issuance, \nand also includes details of identity and age or token made available and verified by a Digital \nLocker Service Provider; \n(c) “Digital Locker service provider” shall mean such intermediary, including a body corporate or an \nagency of the appropriate Government, as may be notified by the Central Government, in \naccordance with the rules made in this regard under the Information Technology Act, 2000 (21 of \n2000); \nIllustration. \nC is a child, P is a parent, and DF is a Data Fiduciary. A user account of C is sought to be created \non the online platform of DF, by processing the personal data of C. \nCase 1: C informs DF that she is a child and declares P as her parent. DF shall enable P to identify \nherself through its website, app or other appropriate means. P identifies herself as the parent and informs \nDF that she is a registered user on DF’s platform and has previously made available her identity and age \ndetails to DF. Before processing C’s personal data for the creation of her user account, DF shall check to \nconfirm that it holds reliable identity and age details of P and that P is an identifiable adult. \nCase 2: C informs DF that she is a child and declares P as her parent. DF shall enable P to identify \nherself through its website, app or other appropriate means. P identifies herself as the parent and informs \nDF that she herself is not a registered user on DF’s platform. Before processing C’s personal data for the \ncreation of her user account, DF shall, by reference to identity and age details issued by an entity entrusted \nby law or the Government with maintenance of the said details or to a virtual token mapped to the identity \nand age, check that P is an identifiable adult. P may voluntarily make such details available using the \nservices of a Digital Locker service provider. \nCase 3: P is opening an account for C and identifies herself as C’s parent and informs DF that she \nis a registered user on DF’s platform and has previously made available her identity and age details to DF. \nBefore processing C’s personal data for the creation of her user account, DF shall check to confirm that it \nholds reliable identity and age details of P and that P is an identifiable adult. \nCase 4: P is opening an account for C and identifies herself as C’s parent and informs DF that she \nherself is not a registered user on DF’s platform. Before processing C’s personal data for the creation of her \nuser account, DF shall, by reference to identity and age details issued by an entity entrusted by law or the \nGovernment with maintenance of the said details or to a virtual token mapped to the identity and age, check \nthat P is an identifiable adult. P may voluntarily make such details available using the services of a Digital \nLocker service provider.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 9",
+    "rule_number": "Rule 10",
+    "obligation_category": "C9",
+    "obligation_categories": [
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 3: Breach in observance of additional obligations in relation to children under section 9 — May extend to ₹200 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-11",
@@ -1085,7 +1690,17 @@
     "text": "11. Verifiable consent for processing of personal data of person with disability who has lawful \nguardian. — (1) A Data Fiduciary, while obtaining verifiable consent from an individual identifying \nherself as the lawful guardian of a person with disability, shall observe due diligence to verify that such \nguardian is appointed by a court of law, or by a designated authority or by a local level committee, under \nthe law applicable to guardianship. \n(2) In this rule, the expression— \n(a) “designated authority” shall mean an authority designated under section 15 of the Rights of Persons \nwith Disabilities Act, 2016 (49 of 2016) to support persons with disabilities in exercise of their \nlegal capacity; \n(b) “law applicable to guardianship” shall mean, — \n(i) in relation to an individual who has long term physical, mental, intellectual or sensory \nimpairment which, in interaction with barriers, hinders her full and effective participation \nin society equally with others and who despite being provided adequate and appropriate \nsupport is unable to take legally binding decisions, the provisions of law contained in \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \nRights of Persons with Disabilities Act, 2016 (49 of 2016) and the rules made thereunder; \nand  \n(ii) in relation to a person who is suffering from any of the conditions relating to autism, \ncerebral palsy, mental retardation or a combination of such conditions and includes a \nperson suffering from severe multiple disability, the provisions of law of the National Trust \nfor the Welfare of Persons with Autism, Cerebral Palsy, Mental Retardation and Multiple \nDisabilities Act, 1999 (44 of 1999) and the rules made thereunder; \n(c) “local level committee” shall mean a local level committee constituted under section 13 of the \nNational Trust for the Welfare of Persons with Autism, Cerebral Palsy, Mental Retardation and \nMultiple Disabilities Act, 1999 (44 of 1999); \n(d) “person with disability” shall mean and include— \n(i) an individual who has long term physical, mental, intellectual or sensory impairment \nwhich, in interaction with barriers, hinders her full and effective participation in society \nequally with others and who, despite being provided adequate and appropriate support, is \nunable to take legally binding decisions; and \n(ii) an individual who is suffering from any of the conditions relating to autism, cerebral palsy, \nmental retardation or a combination of any two or more of such conditions and includes an \nindividual suffering from severe multiple disability and who, despite being provided \nadequate and appropriate support, is unable to take legally binding decisions.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 9",
+    "rule_number": "Rule 11",
+    "obligation_category": "C9",
+    "obligation_categories": [
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 3: Breach in observance of additional obligations in relation to children under section 9 — May extend to ₹200 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-12",
@@ -1102,7 +1717,17 @@
     "text": "12. Exemptions from certain obligations applicable to processing of personal data of child. — (1) The \nprovisions of sub-sections (1) and (3) of section 9 of the Act shall not be applicable to processing of \npersonal data of a child by such class of Data Fiduciaries as are specified in Part A of Fourth Schedule, \nsubject to such conditions as are specified in the said Part. \n(2) The provisions of sub-sections (1) and (3) of section 9 of the Act shall not be applicable to processing of \npersonal data of a child for such purposes as are specified in Part B of Fourth Schedule, subject to such \nconditions as are specified in the said Part.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 9",
+    "rule_number": "Rule 12",
+    "obligation_category": "C9",
+    "obligation_categories": [
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-13",
@@ -1119,7 +1744,19 @@
     "text": "13. Additional obligations of Significant Data Fiduciary. — (1) A Significant Data Fiduciary shall, once \nin every period of twelve months from the date on which it is notified as such or is included in the class of \nData Fiduciaries notified as such, undertake a Data Protection Impact Assessment and an audit to ensure \neffective observance of the provisions of this Act and the rules made thereunder. \n(2) A Significant Data Fiduciary shall cause the person carrying out the Data Protection Impact Assessment \nand audit to furnish to the Board a report containing significant observations in the Data Protection Impact \nAssessment and audit. \n(3) A Significant Data Fiduciary shall observe due diligence to verify that technical measures including \nalgorithmic software adopted by it for hosting, display, uploading, modification, publishing, transmission, \nstorage, updating or sharing of personal data processed by it are not likely to pose a risk to the rights of \nData Principals. \n(4) A Significant Data Fiduciary shall undertake measures to ensure that personal data specified by the \nCentral Government, on the basis of the recommendations of a committee constituted by it, is processed \nsubject to the restriction that the personal data and the traffic data pertaining to its flow is not transferred \noutside the territory of India. \n(5) In this rule, “committee” means a committee constituted by the Central Government for the purpose of \nthis rule, which shall include officials from the Ministry of Electronics and Technology and may include \nofficials from other Ministries or Department of the Central Government.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 10",
+    "rule_number": "Rule 13",
+    "obligation_category": "C4",
+    "obligation_categories": [
+      "C4",
+      "C7",
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 4: Breach in observance of additional obligations of Significant Data Fiduciary under section 10 — May extend to ₹150 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "SIGNIFICANT_DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-14",
@@ -1136,7 +1773,17 @@
     "text": "14. Rights of Data Principals. — (1) For enabling Data Principals to exercise their rights under the Act, \nthe Data Fiduciary and, where applicable, the Consent Manager, shall prominently publish on its website or \napp, or both, as the case may be, — \n\n \n(a) the details of the means using which a Data Principal may make a request for the exercise of such \nrights; and \n(b) the particulars, if any, such as the username or other identifier of such a Data Principal, which may \nbe required to identify her under its terms of service. \n(2) To exercise the rights of the Data Principal under the Act, she may make a request to the Data Fiduciary \nto whom she has previously given consent for processing of her personal data, using the means and \nfurnishing the particulars required by such Data Fiduciary for the exercise of such rights. \n(3) Every Data Fiduciary and Consent Manager shall prominently publish on its website or app, or both, as \nthe case may be, within a reasonable period not exceeding ninety days under its grievance redressal system \nfor responding to the grievances of Data Principals and shall, for ensuring the effectiveness of the system in \nresponding within such period, implement appropriate technical and organisational measures. \n(4) To exercise the rights of the Data Principal under the Act, she may, in accordance with the terms of \nservice of the Data Fiduciary and such law as may be applicable, nominate one or more individuals, using \nthe means and furnishing the particulars required by such Data Fiduciary for the exercise of such right.  \n(5) In this rule, the expression “identifier” shall mean any sequence of characters issued by the Data \nFiduciary to identify the Data Principal and includes a customer identification file number, customer \nacquisition form number, application reference number, enrolment ID, email address, mobile number or \nlicence number that enables such identification.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Sections 11–14",
+    "rule_number": "Rule 14",
+    "obligation_category": "C8",
+    "obligation_categories": [
+      "C8"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-15",
@@ -1153,7 +1800,17 @@
     "text": "15. Transfer of personal data outside the territory of India.— Any personal data processed by a Data \nFiduciary under the Act may be transferred outside the territory of India subject to the restriction that the \nData Fiduciary shall meet such requirements as the Central Government may, by general or special order, \nspecify in respect of making such personal data available to any foreign State, or to any person or entity \nunder the control of or any agency of such a State.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 16",
+    "rule_number": "Rule 15",
+    "obligation_category": "C10",
+    "obligation_categories": [
+      "C10"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-16",
@@ -1170,7 +1827,15 @@
     "text": "16. Exemption from Act for research, archiving or statistical purposes. —The provisions of the Act \nshall not apply to the processing of personal data necessary for research, archiving or statistical purposes if \nit is carried on in accordance with the standards specified in Second Schedule.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 16",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-17",
@@ -1187,7 +1852,15 @@
     "text": "17.Appointment of Chairperson and other Members.— (1) The Central Government shall constitute a \nSearch-cum-Selection Committee, with the Cabinet Secretary as the chairperson and the Secretaries to the \nGovernment of India in charge of the Department of Legal Affairs and the Ministry of Electronics and \nInformation Technology and two experts of repute having special knowledge or practical experience in a \nfield which in the opinion of the Central Government may be useful to the Board as members, to \nrecommend individuals for appointment as Chairperson. \n(2) The Central Government shall constitute a Search-cum-Selection Committee, with the Secretary to the \nGovernment of India in the Ministry of Electronics and Information Technology as the chairperson and the \nSecretary to the Government of India in charge of the Department of Legal Affairs, and two experts of \nrepute having special knowledge or practical experience in a field which in the opinion of the Central \nGovernment may be useful to the Board as members, to recommend individuals for appointment as a \nMember other than the Chairperson.  \n(3) The Central Government shall, after considering the suitability of individuals recommended by the \nSearch-cum-Selection Committee, appoint the Chairperson or other Member, as the case may be. \n(4) No act or proceeding of the Search-cum-Selection Committee specified in sub-rules (1) and (2) of this \nrule shall be called in question on the ground merely of the existence of any vacancy or absences in such \ncommittee or defect in its constitution.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 17",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-18",
@@ -1204,7 +1877,15 @@
     "text": "18. Salary, allowances and other terms and conditions of service of Chairperson and other Members. \n—The Chairperson and every other Member shall receive such salary and allowances and shall have such \nother terms and conditions of service as are specified in Fifth Schedule.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 18",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-19",
@@ -1221,7 +1902,15 @@
     "text": "19. Procedure for meetings of Board and authentication of its orders, directions and instruments. — \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \n(1) The Chairperson shall fix the date, time and place of meetings of the Board, approve the items of \nagenda therefor, and cause notice specifying the same to be issued under her signature or that of such other \nindividual as the Chairperson may authorise by general or special order in writing. \n(2) Meetings of the Board shall be chaired by the Chairperson and, in her absence, by such other Member \nas the Members present at the meeting may choose from amongst themselves. \n(3) One-third of the membership of the Board shall be the quorum for its meetings. \n(4) All questions which come up before any meeting of the Board shall be decided by a majority of the \nvotes of Members present and voting, and, in the event of an equality of votes, the Chairperson, or in her \nabsence, the person chairing, shall have a second or casting vote.  \n(5) If a Member has an interest in any item of business to be transacted at a meeting of the Board, she shall \nnot participate in or vote on the same and, in such a case, the decision on such item shall be taken by a \nmajority of the votes of other Members present and voting. \n(6) In case an emergent situation warrants immediate action by the Board and it is not feasible to call a \nmeeting of the Board, the Chairperson may, while recording the reasons in writing, take such action as may \nbe necessary, which shall be communicated within seven days to all Members and laid before the Board for \nratification at its next meeting. \n(7) If the Chairperson so directs, an item of business or issue which requires decision of the Board may be \nreferred to Members by circulation and such item may be decided with the approval of majority of the \nMembers.  \n(8) The Chairperson or any Member of the Board, or any individual authorised by it,by a general or special \norder in writing, may, under her signature, authenticate its order, direction or instrument. \n(9) The inquiry by the Board shall be completed within a period of six months from the date of receipt of \nthe intimation, complaint, reference or direction under section 27 of the Act, unless such period is extended \nby it, for reasons to be recorded in writing, for a further period not exceeding three months at a time.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 19",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-20",
@@ -1238,7 +1927,15 @@
     "text": "20. Functioning of Board as digital office. — The Board shall function as a digital office, without \nprejudice to its power to summon and enforce the attendance of any person and examine her on oath, may \nadopt techno-legal measures to conduct proceedings in a manner that does not require physical presence of \nany individual.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 20",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-21",
@@ -1255,7 +1952,15 @@
     "text": "21. Terms and conditions of appointment and service of officers and employees of Board.— (1) The \nBoard may, with previous approval of the Central Government, appoint such officers and employees as it \nmay deem necessary for the efficient discharge of its functions under the provisions of the Act. \n(2) The terms and conditions of service of officers and employees of the Board shall be such as are \nspecified in Sixth Schedule.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 21",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-22",
@@ -1272,7 +1977,15 @@
     "text": "22. Appeal to Appellate Tribunal. — (1) Any person aggrieved by an order or direction of the Board, \nmay prefer an appeal before the Appellate Tribunal, it shall be filed in digital form as the Appellate \nTribunal may decide. \n(2) An appeal filed with the Appellate Tribunal shall be accompanied by fee of like amount as is applicable \nin respect of an appeal filed under the Telecom Regulatory Authority of India Act, 1997 (24 of 1997), \nunless reduced or waived by the Chairperson of the Appellate Tribunal at her discretion, and the same shall \nbe payable digitally using the Unified Payments Interface or such other payment system authorised by the \nReserve Bank of India. \n(3) The Appellate Tribunal—  \n(a) shall not be bound by the procedure laid down by the Code of Civil Procedure, 1908 (5 of 1908), \nbut shall be guided by the principles of natural justice and, subject to the provisions of the Act, may \nregulate its own procedure; and \n(b) shall function as a digital office which, without prejudice to its power to summon and enforce the \nattendance of any person and examine her on oath, may adopt techno-legal measures to conduct \nproceedings in a manner that does not require physical presence of any individual.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 22",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-rule-23",
@@ -1289,7 +2002,15 @@
     "text": "23. Calling for information from Data Fiduciary or intermediary. — (1) The Central Government may, \nfor such purposes of the Act as are specified in Seventh Schedule, acting through the corresponding \nauthorised person specified in the said Schedule, require any Data Fiduciary or intermediary to furnish such \ninformation as may be called for, within the specified period as may be given in such. \n(2) Where the disclosure of furnishing of information as referred to in sub-rule (1) is likely to prejudicially \naffect the sovereignty and integrity of India or security of the State, the Central Government may require \nthe Data Fiduciary or intermediary to not disclose such furnishing to affected Data Principal or any other \nperson except with the previous permission, in writing, of the authorised person.  \n(3) For the purposes of this rule, the expression “intermediary” shall have the same meaning as assigned to \nit in the Information Technology Act, 2000 (21 of 2000).",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": "Rule 23",
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_PROTECTION_BOARD"
   },
   {
     "chunk_id": "dpdp-rules-2025-first-schedule-part-a",
@@ -1306,7 +2027,17 @@
     "text": "FIRST SCHEDULE \n[See rule 4] \nPART A \nConditions for registration of Consent Manager \n \n1. The applicant is a company incorporated in India. \n2. The applicant has sufficient capacity, including technical, operational and financial capacity, to fulfil its \nobligations as a Consent Manager. \n3. The financial condition and the general character of management of the applicant are sound. \n4. The net worth of the applicant is not less than two crore rupees. \n5. The volume of business likely to be available to and the capital structure and earning prospects of the \napplicant are adequate. \n6. The directors, key managerial personnel and senior management of the applicant company are \nindividuals with a general reputation and record of fairness and integrity. \n7. The memorandum of association and articles of association of the applicant company contain provisions \nrequiring that the obligations under items 9 and 10 of Part B are adhered to, that policies and procedures are \nin place to ensure such adherence, and that such provisions may be amended only with the previous \napproval of the Board. \n8. The operations proposed to be undertaken by the applicant are in the interests of Data Principals. \n9. It is independently certified that— \n(a) the interoperable platform of the applicant to enable the Data Principal to give, manage, review and \nwithdraw her consent is consistent with such data protection standards and assurance framework \nas may be published by the Board on its website from time to time; and \n(b) appropriate technical and organisational measures are in place to ensure adherence to such \nstandards and framework and effective observance of the obligations under item 11 of Part B.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 6",
+    "rule_number": null,
+    "obligation_category": "C2",
+    "obligation_categories": [
+      "C2"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-first-schedule-part-b",
@@ -1323,7 +2054,17 @@
     "text": "PART B \nObligations of Consent Manager \n \n1. \nThe Consent Manager shall enable a Data Principal using its platform to give consent to the \nprocessing of her personal data by a Data Fiduciary onboarded onto such platform either directly to such \nData Fiduciary or through another Data Fiduciary onboarded onto such platform, who maintains such \npersonal data with the consent of that Data Principal. \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \nIllustration. \nIndividuals are enabled to give, manage, review and withdraw their consent to the processing of \ntheir personal data through P, a platform maintained by a Consent Manager. X, an individual, is a registered \nuser on P. B1 and B2 are banks onboarded onto P. \n \nCase 1:B1 sends a request on P to X for consent to process personal data contained in her bank \naccount statement. X maintains the bank account statement as a digital record in her digital locker. X uses P \nto directly give her consent to B1, and proceeds to give B1 access to her bank account statement. \n \nCase 2:B1 sends a request on P to X for consent to process personal data contained in her bank \naccount statement. X maintains her bank account with B2. X uses P to route her consent through B2 to B1, \nwhile also digitally instructing B2 to send her bank account statement to B1. B2 proceeds to send the bank \naccount statement to B1. \n2. \nThe Consent Manager shall ensure that the manner of making available the personal data or its sharing \nis such that the contents thereof are not readable by it. \n3. \nThe Consent Manager shall maintain on its platform a record of the following, namely:— \n(a) Consents given, denied or withdrawn by her; \n(b) Notices preceding or accompanying requests for consent; and \n(c) Sharing of her personal data with a transferee Data Fiduciary. \n4. \nThe Consent Manager: — \n(a) shall give the Data Principal using such platform access to such record; \n(b) shall, on the request of the Data Principal and in accordance with its terms of service, make \navailable to her the information contained in such record, in machine-readable form; and \n(c) shall maintain such record for at least seven years, or for such longer period as the Data \nPrincipal and Consent Manager may agree upon or as may be required by law. \n5. \nThe Consent Manager shall develop and maintain a website or app, or both, as the primary means \nthrough which a Data Principal may access the services provided by the Consent Manager. \n6. \nThe Consent Manager shall not sub-contract or assign the performance of any of its obligations under \nthe Act and these rules. \n7. \nThe Consent Manager shall take reasonable security safeguards to prevent personal data breach. \n8. \nThe Consent Manager shall act in a fiduciary capacity in relation to the Data Principal. \n9. \nThe Consent Manager shall avoid conflict of interest with Data Fiduciaries, including in respect of \ntheir promoters and key managerial personnel. \n10. The Consent Manager shall have in place measures to ensure that no conflict of interest arises on \naccount of its directors, key managerial personnel and senior management holding a directorship, financial \ninterest, employment or beneficial ownership in Data Fiduciaries, or having a material pecuniary \nrelationship with them. \n11. The Consent Manager shall publish in an easily accessible manner, on its website or app, or both, as \nthe case may be, information regarding: — \n(a) the promoters, directors, key managerial personnel and senior management of the company \nregistered as Consent Manager;  \n(b) every person who holds shares in excess of two per cent. of the shareholding of the company \nregistered as Consent Manager;  \n\n \n(c) everybody corporate in whose shareholding any promoter, director, key managerial personnel or \nsenior management of the Consent Manager holds shares in excess of two per cent. as on the \nfirst day of the preceding calendar month; and  \n(d) such other information as the Board may direct the Consent Manager to disclose in the interests \nof transparency. \n12. The Consent Manager shall have in place effective audit mechanisms to review, monitor, evaluate and \nreport the outcome of such audit to the Board, periodically and on such other occasions as the Board may \ndirect, in respect of—  \n(a) technical and organisational controls, systems, procedures and safeguards; \n(b) continued fulfilment of the conditions of registration; and \n(c) adherence to its obligations under the Act and these rules. \n13. The control of the company registered as the Consent Manager shall not be transferred by way of sale, \nmerger or otherwise, except with the previous approval of the Board and subject to fulfilment of such \nconditions as the Board may specify in this behalf. \nNote: In this Schedule, — \n(a) the expression “body corporate” shall include a company, a body corporate as defined under \nclause (11) of section 2 of the Companies Act, 2013 (18 of 2013), a firm, a financial institution, \na scheduled bank or a public sector enterprise established or constituted by or under any Central \nAct, Provincial Act or State Act, and any other incorporated association of persons or body of \nindividuals;  \n(b) the expressions “company”, “control”, “director” and “key managerial personnel” shall have the \nsame meanings as are respectively assigned to them in the Companies Act, 2013 (18 of 2013);  \n(c) the expression “net worth” shall mean the aggregate value of total assets as reduced by the value \nof liabilities of the Consent Manager as appearing in its books of accounts; and \n(d) the expressions “promoter” and “senior management” shall have the same meanings as are \nrespectively assigned to them in the Companies Act, 2013 (18 or 2013).",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 6",
+    "rule_number": null,
+    "obligation_category": "C2",
+    "obligation_categories": [
+      "C2"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-second-schedule",
@@ -1340,7 +2081,15 @@
     "text": "SECOND SCHEDULE \n[See rules 5(1) and 16] \nStandards for processing of personal data by State and its instrumentalities under clause (b) of \nsection 7 and for processing of personal data necessary for the purposes specified in clause (b) of sub-\nsection (2) of section 17 \nImplementation of appropriate technical and organisational measures to ensure effective observance of the \nfollowing, in accordance with applicable law, for the processing of personal data, namely: — \n(a) Processing is carried out in a lawful manner;  \n(b) Processing is done for the uses specified in clause (b) of section 7 of the Act or for the purposes \nspecified in clause (b) of sub-section (2) of section 17 of the Act, as the case may be; \n(c) Processing is limited to such personal data as is necessary for such uses or achieving such \npurposes, as the case may be; \n(d) Processing is done while making reasonable efforts to ensure the completeness, accuracy and \nconsistency of personal data; \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \n(e) Personal data is retained till required for such uses or achieving such purposes, as the case may \nbe, or for compliance with any law for the time being in force; \n(f) Reasonable security safeguards to prevent personal data breach to protect personal data in the \npossession or under control of the Data Fiduciary, including in respect of any processing \nundertaken by it or on its behalf by a Data Processor; \n(g) Where processing is to be done under clause (b) of section 7 of the Act, the same is undertaken \nwhile giving the Data Principal an intimation in respect of the same and—  \n(i) giving the business contact information of a person who is able to answer on behalf of \nthe Data Fiduciary the questions of the Data Principal about the processing of her \npersonal data; \n(ii) specifying the particular communication link for accessing the website or app, or both, \nof such Data Fiduciary, and a description of other means, if any, using which such Data \nPrincipal may exercise her rights under the Act; and \n(iii) is carried on in a manner consistent with such other standards as may be applicable to \nthe processing of such personal data under policy issued by the Central Government or \nany law for the time being in force; and \n(h) Accountability of the person who alone or in conjunction with other persons determines the \npurpose and means of processing of personal data, for effective observance of these standards.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": null,
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "GENERAL"
   },
   {
     "chunk_id": "dpdp-rules-2025-third-schedule",
@@ -1357,7 +2106,17 @@
     "text": "THIRD SCHEDULE \n[See rule 8(1)] \n \nS. \nno. \nClass of Data \nFiduciaries \nPurposes \nTime period \n(1) \n(2) \n(3) \n(4) \n1. \nData Fiduciary who \nis an e-commerce \nentity having not \nless than two crore \nregistered users in \nIndia. \nFor all purposes, except for the following: \n(a) Enabling the Data Principal to access \nher user account; and \n(b) Enabling the Data Principal to access \nany virtual token that is issued by or \non behalf of the Data Fiduciary, is \nstored on the digital facility or \nplatform of such Data Fiduciary, and \nmay be used to get money, goods or \nservices. \nThree years from the date on \nwhich the Data Principal last \napproached the Data Fiduciary \nfor the performance of the \nspecified purpose or exercise of \nher \nrights, \nor \nthe \ncommencement of the Digital \nPersonal Data Protection Rules, \n2025, whichever is latest. \n2. \nData Fiduciary who \nis an online gaming \nintermediary having \nnot less than fifty \nlakh registered users \nin India. \nFor all purposes, except for the following:  \n(a) Enabling the Data Principal to \naccess her user account; and \n(b) Enabling the Data Principal to \naccess any virtual token that is \nissued by or on behalf of the Data \nFiduciary, is stored on the digital \nfacility or platform of such Data \nThree years from the date on \nwhich the Data Principal last \napproached the Data Fiduciary \nfor the performance of the \nspecified purpose or exercise of \nher \nrights, \nor \nthe \ncommencement of the Digital \nPersonal Data Protection Rules, \n2025, whichever is latest. \n\n \nFiduciary, and may be used to get \nmoney, goods or services. \n3. \nData Fiduciary who \nis a social media \nintermediary having \nnot less than two \ncrore \nregistered \nusers in India. \nFor all purposes, except for the following:  \n(a) Enabling the Data Principal to \naccess her user account; and \n(b) Enabling the Data Principal to \naccess any virtual token that is \nissued by or on behalf of the Data \nFiduciary, is stored on the digital \nfacility or platform of such Data \nFiduciary, and may be used to get \nmoney, goods or services. \nThree years from the date on \nwhich the Data Principal last \napproached the Data Fiduciary \nfor the performance of the \nspecified purpose or exercise of \nher \nrights, \nor \nthe \ncommencement of the Digital \nPersonal Data Protection Rules, \n2025, whichever is latest. \nNote:In this Schedule, — \n(a) “e-commerce entity” means any person who owns, operates or manages a digital facility or \nplatform for e-commerce as defined in the Consumer Protection Act, 2019 (35 of 2019), but does \nnot include a seller offering her goods or services for sale on a marketplace e-commerce entity as \ndefined in the said Act; \n(b) “online gaming intermediary” means any intermediary who enables the users of its computer \nresource to access one or more online games; \n(c) “social media intermediary” means an intermediary as defined in clause (w) of sub-rule (1) of rule \n2 of the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, \n2021; and \n(d) “user”, in relation to— \n(i) an e-commerce entity, means any person who accesses or avails any computer resource of \nan e-commerce entity; and \n(ii) an online gaming intermediary or a social media intermediary, means any person who \naccesses or avails of any computer resource of an intermediary for the purpose of hosting, \npublishing, sharing, transacting, viewing, displaying, downloading or uploading \ninformation.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 8(7)",
+    "rule_number": null,
+    "obligation_category": "C6",
+    "obligation_categories": [
+      "C6"
+    ],
+    "penalty_reference": "Schedule Item 7: Breach of any other provision of this Act or the rules made thereunder — May extend to ₹50 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-fourth-schedule-part-a",
@@ -1374,7 +2133,17 @@
     "text": "FOURTH SCHEDULE \n[See rule 12] \nPART A \nClasses of Data Fiduciaries in respect of whom provisions of sub-sections (1) and (3) of section 9 shall \nnot apply \nS. \nNo. \nClass of Data Fiduciaries \nConditions \n(1) \n(2) \n(3) \n1. \nA Data Fiduciary who is a clinical \nestablishment, mental health establishment \nor healthcare professional. \nProcessing is restricted to provision of health \nservices to the child by such establishment or \nprofessional, to the extent necessary for the \nprotection of her health. \n2. \nA Data Fiduciary who is an allied \nhealthcare professional. \nProcessing is restricted to supporting implementation \nof any healthcare treatment and referral plan \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \nrecommended by such professional for the child, to \nthe extent necessary for the protection of her health. \n3. \nA Data Fiduciary who is an educational \ninstitution. \nProcessing is restricted to tracking and behavioural \nmonitoring— \n(a) for the educational activities of such institution; \nor  \n(b) in the interests of safety of children enrolled \nwith such institution. \n4. \nA Data Fiduciary who is an individual in \nwhose care infants and children in a crèche \nor child day care centre are entrusted. \nProcessing is restricted to tracking and behavioural \nmonitoring in the interests of safety of children \nentrusted in the care of such institution, crèche or \ncentre. \n5. \nA Data Fiduciary who is engaged by an \neducational institution, crèche or child care \ncentre for transport of children enrolled \nwith such institution, crèche or centre. \nProcessing is restricted to tracking the location of \nsuch children, in the interests of their safety, during \nthe course of their travel to and from such institution, \ncrèche or centre.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 9",
+    "rule_number": null,
+    "obligation_category": "C9",
+    "obligation_categories": [
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 3: Breach in observance of additional obligations in relation to children under section 9 — May extend to ₹200 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-rules-2025-fourth-schedule-part-b",
@@ -1391,7 +2160,17 @@
     "text": "PART B \nPurposes for which provisions of sub-sections (1) and (3) of section 9 shall not apply  \nS. \nNo. \nPurposes \nConditions \n(1) \n(2) \n(3) \n1. \nFor the exercise of any power, performance \nof any function or discharge of any duties in \nthe interests of a child, under any law for the \ntime being in force in India. \nProcessing is restricted to the extent necessary for \nsuch exercise, performance or discharge. \n \n2. \nFor providing or issuing of any subsidy, \nbenefit, service, certificate, licence or permit, \nby whatever name called, under law or policy \nor using public funds, in the interests of a \nchild, under clause (b) of section 7 of the Act. \nProcessing is restricted to the extent necessary for \nsuch provision or issuance. \n3. \nFor the creation of a user account for \ncommunicating by email. \nProcessing is restricted to the extent necessary for \ncreating such user account, the use of which is \nlimited to communication by email. \n4. \nFor the determination of real-time location of \na child. \nProcessing is restricted to the tracking of real-time \nlocation of such child, in the interest of her safety \nand protection or security.  \n5. \nFor ensuring that any information, service or \nadvertisement likely to cause any detrimental \neffect on the well-being of a child is not \naccessible to her. \nProcessing is restricted to the extent necessary to \nensure \nthat \nsuch \ninformation, \nservice \nor \nadvertisement is not accessible to the child.  \n6. \nFor confirmation by the Data Fiduciary that \nthe Data Principal is not a child and \nobservance of due diligence under rule 10. \nProcessing is restricted to the extent necessary for \nsuch confirmation or observance. \nNote: In this Schedule, — \n\n \n(a) “advertisement” shall have the same meaning as is assigned to it in the Consumer Protection Act, \n2019 (35 of 2019). \n(a) “allied healthcare professional” shall have the same meaning as is assigned to it in the clause (d) of \nsection 2 of the National Commission for Allied and Healthcare Professions Act, 2021 (14 of 2021); \n(b) “clinical establishment” shall have the same meaning as assigned to it in the clause (c) of section 2 \nof the Clinical Establishments (Registration and Regulation) Act, 2010 (23 of 2010); \n(c) “educational institution” shall mean and include an institution of learning that imparts education, \nincluding vocational education; \n(d) “healthcare professional” shall have the same meaning as is assigned to it in clause (j) of section 2 \nof the National Commission for Allied and Healthcare Professions Act, 2021 (14 of 2021); \n(e) “health services” shall mean the services required to be provided by a healthcare professional as \nreferred to in clause (j) of section 2 of the National Commission for Allied and Healthcare Professions \nAct, 2021 (14 of 2021); and \n(f) “mental health establishment” shall have the same meaning as is assigned to it in clause (p) of sub-\nsection (1) of section 2 of the Mental Healthcare Act, 2017 (10 of 2017). \n \n \nFIFTH SCHEDULE \n[See rule 18] \nTerms and conditions of service of Chairperson and other Members \n1. Salary. — (1) The Chairperson shall be entitled to receive a consolidated salary of rupees four lakh fifty \nthousand per month, without the facility of house and car.  \n(2) Every Member other than the Chairperson shall be entitled to receive a consolidated salary of rupees \nfour lakh per month, without the facility of house and car. \n2. Provident Fund. —The Chairperson and every other Member shall be eligible to contribute to the \nProvident Fund of the Board, and the manner and terms and conditions applicable in this regard shall, \nmutatis mutandis, be the same as those applicable to other officers and employees of the Board for their \nProvident Fund. \n3. Pension and gratuity. —The Chairperson and every other Member shall not be entitled to payment of \npension or gratuity for service rendered in the Board. \n4. Travelling allowance.—(1) The Chairperson and every other Member, while on transfer to join the \nBoard, or on the expiry of her term with the Board for proceeding to her home town with family (including \nin respect of journey undertaken by her and her family), or on tour within India, shall be entitled to journey \nallowance, daily allowance and reimbursement of expense on transportation of personal effects at such \nscales and rates as are applicable to an officer of the Central Government in the following level of the pay \nmatrix, namely:—  \n(a) level 17, in the case of the Chairperson; and \n(b) level 15, in the case of every other Member. \n(2) The Chairperson and every other Member may undertake tour outside India only in accordance with \nguidelines or instructions issued by the Central Government, and in respect of such tour, she shall be \nentitled to draw the same allowances as an officer of the Central Government, in the following level of the \npay matrix, is entitled to draw, namely: — \n(a) level 17, in the case of the Chairperson; and \n(b) level 15, in the case of every other Member. \n5. Medical assistance. — (1) The Chairperson and every other Member shall be entitled to such medical \nassistance as may be admissible to them under any group health insurance scheme of the Board for officers \nand employees of the Board and their eligible dependants. \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \n(2) If the Chairperson or other Member has retired from Government service, or from the service of a \npublic sector entity or a body corporate established by a Central Act, Provincial Act or State Act, and there \nare a separate set of rules for the grant of medical assistance for such service, she may, in lieu of medical \nassistance under sub-paragraph (1), opt to be governed by such rules. \n6. Leave. — (1) The authority competent to sanction leave shall be the Central Government in respect of \nthe Chairperson, and the Chairperson in respect of any other Member.  \n(2) The Chairperson and every other Member may avail of such kinds of leave as are admissible to a \nGovernment servant under sub-clause (i) of clause (a) and clause (b) of sub-rule (1) of rule 26, rules 27, 29, \n30 and 40 to 43-C of the Central Civil Services (Leave) Rules, 1972 (hereinafter referred to as “Leave \nRules”). \n(3) Leave shall be subject to the conditions applicable to a Government servant under rules 7 to 11 and 22 \nto 25 of the Leave Rules, and the Central Government may, if satisfied that the operation of any of the said \nrules causes undue hardship in a particular case, by order relax the requirements of that rule to such extent \nand subject to such exceptions and conditions as it may consider necessary for dealing with the case in a \njust and equitable manner. \n(4) The Chairperson and every other Member shall be entitled to casual leave to such extent as is \nadmissible to a Government servant under instructions issued by the Central Government. \n(5) The Chairperson and every other Member shall be entitled to encashment of earned leave standing to \nher credit, subject to such conditions and in like manner as are applicable to a Government servant under \nrule 38-A, sub-rules (1) and (2) and sub-clauses (i) and (ii) of clause (a) of sub-rule (6) of rule 39, rule 39-A \nand rule 39-C of the Leave Rules, subject to the maximum extent of encashment under any of the said \nrules, other than rule 38-A, being fifty per cent. of the earned leave standing to her credit. \n7. Leave travel concession.—(1) Leave travel concession shall be admissible to the Chairperson and every \nother Member in accordance with the provisions applicable to persons appointed to civil services and posts \nin connection with the affairs of the Union of India under rule 3, clauses (a) and (d) of rule 4, rules 5 to 15 \nand rule 17 of the Central Civil Services (Leave Travel Concession) Rules, 1988, and the entitlement for \nsuch concession shall be the same as is applicable to officers of the Central Government in level 17 of the \npay matrix in the case of the Chairperson, and to officers of the Central Government in level 15 of the pay \nmatrix in the case of a Member. \n(2) The Chairperson and every other Member shall be eligible to avail of either leave travel concession to \nhome town or leave travel concession to any place in India in any period of two years from the date of \nassumption of their office as a Member. \n8. Other terms and conditions of service. — (1) The Chairperson and every other Member shall ensure \nabsence of conflict of interest in the performance of the functions of her office and shall not have any such \nfinancial or other interests as are likely to prejudicially affect the performance of the functions of such \noffice. \n(2) The provisions contained in Part IV to Part IX of the Central Civil Services (Classification, Control and \nAppeal) Rules, 1965, as applicable to an officer of the Central Government who is a member of a Central \nCivil Services, Group ‘A’, shall apply, mutatis mutandis, to the Chairperson and every other Member. \n(3) The Chairperson and every other Member shall not be entitled to any sitting fee for attending meetings \nof the Board. \n(4) The Chairperson and every other Member shall not be entitled to any sumptuary allowance. \n(5)Any matter relating to the conditions of service of the Chairperson or any other Member, in respect of \nwhich no express provision has been made in these rules, shall be referred to the Central Government for its \ndecision, and the decision of the Central Government on the same shall be final. \n9. In this Schedule, “pay matrix” shall mean the pay matrix specified in Annexure I to the Central \nGovernment’s Resolution published in the Official Gazette vide Notification no. 1-2/2016-IC, dated the 25th \nJuly, 2016. \n\n \nSIXTH SCHEDULE \n[See rule 21(2)] \nTerms and conditions of appointment and service of officers and employees of Board \n1. Classes of officials. — (1) The Board may, in accordance with the Fundamental Rules and applicable \nguidelines issued by the Ministry of Personnel, Public Grievances and Pensions, Department of Personnel \nand Training, appoint officers and employees on deputation from the Central Government, a State \nGovernment, an autonomous body under the overall control of the Central Government or a State \nGovernment, a statutory body, or a public sector enterprise, for a period not exceeding five years.  \n(2) The Board may also receive or take on deputation any officer or other employee from the National \nInstitute for Smart Government, for a period not exceeding five years, with salary and allowances guided \nby market standards and on such other terms and conditions as the Board may decide. \n2. Gratuity. —The officers and employees shall be entitled to payment of such gratuity as may be \nadmissible under the Payment of Gratuity Act, 1972 (39 of 1972). \n3. Travelling allowance. —The travelling allowance payable to the officers and employees shall, mutatis \nmutandis, be the same as those applicable to the officers and employees of the Central Government.  \n4. Medical assistance. —The officers and employees shall be entitled to such medical assistance as may be \nadmissible to them and their eligible dependants under any group health insurance scheme of the Board, \nmade with the previous approval of the Central Government. \n5. Leave. — (1) The officers and employees may avail of such kinds of leaves as are admissible to a \nGovernment servant under the Central Civil Services (Leave) Rules, 1972, subject to the conditions \napplicable under the said rules, and shall be eligible for encashment of earned leave as provided therein. \n(2) The officers and employees shall be entitled to casual leave to such extent as is admissible to a \nGovernment servant under instructions issued by the Central Government. \n6. Leave travel concession. — Leave travel concession shall be admissible to the officers and employees \nappointed under clause (1) of paragraph 1, in accordance with the provisions applicable to persons \nappointed to civil services and posts in connection with the affairs of the Union of India under the Central \nCivil Services (Leave Travel Concession) Rules, 1988. \n7. Other terms and conditions of service. — (1) The provisions of the Civil Service (Conduct) Rules, \n1964 shall apply to the officers and employees in like manner as applicable to a person appointed to a civil \nservice or post in connection with the affairs of the Union of India under the said rules. \n(2) The provisions contained in Part IV to Part IX of the Central Civil Services (Classification, Control and \nAppeal) Rules, 1965 shall apply, mutatis mutandis, to the officers and employees appointed under clause \n(1) of paragraph 1, in like manner as applicable to a Government servant under the said rules.  \n(3)Any matter relating to the terms and conditions of service of the officers and employees appointed under \nclause (1) of paragraph 1, in respect of which no express provision has been made in these rules, shall be \nreferred to the Central Government for its decision, and the decision of the Central Government on the \nsame shall be final. \n \nSEVENTH SCHEDULE \n[See rule 23(1) and 8(3)] \nS. \nno. \nPurpose \nAuthorised person \n(1) \n(2) \n(3) \n1. \nUse, by the State or any of its instrumentalities, of \npersonal data of a Data Principal in the interest of \nsovereignty and integrity of India or security of \nthe State. \nSuch officer of the State or of any of its \ninstrumentalities notified under clause (a) of \nsub-section (2) of section 17 of the Act, as the \nCentral Government or the head of such \ninstrumentality, as the case may be, may \ndesignate in this behalf. \n\n[भाग II—खण् ड 3(i)] \nभारत का रािपत्र : असाधारण  \n \n2. \nUse, by the State or any of its instrumentalities, of \npersonal data of a Data Principal for the following \npurposes, namely: — \n(i) performance of any function under any \nlaw for the time being in force in India; or \n(ii) disclosure of any information for \nfulfilling any obligation under any law for \nthe time being in force in India. \nPerson authorised under applicable law. \n3. \nCarrying out assessment for notifying any Data \nFiduciary or class of Data Fiduciaries as \nSignificant Data Fiduciary. \nSuch officer of the Central Government, in the \nMinistry of Electronics and Information \nTechnology, as the Secretary in charge of the \nsaid Ministry may designate in this behalf.",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Notified-GSR-846E"
+    "version": "2025-Notified-GSR-846E",
+    "source_document": "dpdp-rules-2025",
+    "section_number": "Section 9",
+    "rule_number": null,
+    "obligation_category": "C9",
+    "obligation_categories": [
+      "C9"
+    ],
+    "penalty_reference": "Schedule Item 3: Breach in observance of additional obligations in relation to children under section 9 — May extend to ₹200 crore.",
+    "source_notification": "G.S.R. 846(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "DATA_FIDUCIARY"
   },
   {
     "chunk_id": "dpdp-act-commencement-gsr-843e",
@@ -1408,6 +2187,14 @@
     "text": "MINISTRY OF ELECTRONICS AND INFORMATION TECHNOLOGY \nNOTIFICATION \nNew Delhi, the 13th November, 2025 \n \n G.S.R. 843(E).–––In exercise of the powers conferred by sub-section (2) of section 1 of the Digital \nPersonal Data Protection Act, 2023 (22 of 2023), the Central Government hereby appoints— \n(a) the date of publication of this notification in the Official Gazette as the date on which the provisions of \nsub-section (2) of section 1, section 2, sections 18 to 26 sections 35, 38, 39, 40, 41, 42, 43, and sub-\nsections (1) and (3) of section 44 of the said Act shall come into force;  \n(b) one year from the date of publication of this gazette on which the provisions of sub-section (9) of \nsection 6 and clause (d) of sub-section (1) of section 27 of the said Act shall come into force. \n(c) eighteen months from the date of publication of this gazette, on which the provision of  sections 3 to 5, \nsub-sections (1) to (8) and (10) of section 6,sections 7 to 10, sections 11 to 17, section 27 except clause \n(d) of sub-section (1) of the said section, sections 28 to 34, 36, 37 and sub-section (2) of section 44 of \nthe said Act shall come into force. \n \n \n[F. No. AA-11038/1/2025-CL&ES] \n \nAJIT KUMAR, Jt. Secy. \n  \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nUploaded by Dte. of Printing at Government of India Press, Ring Road, Mayapuri, New Delhi-110064 \nand Published by the Controller of Publications, Delhi-110054.  GORAKHA NATH \nYADAVA\nDigitally signed by GORAKHA \nNATH YADAVA \nDate: 2025.11.14 10:37:23 +05'30'",
     "source_url": "https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf",
     "publication_date": "2025-11-13",
-    "version": "2025-Gazette-No-757"
+    "version": "2025-Gazette-No-757",
+    "source_document": "dpdp-act-commencement-2025",
+    "section_number": null,
+    "rule_number": null,
+    "obligation_category": "GENERAL",
+    "obligation_categories": [],
+    "penalty_reference": "Procedural / Administrative provision — No direct monetary penalty specified in the Schedule.",
+    "source_notification": "G.S.R. 843(E), Ministry of Electronics and Information Technology, Gazette of India Extraordinary, Part II—Section 3(i), dated 13 November 2025",
+    "applicability": "GENERAL"
   }
 ]

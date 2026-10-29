@@ -312,7 +312,7 @@ export async function resolveActiveAssessmentId(): Promise<string | null> {
   if (stored) {
     try {
       const res = await apiClient.getAssessmentResult(stored);
-      if (res && res.status === "complete") return stored;
+      if (res && (res.status === "complete" || res.status === "completed")) return stored;
     } catch {
       // Stored ID is no longer valid, clear it
       try {
@@ -419,20 +419,51 @@ export const evidenceService = {
               website_scanner: "Website Scanner",
               scanner: "Website Scanner",
               assessment_wizard: "Manual Self-Declaration",
+              ASSESSMENT_WIZARD: "Manual Self-Declaration",
               document_upload: "Document Upload",
+              DOCUMENT_UPLOAD: "Document Upload",
               system_inferred: "System Assessment",
+              SYSTEM_INFERRED: "System Assessment",
             };
-            return res.evidence.map((ev, idx) => ({
-              id: ev.evidence_id || `ev-${idx}`,
-              title: ev.title || ev.key,
-              status: (ev.status as EvidenceItem["status"]) || "DETECTED",
-              confidence: (ev.confidence as EvidenceItem["confidence"]) || "MEDIUM",
-              sourceType: sourceMap[ev.source] || "System Assessment",
-              sourceUrl: ev.url || undefined,
-              lastChecked: "Recent",
-              notes: ev.notes || "",
-              method: ev.method || "Observed through assessment pipeline",
-            }));
+            return res.evidence.map((ev: any, idx: number) => {
+              let conf: "HIGH" | "MEDIUM" | "LOW" = "MEDIUM";
+              if (typeof ev.confidence === "number") {
+                conf = ev.confidence >= 0.8 ? "HIGH" : ev.confidence >= 0.5 ? "MEDIUM" : "LOW";
+              } else if (typeof ev.confidence === "string" && ev.confidence.trim()) {
+                const upper = ev.confidence.trim().toUpperCase();
+                if (upper === "HIGH" || upper === "MEDIUM" || upper === "LOW") conf = upper;
+              }
+
+              let stat: EvidenceItem["status"] = "DETECTED";
+              const rawStat = String(ev.status || "").toUpperCase();
+              if (rawStat === "VERIFIED") stat = "VERIFIED";
+              else if (rawStat === "DETECTED" || rawStat === "SELF_REPORTED") stat = "DETECTED";
+              else if (rawStat === "INFERRED") stat = "INFERRED";
+              else if (rawStat === "NOT_FOUND" || rawStat === "MISSING") stat = "NOT_FOUND";
+              else if (rawStat === "NOT_ASSESSED") stat = "NOT_ASSESSED";
+
+              const rawSrc = String(ev.source_type || ev.source || "");
+              const sType: EvidenceItem["sourceType"] = sourceMap[rawSrc] ||
+                (rawSrc.toUpperCase().includes("WIZARD") ? "Manual Self-Declaration" :
+                 rawSrc.toUpperCase().includes("SCAN") ? "Website Scanner" :
+                 rawSrc.toUpperCase().includes("DOC") ? "Document Upload" : "System Assessment");
+
+              const noteStr = typeof ev.value === "object" && ev.value !== null
+                ? JSON.stringify(ev.value)
+                : String(ev.notes || ev.value || "");
+
+              return {
+                id: ev.id || ev.evidence_id || `ev-${idx}`,
+                title: ev.label || ev.title || ev.key || `Evidence Item ${idx + 1}`,
+                status: stat,
+                confidence: conf,
+                sourceType: sType,
+                sourceUrl: ev.url || ev.source_url || undefined,
+                lastChecked: ev.extracted_at ? new Date(ev.extracted_at).toLocaleDateString() : "Recent",
+                notes: noteStr || "Observed through compliance evaluation.",
+                method: ev.method || (rawSrc.toUpperCase().includes("WIZARD") ? "Direct questionnaire response" : "Automated security/privacy crawler"),
+              };
+            });
           }
           return [];
         } catch (err) {

@@ -1,0 +1,579 @@
+{
+  "dataset_name": "TrustForge DPDP Obligation-Evidence Evaluation Dataset",
+  "version": "1.0-research-team-authored",
+  "created_at": "2026-10-22",
+  "review_status": "RESEARCH_TEAM_AUTHORED_REFERENCE_LABELS",
+  "review_status_clarification": "These reference labels were formulated by the TrustForge research team using official statutory provisions from the DPDP Act, 2023 and DPDP Rules, 2025. They have NOT been independently certified by external legal counsel and must be treated as preliminary research-team reference judgements.",
+  "label_schema": [
+    "SUPPORTED",
+    "NOT_SUPPORTED",
+    "INSUFFICIENT_EVIDENCE",
+    "NOT_APPLICABLE"
+  ],
+  "total_cases": 60,
+  "cases": [
+    {
+      "case_id": "CASE_TF_PRIV_001_A",
+      "control_id": "TF-PRIV-001",
+      "control_name": "Privacy Notice Itemisation",
+      "statutory_ref": "Section 5(1)",
+      "evidence_input": {
+        "key": "notice_items_present",
+        "label": "Notice Itemisation Elements",
+        "value": {
+          "personal_data_itemised": true,
+          "purposes_specified": true,
+          "rights_exercise_manner_described": true,
+          "board_complaint_manner_described": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Notice clearly itemises personal data, specific processing purposes, manner of exercising rights, and Board complaint procedures under Section 5(1).",
+      "reference_source": "DPDP Act, 2023 Section 5(1)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_001_B",
+      "control_id": "TF-PRIV-001",
+      "control_name": "Privacy Notice Itemisation",
+      "statutory_ref": "Section 5(1)",
+      "evidence_input": {
+        "key": "notice_items_present",
+        "label": "Notice Itemisation Elements",
+        "value": {
+          "personal_data_itemised": false,
+          "purposes_specified": false,
+          "bundled_vague_terms": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Notice bundles generic terms and fails to provide itemised personal data categories and specific purposes as required by Section 5(1).",
+      "reference_source": "DPDP Act, 2023 Section 5(1)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_001_C",
+      "control_id": "TF-PRIV-001",
+      "control_name": "Privacy Notice Itemisation",
+      "statutory_ref": "Section 5(1)",
+      "evidence_input": {
+        "key": "privacy_policy_url",
+        "label": "Privacy Policy URL",
+        "value": null,
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "No public privacy policy or notice document was discovered by the crawler; insufficient evidence to evaluate substantive clause contents.",
+      "reference_source": "DPDP Act, 2023 Section 5(1)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_PRIV_002_A",
+      "control_id": "TF-PRIV-002",
+      "control_name": "Consent Mechanism & Validity",
+      "statutory_ref": "Section 6(1)",
+      "evidence_input": {
+        "key": "consent_opt_in",
+        "label": "Consent Affirmative Action",
+        "value": {
+          "free_unbundled": true,
+          "prechecked_checkboxes": false,
+          "explicit_opt_in": true,
+          "unambiguous_action": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Consent mechanism uses unbundled affirmative action with unchecked checkboxes in full accordance with Section 6(1).",
+      "reference_source": "DPDP Act, 2023 Section 6(1)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_002_B",
+      "control_id": "TF-PRIV-002",
+      "control_name": "Consent Mechanism & Validity",
+      "statutory_ref": "Section 6(1)",
+      "evidence_input": {
+        "key": "consent_opt_in",
+        "label": "Consent Affirmative Action",
+        "value": {
+          "prechecked_checkboxes": true,
+          "bundled_terms_of_service": true,
+          "forced_consent_for_unrelated_services": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Pre-ticked checkboxes and bundled non-essential consent violate the requirement of free, specific, and unambiguous consent under Section 6(1).",
+      "reference_source": "DPDP Act, 2023 Section 6(1)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_002_C",
+      "control_id": "TF-PRIV-002",
+      "control_name": "Consent Mechanism & Validity",
+      "statutory_ref": "Section 6(1)",
+      "evidence_input": {
+        "key": "cookie_banner_state",
+        "label": "Consent Banner State",
+        "value": { "banner_detected": false },
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "No interactive form or consent dialogue was encountered on the public landing page; insufficient evidence to evaluate consent validity.",
+      "reference_source": "DPDP Act, 2023 Section 6(1)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_PRIV_003_A",
+      "control_id": "TF-PRIV-003",
+      "control_name": "Multilingual Notice Option",
+      "statutory_ref": "Section 5(3)",
+      "evidence_input": {
+        "key": "notice_languages",
+        "label": "Supported Languages",
+        "value": ["English", "Hindi", "Tamil", "Bengali"],
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Notice provides options in English and Eighth Schedule languages (Hindi, Tamil, Bengali) complying with Section 5(3).",
+      "reference_source": "DPDP Act, 2023 Section 5(3)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_003_B",
+      "control_id": "TF-PRIV-003",
+      "control_name": "Multilingual Notice Option",
+      "statutory_ref": "Section 5(3)",
+      "evidence_input": {
+        "key": "notice_languages",
+        "label": "Supported Languages",
+        "value": ["English"],
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Notice is exclusively available in English with zero Eighth Schedule language alternatives provided upon request.",
+      "reference_source": "DPDP Act, 2023 Section 5(3)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_003_C",
+      "control_id": "TF-PRIV-003",
+      "control_name": "Multilingual Notice Option",
+      "statutory_ref": "Section 5(3)",
+      "evidence_input": {
+        "key": "notice_languages",
+        "label": "Supported Languages",
+        "value": [],
+        "status": "SELF_REPORTED"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "No language selector was detected on the site and self-reported language inventory was blank.",
+      "reference_source": "DPDP Act, 2023 Section 5(3)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_PRIV_004_A",
+      "control_id": "TF-PRIV-004",
+      "control_name": "Consent Withdrawal Ease",
+      "statutory_ref": "Section 6(4)",
+      "evidence_input": {
+        "key": "withdrawal_mechanism",
+        "label": "Consent Withdrawal Mechanism",
+        "value": {
+          "one_click_portal": true,
+          "ease_comparable_to_giving": true,
+          "automated_unsubscription": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Withdrawal of consent is provided via account settings and one-click preferences with comparable ease to granting consent.",
+      "reference_source": "DPDP Act, 2023 Section 6(4)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_004_B",
+      "control_id": "TF-PRIV-004",
+      "control_name": "Consent Withdrawal Ease",
+      "statutory_ref": "Section 6(4)",
+      "evidence_input": {
+        "key": "withdrawal_mechanism",
+        "label": "Consent Withdrawal Mechanism",
+        "value": {
+          "requires_in_person_notary": true,
+          "no_online_opt_out": true,
+          "administrative_fee_charged": true
+        },
+        "status": "NOT_SUPPORTED",
+        "confidence": 0.95
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Burdensome withdrawal barriers and fees violate the mandate that withdrawal must be as easy as giving consent under Section 6(4).",
+      "reference_source": "DPDP Act, 2023 Section 6(4)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_PRIV_004_C",
+      "control_id": "TF-PRIV-004",
+      "control_name": "Consent Withdrawal Ease",
+      "statutory_ref": "Section 6(4)",
+      "evidence_input": {
+        "key": "withdrawal_mechanism",
+        "label": "Consent Withdrawal Mechanism",
+        "value": null,
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "No policy statement or interface elements regarding consent revocation were located.",
+      "reference_source": "DPDP Act, 2023 Section 6(4)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_SEC_001_A",
+      "control_id": "TF-SEC-001",
+      "control_name": "Reasonable Security Safeguards",
+      "statutory_ref": "Section 8(5)",
+      "evidence_input": {
+        "key": "tls_and_security_headers",
+        "label": "Technical Safeguards",
+        "value": {
+          "https_enforced": true,
+          "hsts_active": true,
+          "tls_version": "TLSv1.3",
+          "csp_implemented": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Technical telemetry verifies modern TLS 1.3 encryption, active HSTS, and Content Security Policy conforming with Rule 6 and Section 8(5).",
+      "reference_source": "DPDP Act Section 8(5) & DPDP Rules Rule 6",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_SEC_001_B",
+      "control_id": "TF-SEC-001",
+      "control_name": "Reasonable Security Safeguards",
+      "statutory_ref": "Section 8(5)",
+      "evidence_input": {
+        "key": "tls_and_security_headers",
+        "label": "Technical Safeguards",
+        "value": {
+          "https_enforced": false,
+          "plaintext_http_allowed": true,
+          "weak_ciphers": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Plaintext HTTP transport and absent encryption directly fail the mandatory duty to maintain reasonable security safeguards under Section 8(5).",
+      "reference_source": "DPDP Act Section 8(5)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_SEC_001_C",
+      "control_id": "TF-SEC-001",
+      "control_name": "Reasonable Security Safeguards",
+      "statutory_ref": "Section 8(5)",
+      "evidence_input": {
+        "key": "internal_encryption_at_rest",
+        "label": "At-Rest Database Encryption",
+        "value": null,
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "External network scan cannot evaluate internal backend database encryption at rest without access to cloud architecture documentation.",
+      "reference_source": "DPDP Act Section 8(5)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_SEC_002_A",
+      "control_id": "TF-SEC-002",
+      "control_name": "Personal Data Breach Intimation",
+      "statutory_ref": "Section 8(6)",
+      "evidence_input": {
+        "key": "breach_incident_response_plan",
+        "label": "Breach Intimation Protocol",
+        "value": {
+          "intimation_to_board_mandated": true,
+          "affected_principals_notified": true,
+          "timeline_established": "Prompt intimation as prescribed"
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Documented incident response plan explicitly provides for notifying both the Data Protection Board and affected Data Principals under Section 8(6).",
+      "reference_source": "DPDP Act Section 8(6) & DPDP Rules Rule 7",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_SEC_002_B",
+      "control_id": "TF-SEC-002",
+      "control_name": "Personal Data Breach Intimation",
+      "statutory_ref": "Section 8(6)",
+      "evidence_input": {
+        "key": "breach_incident_response_plan",
+        "label": "Breach Intimation Protocol",
+        "value": {
+          "policy_states_no_disclosure_to_users": true,
+          "board_notification_expressly_disclaimed": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Policy disclaiming user and regulatory breach intimation directly contradicts statutory obligations under Section 8(6).",
+      "reference_source": "DPDP Act Section 8(6)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_SEC_002_C",
+      "control_id": "TF-SEC-002",
+      "control_name": "Personal Data Breach Intimation",
+      "statutory_ref": "Section 8(6)",
+      "evidence_input": {
+        "key": "breach_incident_response_plan",
+        "label": "Breach Intimation Protocol",
+        "value": null,
+        "status": "SELF_REPORTED"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "Organization provided no internal breach response manual or public breach commitment; evidence is indeterminate.",
+      "reference_source": "DPDP Act Section 8(6)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_RIGHTS_001_A",
+      "control_id": "TF-RIGHTS-001",
+      "control_name": "Right of Access to Information",
+      "statutory_ref": "Section 11",
+      "evidence_input": {
+        "key": "right_to_access_workflow",
+        "label": "Access Request Channel",
+        "value": {
+          "summary_of_data_available": true,
+          "identities_of_fiduciaries_shared_with": true,
+          "online_portal_channel": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Platform provides explicit workflow for data principals to request summary of processed data and identities of shared fiduciaries under Section 11.",
+      "reference_source": "DPDP Act Section 11",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_RIGHTS_001_B",
+      "control_id": "TF-RIGHTS-001",
+      "control_name": "Right of Access to Information",
+      "statutory_ref": "Section 11",
+      "evidence_input": {
+        "key": "right_to_access_workflow",
+        "label": "Access Request Channel",
+        "value": {
+          "terms_state_no_access_permitted": true,
+          "user_data_denied_upon_request": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Denying access to information about processed personal data contravenes statutory rights guaranteed under Section 11.",
+      "reference_source": "DPDP Act Section 11",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_RIGHTS_001_C",
+      "control_id": "TF-RIGHTS-001",
+      "control_name": "Right of Access to Information",
+      "statutory_ref": "Section 11",
+      "evidence_input": {
+        "key": "right_to_access_workflow",
+        "label": "Access Request Channel",
+        "value": null,
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "Website privacy policy did not enumerate specific access request procedures.",
+      "reference_source": "DPDP Act Section 11",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_GOV_001_A",
+      "control_id": "TF-GOV-001",
+      "control_name": "Children Personal Data Processing",
+      "statutory_ref": "Section 9",
+      "evidence_input": {
+        "key": "child_consent_and_tracking",
+        "label": "Child Data Protection Safeguards",
+        "value": {
+          "verifiable_parental_consent": true,
+          "behavioural_tracking_prohibited": true,
+          "targeted_advertising_disabled": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Parental consent verification is implemented and behavioural tracking/targeted advertising of children is prohibited under Section 9.",
+      "reference_source": "DPDP Act Section 9",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_GOV_001_B",
+      "control_id": "TF-GOV-001",
+      "control_name": "Children Personal Data Processing",
+      "statutory_ref": "Section 9",
+      "evidence_input": {
+        "key": "child_consent_and_tracking",
+        "label": "Child Data Protection Safeguards",
+        "value": {
+          "tracking_of_minors_active": true,
+          "targeted_ads_served_to_children": true,
+          "no_parental_verification": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Active tracking, behavioural monitoring, or targeted advertising directed at children directly violates Sections 9(2) and 9(3).",
+      "reference_source": "DPDP Act Section 9(2), 9(3)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_GOV_001_C",
+      "control_id": "TF-GOV-001",
+      "control_name": "Children Personal Data Processing",
+      "statutory_ref": "Section 9",
+      "evidence_input": {
+        "key": "b2b_enterprise_service_only",
+        "label": "Target Demographics",
+        "value": { "adult_enterprise_only": true, "no_child_data_processed": true },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_APPLICABLE",
+      "explanation": "Service exclusively targets adult enterprise professionals and processes no children's data; Section 9 obligations are not applicable.",
+      "reference_source": "DPDP Act Section 9",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_TRP_001_A",
+      "control_id": "TF-TRP-001",
+      "control_name": "Grievance Redressal Mechanism & Officer",
+      "statutory_ref": "Section 8(9)",
+      "evidence_input": {
+        "key": "grievance_officer_details",
+        "label": "Grievance Redressal Details",
+        "value": {
+          "officer_named": "Rajesh V. Sharma",
+          "official_email_published": "grievance@technova.in",
+          "physical_address_published": true,
+          "turnaround_sla_published": "30 days"
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Name, email, and contact details of the Grievance Redressal Officer are clearly published with resolution timelines under Section 8(9) & Rule 8.",
+      "reference_source": "DPDP Act Section 8(9) & DPDP Rules Rule 8",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_TRP_001_B",
+      "control_id": "TF-TRP-001",
+      "control_name": "Grievance Redressal Mechanism & Officer",
+      "statutory_ref": "Section 8(9)",
+      "evidence_input": {
+        "key": "grievance_officer_details",
+        "label": "Grievance Redressal Details",
+        "value": {
+          "officer_named": false,
+          "no_contact_channel": true,
+          "contact_form_broken": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Complete absence of an identified Grievance Officer or contact channel violates the mandatory transparency obligation under Section 8(9).",
+      "reference_source": "DPDP Act Section 8(9)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_TRP_001_C",
+      "control_id": "TF-TRP-001",
+      "control_name": "Grievance Redressal Mechanism & Officer",
+      "statutory_ref": "Section 8(9)",
+      "evidence_input": {
+        "key": "grievance_officer_details",
+        "label": "Grievance Redressal Details",
+        "value": null,
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "Footer link to grievance officer was present but led to an authentication-gated internal intranet; insufficient public evidence.",
+      "reference_source": "DPDP Act Section 8(9)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+
+    {
+      "case_id": "CASE_TF_LIFE_001_A",
+      "control_id": "TF-LIFE-001",
+      "control_name": "Data Retention Specification & Erasure",
+      "statutory_ref": "Section 8(7)",
+      "evidence_input": {
+        "key": "retention_schedule_and_erasure",
+        "label": "Retention Policy & Erasure",
+        "value": {
+          "retention_period_specified": "180 days post-purpose",
+          "erasure_procedure_automated": true,
+          "legal_preservation_exceptions_defined": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "SUPPORTED",
+      "explanation": "Clear data retention schedule published and automated data erasure upon purpose completion established under Section 8(7).",
+      "reference_source": "DPDP Act Section 8(7)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_LIFE_001_B",
+      "control_id": "TF-LIFE-001",
+      "control_name": "Data Retention Specification & Erasure",
+      "statutory_ref": "Section 8(7)",
+      "evidence_input": {
+        "key": "retention_schedule_and_erasure",
+        "label": "Retention Policy & Erasure",
+        "value": {
+          "indefinite_retention_claimed": true,
+          "erasure_requests_expressly_rejected": true
+        },
+        "status": "VERIFIED"
+      },
+      "expected_verdict": "NOT_SUPPORTED",
+      "explanation": "Claiming indefinite retention and refusing erasure once the purpose is served violates Section 8(7) mandates.",
+      "reference_source": "DPDP Act Section 8(7)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    },
+    {
+      "case_id": "CASE_TF_LIFE_001_C",
+      "control_id": "TF-LIFE-001",
+      "control_name": "Data Retention Specification & Erasure",
+      "statutory_ref": "Section 8(7)",
+      "evidence_input": {
+        "key": "retention_schedule_and_erasure",
+        "label": "Retention Policy & Erasure",
+        "value": null,
+        "status": "NOT_FOUND"
+      },
+      "expected_verdict": "INSUFFICIENT_EVIDENCE",
+      "explanation": "Privacy policy mentions retention generally but does not specify retention periods or automated erasure procedures.",
+      "reference_source": "DPDP Act Section 8(7)",
+      "reviewer_status": "RESEARCH_TEAM_AUTHORED"
+    }
+  ]
+}

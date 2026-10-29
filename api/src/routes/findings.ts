@@ -1,10 +1,18 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../database/supabaseClient.js';
+import { durableStore } from '../database/durableStore.js';
+import { requireAuth, validateTenantAccess } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-router.get('/findings/:id', async (req: Request, res: Response): Promise<void> => {
+router.get('/findings/:id', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const job = (await db.getAssessment(id)) || durableStore.getAssessment(id);
+
+  if (job && !validateTenantAccess(job.org_id, req, res)) {
+    return;
+  }
+
   const findings = await db.getFindings(id);
 
   if (!findings || findings.length === 0) {

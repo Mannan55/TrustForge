@@ -7,6 +7,7 @@ router.get('/health', (req, res) => {
     status: 'healthy',
     service: 'TrustForge Node.js / Express Research Orchestrator',
     version: '1.0.0-research',
+    llm_provider: process.env.TRUSTFORGE_LLM_PROVIDER || 'groq',
     models_configured: 10,
     timestamp: new Date().toISOString(),
     crawler: 'Playwright Headless Chromium (Active)',

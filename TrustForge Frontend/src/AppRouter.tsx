@@ -23,6 +23,7 @@ import { EvidencePage } from "@/pages/app/EvidencePage";
 import { RemediationPage } from "@/pages/app/RemediationPage";
 import { ReportsPage } from "@/pages/app/ReportsPage";
 import { ModelBenchmarkPage } from "@/pages/app/ModelBenchmarkPage";
+import { RAGMonitorPage } from "@/pages/app/RAGMonitorPage";
 import { RightsPage } from "@/pages/app/RightsPage";
 import { SettingsPage } from "@/pages/app/SettingsPage";
 
@@ -93,6 +94,7 @@ export function AppRouter() {
           <Route path="/remediation" element={<RemediationPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/benchmark" element={<ModelBenchmarkPage />} />
+          <Route path="/rag-monitor" element={<RAGMonitorPage />} />
           <Route path="/rights" element={<RightsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
