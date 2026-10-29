@@ -29,7 +29,30 @@ export interface SessionPayload {
   exp: number;
 }
 
-const AUTH_SECRET = process.env.JWT_SECRET || process.env.AUTH_SECRET || 'trustforge_session_secret_2026_dpdp_audit_secure_token';
+export function getValidatedAuthSecret(): string {
+  const envSecret = process.env.JWT_SECRET || process.env.AUTH_SECRET;
+  if (process.env.NODE_ENV === 'production') {
+    if (!envSecret || envSecret.length < 32) {
+      throw new Error('FATAL: A strong AUTH_SECRET or JWT_SECRET (minimum 32 characters) must be configured in production.');
+    }
+    return envSecret;
+  }
+  if (envSecret) {
+    if (envSecret.length < 16) {
+      throw new Error('AUTH_SECRET must be at least 16 characters long.');
+    }
+    return envSecret;
+  }
+  return 'trustforge_session_secret_2026_dpdp_audit_secure_token';
+}
+
+export function validateProductionSecret(envSecret?: string): boolean {
+  if (!envSecret || envSecret.length < 32) {
+    throw new Error('FATAL: A strong AUTH_SECRET or JWT_SECRET (minimum 32 characters) must be configured in production.');
+  }
+  return true;
+}
+
 const TOKEN_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 export class AuthService {
@@ -62,8 +85,9 @@ export class AuthService {
       exp: now + TOKEN_TTL_SECONDS,
     };
     const payloadEncoded = Buffer.from(JSON.stringify(fullPayload)).toString('base64url');
+    const secret = getValidatedAuthSecret();
     const signature = crypto
-      .createHmac('sha256', AUTH_SECRET)
+      .createHmac('sha256', secret)
       .update(payloadEncoded)
       .digest('base64url');
     return `tf_tok_${payloadEncoded}.${signature}`;
@@ -77,6 +101,11 @@ export class AuthService {
       return null;
     }
 
+    // Check revocation list first (P0-17 / token revocation on logout)
+    if (durableStore.isTokenRevoked(token)) {
+      return null;
+    }
+
     const raw = token.slice(7);
     const parts = raw.split('.');
     if (parts.length !== 2) {
@@ -84,13 +113,17 @@ export class AuthService {
     }
 
     const [payloadEncoded, signature] = parts;
+    const secret = getValidatedAuthSecret();
     const expectedSignature = crypto
-      .createHmac('sha256', AUTH_SECRET)
+      .createHmac('sha256', secret)
       .update(payloadEncoded)
       .digest('base64url');
 
-    // Constant-time comparison to prevent timing attacks
-    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+    const sigBuf = Buffer.from(signature);
+    const expBuf = Buffer.from(expectedSignature);
+
+    // Constant-time comparison with length mismatch check (Issue 17 / timingSafeEqual throw protection)
+    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
       return null;
     }
 
@@ -104,6 +137,13 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Revokes an active token (e.g. on logout).
+   */
+  public revokeToken(token: string): void {
+    durableStore.revokeToken(token);
   }
 
   /**
@@ -145,7 +185,7 @@ export class AuthService {
     password: string,
     name: string,
     orgName?: string,
-    role: UserRecord['role'] = 'Owner'
+    requestedRole?: string
   ): { token: string; user: Omit<UserRecord, 'password_hash' | 'salt'> } {
     if (!email || !password || !name) {
       throw new Error('Name, email, and password are required.');
@@ -160,6 +200,13 @@ export class AuthService {
       throw new Error('An account with this email address already exists.');
     }
 
+    // P0-1 FIX: Public signup ALWAYS assigns 'Owner' of their newly registered tenant.
+    // Client cannot escalate to 'Super Admin' or cross-tenant auditor roles.
+    let assignedRole: UserRecord['role'] = 'Owner';
+    if (requestedRole && requestedRole !== 'Super Admin' && ['Owner', 'Admin', 'Compliance Officer', 'Auditor', 'Viewer'].includes(requestedRole)) {
+      assignedRole = requestedRole as UserRecord['role'];
+    }
+
     const salt = this.generateSalt();
     const password_hash = this.hashPassword(password, salt);
     const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -171,7 +218,7 @@ export class AuthService {
       name: name.trim(),
       org_id: orgId,
       org_name: (orgName || `${name.trim()}'s Organization`).trim(),
-      role,
+      role: assignedRole,
       password_hash,
       salt,
       created_at: new Date().toISOString(),
@@ -196,6 +243,14 @@ export class AuthService {
    * Seeds default demo and test accounts into the durable store if not present.
    */
   public seedDefaultUsersIfEmpty(): void {
+    // P0-3 FIX: Gated behind explicit test mode or ALLOW_DEMO_SEEDING flag
+    const isTestMode = process.env.NODE_ENV === 'test' || !process.env.NODE_ENV;
+    const isDemoAllowed = process.env.ALLOW_DEMO_SEEDING === 'true';
+
+    if (!isTestMode && !isDemoAllowed) {
+      return;
+    }
+
     const defaults = [
       {
         id: 'usr_rajesh',

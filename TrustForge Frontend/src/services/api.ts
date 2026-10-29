@@ -632,3 +632,38 @@ export async function getAssessmentModelExecutions(id = "latest"): Promise<{
   }>("GET", `/api/assessments/${encodeURIComponent(id)}/model-executions`);
 }
 
+// --- Organization & Domain Verification (Authentic Server Endpoints) ---
+
+export interface ApiDomainChallengeResponse {
+  domain: string;
+  challengeRecord: string;
+  challengeExpiresAt: string;
+  method: string;
+  note: string;
+}
+
+export interface ApiDomainVerificationResponse {
+  verified: boolean;
+  method: string;
+  challengeRecord?: string;
+  challengeExpiresAt?: string;
+  note: string;
+}
+
+export async function createDomainChallengeApi(domain: string): Promise<ApiDomainChallengeResponse> {
+  return _request<ApiDomainChallengeResponse>("POST", "/api/organization/domain-challenge", { domain });
+}
+
+export async function verifyDomainApi(domain: string): Promise<ApiDomainVerificationResponse> {
+  return _request<ApiDomainVerificationResponse>("POST", "/api/organization/verify-domain", { domain });
+}
+
+export async function getOrganizationApi(): Promise<any> {
+  return _request<any>("GET", "/api/organization");
+}
+
+export async function updateOrganizationApi(patch: any): Promise<any> {
+  return _request<any>("PUT", "/api/organization", patch);
+}
+
+

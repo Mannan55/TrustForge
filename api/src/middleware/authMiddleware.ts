@@ -71,11 +71,24 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
             .eq('user_id', data.user.id)
             .maybeSingle();
 
+                    if (!memberData || !memberData.organisation_id) {
+            // P0-4 FIX: Reject authenticated status if user has no active organization membership
+            // Zero fallback to another tenant or elevated privileges
+            req.authContext = {
+              userId: data.user.id,
+              email,
+              orgId: '',
+              role: 'Viewer',
+              isAuthenticated: false,
+            };
+            return next();
+          }
+
           req.authContext = {
             userId: data.user.id,
             email,
-            orgId: memberData?.organisation_id || 'org_technova',
-            role: memberData?.role || 'Owner',
+            orgId: memberData.organisation_id,
+            role: memberData.role || 'Viewer',
             isAuthenticated: true,
           };
           return next();

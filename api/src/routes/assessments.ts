@@ -869,43 +869,26 @@ export async function ensureAssessmentRAGArtifacts(job: AssessmentRecord): Promi
     return job;
   }
 
-  try {
-    const frozenSnapshot = await hybridRAG.buildFrozenSnapshot(CANONICAL_CONTROLS, {
-      topK: 5,
-      categoryMap: CANONICAL_CONTROL_TO_C10,
-    });
-
-    const findings = job.findings || [];
-    const evidence = job.evidence || [];
-
-    // Historical execution without telemetry: mark stages as NOT_RECORDED
-    let ragTrace = RAGExecutionTracer.createInitialTrace(job.assessment_id, job.website_url);
-    ragTrace.started_at = job.created_at || new Date().toISOString();
-    ragTrace.status = 'COMPLETED';
-
-    for (const stage of ragTrace.stages) {
-      stage.status = 'SKIPPED';
-      stage.duration_ms = 0;
-      stage.details = {
-        status: 'NOT_RECORDED',
-        note: 'Historical assessment execution prior to live RAG telemetry instrumentation — timing not recorded.',
-      };
-    }
-
-    ragTrace = RAGExecutionTracer.finalizeTrace(ragTrace, 'COMPLETED', frozenSnapshot.snapshotHash);
-
-    const retrievalExplorer = RAGExecutionTracer.buildRetrievalExplorerRecords(frozenSnapshot.contexts);
-    const evidenceToVerdict = RAGExecutionTracer.buildEvidenceToVerdictTrace(findings as ModelFinding[], evidence, frozenSnapshot.contexts);
-    const modelExecutions = RAGExecutionTracer.buildModelExecutionTrace({}, {}, {});
-
-    job.rag_execution_trace = ragTrace;
-    job.retrieval_explorer = retrievalExplorer;
-    job.evidence_to_verdict_trace = evidenceToVerdict;
-    job.model_executions = modelExecutions;
-    job.frozen_snapshot_hash = frozenSnapshot.snapshotHash;
-  } catch (e) {
-    console.warn('[ensureAssessmentRAGArtifacts] Could not augment job:', e);
-  }
+  // Issue 12 FIX: Historical execution without live telemetry instrumentation.
+  // DO NOT call buildFrozenSnapshot to reconstruct today's corpus for historical records.
+  // Mark trace status explicitly as NOT_RECORDED with empty historical artifacts.
+  job.rag_execution_trace = {
+    assessment_id: job.assessment_id,
+    target_url: job.website_url,
+    started_at: job.created_at || new Date().toISOString(),
+    completed_at: (job as any).updated_at || job.created_at || new Date().toISOString(),
+    status: 'NOT_RECORDED',
+    total_duration_ms: 0,
+    frozen_snapshot_hash: job.frozen_snapshot_hash || 'NOT_RECORDED',
+    stages: [],
+    metadata: {
+      note: 'Historical assessment execution prior to live RAG telemetry instrumentation. Original retrieval context not recorded.',
+    },
+  } as any;
+  job.retrieval_explorer = [];
+  job.evidence_to_verdict_trace = [];
+  job.model_executions = [];
+  job.frozen_snapshot_hash = job.frozen_snapshot_hash || undefined;
 
   return job;
 }
@@ -1130,21 +1113,29 @@ router.post('/assessments/:id/evidence/upload', requireAuth, (req: Request, res:
       fs.mkdirSync(assessmentUploadDir, { recursive: true });
     }
 
-    const filePath = path.join(assessmentUploadDir, safeFilename);
-    fs.writeFileSync(filePath, file.buffer);
-
-    const sizeKb = Math.round((file.size / 1024) * 10) / 10;
     const evId = `ev-upload-${crypto.randomBytes(6).toString('hex')}`;
     const ext = path.extname(originalName).toLowerCase();
 
-    // Extract text preview if readable plain text
+    // Issue 14 FIX: Unique immutable filename per evidence ID so same-name uploads
+    // never overwrite prior evidence bytes
+    const storedFilename = `${evId}_${safeFilename}`;
+    const filePath = path.join(assessmentUploadDir, storedFilename);
+    fs.writeFileSync(filePath, file.buffer);
+
+    const sizeKb = Math.round((file.size / 1024) * 10) / 10;
+
+    // Issue 13 FIX: Clear extracted vs unparsed status for uploaded documents
     let textPreview = '';
+    let isExtracted = false;
     if (ext === '.txt') {
       textPreview = file.buffer.toString('utf-8', 0, Math.min(file.buffer.length, 5000));
+      isExtracted = true;
     }
 
     const title = `Uploaded Document: ${originalName}`;
-    const notes = `Uploaded document '${originalName}' (${sizeKb} KB, ${file.mimetype}). Document metadata registered and attached to assessment.`;
+    const notes = isExtracted
+      ? `Uploaded text document '${originalName}' (${sizeKb} KB). Text extracted successfully for grounding validation.`
+      : `Uploaded binary document '${originalName}' (${sizeKb} KB, ${file.mimetype}). Document archived; semantic text extraction not performed (participates_in_grounding: false).`;
     const method = `Document upload verified by TrustForge (size: ${file.size} bytes, sha256: ${contentHash})`;
 
     const evidenceItem: EvidenceItem = {
@@ -1153,13 +1144,15 @@ router.post('/assessments/:id/evidence/upload', requireAuth, (req: Request, res:
       key: `doc_${crypto.randomBytes(4).toString('hex')}`,
       label: title,
       value: {
-        filename: safeFilename,
+        filename: storedFilename,
         original_name: originalName,
         size_bytes: file.size,
         content_type: file.mimetype,
         content_hash: contentHash,
         file_path: filePath,
         text_preview: textPreview,
+        text_extraction_status: isExtracted ? 'EXTRACTED' : 'NOT_PARSED',
+        participates_in_grounding: isExtracted,
       },
       status: 'DETECTED',
       confidence: 1.0,
@@ -1223,6 +1216,16 @@ router.get('/assessments/:id/evidence/:evidenceId/download', requireAuth, async 
   if (!filePath || !fs.existsSync(filePath)) {
     res.status(404).json({ error: 'Evidence file not found on disk.', code: 'FILE_NOT_FOUND' });
     return;
+  }
+
+  // Issue 14 FIX: Verify stored bytes against expected SHA-256 hash
+  if (val?.content_hash) {
+    const fileBytes = fs.readFileSync(filePath);
+    const actualHash = crypto.createHash('sha256').update(fileBytes).digest('hex');
+    if (actualHash !== val.content_hash) {
+      res.status(500).json({ error: 'Evidence file integrity verification failed (SHA-256 mismatch).', code: 'INTEGRITY_CHECK_FAILED' });
+      return;
+    }
   }
 
   res.download(filePath, originalName);

@@ -173,7 +173,7 @@ const handlePdfExport = async (req: Request, res: Response): Promise<void> => {
 
     // Build authentic TrustScoreComputation without fabricated defaults
     const computedScore: TrustScoreComputation = {
-      model_id: score?.model_id || 'M03',
+      model_id: score?.model_id || (score?.is_consensus ? 'CONSENSUS' : 'NOT_RECORDED'),
       trust_score: trustScoreVal,
       posture: posture as any,
       evidence_coverage: evidenceCoverage,
@@ -184,7 +184,7 @@ const handlePdfExport = async (req: Request, res: Response): Promise<void> => {
     const findings = job.findings || (await db.getFindings(effectiveId)) || [];
     const evaluatedModels = job.models_evaluated && job.models_evaluated.length > 0
       ? job.models_evaluated
-      : (computedScore.is_consensus ? ['M01', 'M02', 'M03'] : [computedScore.model_id]);
+      : (score?.model_id ? [score.model_id] : []);
 
     const pdfBuffer = await generatePdfReport({
       scanId: effectiveId,

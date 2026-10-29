@@ -267,7 +267,7 @@ test('Phase 7.7: Model executions trace captures all 10 slots with verified stat
 // 5. Historical Record Recovery & Browser Refresh Resilience
 // ============================================================================
 
-test('Phase 7.8: ensureAssessmentRAGArtifacts synthesizes and persists artifacts for historical jobs', async () => {
+test('Phase 7.8: ensureAssessmentRAGArtifacts accurately marks historical jobs as NOT_RECORDED (Finding 12)', async () => {
   const historicalId = `ASM_HIST_${Date.now()}`;
   const bareJob: AssessmentRecord = {
     assessment_id: historicalId,
@@ -281,21 +281,19 @@ test('Phase 7.8: ensureAssessmentRAGArtifacts synthesizes and persists artifacts
 
   durableStore.setAssessment(historicalId, bareJob);
 
-  // Call lazy enricher
+  // Call enricher (Finding 12: must NOT reconstruct historical retrieval from today's corpus)
   const enriched = await ensureAssessmentRAGArtifacts(bareJob);
 
   assert.ok(enriched.rag_execution_trace != null);
-  assert.equal(enriched.rag_execution_trace.stages.length, 10);
-  assert.ok(enriched.retrieval_explorer != null);
-  assert.ok(enriched.retrieval_explorer.length > 0);
-  assert.ok(enriched.evidence_to_verdict_trace != null);
-  assert.ok(enriched.model_executions != null);
-  assert.equal(enriched.model_executions.length, 10);
+  assert.equal(enriched.rag_execution_trace.status, 'NOT_RECORDED');
+  assert.equal(enriched.retrieval_explorer?.length, 0, 'Must NOT synthesize retrieval explorer records from today\'s corpus for historical jobs');
+  assert.equal(enriched.evidence_to_verdict_trace?.length, 0);
+  assert.equal(enriched.model_executions?.length, 0);
 
   // Verify persistence in DurableStore
   const reloaded = durableStore.getAssessment(historicalId);
   assert.ok(reloaded?.rag_execution_trace != null);
-  assert.ok(reloaded?.retrieval_explorer != null);
+  assert.equal(reloaded?.rag_execution_trace.status, 'NOT_RECORDED');
 });
 
 // ============================================================================

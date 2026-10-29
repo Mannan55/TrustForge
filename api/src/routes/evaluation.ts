@@ -8,6 +8,7 @@ import { Router, Request, Response } from 'express';
 import { evaluationRunner } from '../evaluation/evaluationRunner.js';
 import { canonicalEvaluationDataset } from '../evaluation/expertDataset.js';
 import { durableStore } from '../database/durableStore.js';
+import { requireAuth } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
@@ -79,7 +80,7 @@ router.get('/ablation', (req: Request, res: Response) => {
 });
 
 // POST /api/evaluation/run — Execute evaluation benchmark with configurable options
-router.post('/run', (req: Request, res: Response) => {
+router.post('/run', requireAuth, (req: Request, res: Response) => {
   try {
     const { rejection_policy = 'PENALIZE_AS_INCORRECT', run_bootstrap = true, bootstrap_iterations = 500 } = req.body || {};
     const runResult = evaluationRunner.runFullEvaluation({
@@ -95,7 +96,7 @@ router.post('/run', (req: Request, res: Response) => {
 });
 
 // GET /api/evaluation/export/csv — Download evaluation matrix as RFC 4180 CSV
-router.get('/export/csv', (req: Request, res: Response) => {
+router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
   const latest = durableStore.getEvaluationRun('latest') || evaluationRunner.runFullEvaluation();
 
   const headers = [

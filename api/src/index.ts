@@ -16,6 +16,7 @@ import express from 'express';
 import cors from 'cors';
 
 import authRoute from './routes/auth.js';
+import organizationRoute from './routes/organization.js';
 import healthRoute from './routes/health.js';
 import scansRoute from './routes/scans.js';
 import assessmentsRoute from './routes/assessments.js';
@@ -36,10 +37,11 @@ app.use(cors({
   origin: (origin, callback) => {
     // allow requests with no origin (like mobile apps, curl, or same-origin)
     if (!origin) return callback(null, true);
-    const isAllowed = allowedOrigins.includes(origin) ||
-      origin.startsWith('http://localhost:') ||
-      origin.startsWith('http://127.0.0.1:') ||
-      origin.endsWith('.vercel.app');
+        const isAllowed = allowedOrigins.includes(origin) ||
+      (process.env.NODE_ENV !== 'production' && (
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:')
+      ));
 
     if (isAllowed) {
       return callback(null, true);
@@ -63,6 +65,7 @@ app.use(authMiddleware);
 
 // Route registration
 app.use('/api', authRoute);
+app.use('/api', organizationRoute);
 app.use('/api', healthRoute);
 app.use('/api', scansRoute);
 app.use('/api', assessmentsRoute);

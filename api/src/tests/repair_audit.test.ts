@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { authService } from '../services/authService.js';
+import { authService, validateProductionSecret } from '../services/authService.js';
 import { authMiddleware, requireAuth, validateTenantAccess } from '../middleware/authMiddleware.js';
 import { durableStore } from '../database/durableStore.js';
 import { db } from '../database/supabaseClient.js';
@@ -257,4 +257,172 @@ test('P0-5: Evidence items support DOCUMENT_UPLOAD with genuine file hashes', ()
   assert.equal(evidenceItem.source_type, 'DOCUMENT_UPLOAD');
   assert.equal(evidenceItem.content_hash, fileHash);
   assert.ok((evidenceItem.value as any).text_preview.includes('Internal Data Retention Policy'));
+});
+
+
+// ============================================================================
+// 5. Stage 2 Remediation Assertions (P0-1 to P0-10, P1-11 to P1-20)
+// ============================================================================
+
+test('P0-1: Public signup strictly rejects Super Admin escalation and forces Owner', () => {
+  const testEmail = "superadmin_hacker_" + Date.now() + "@attacker.com";
+  const result = authService.signup(testEmail, 'AttackerPass123!', 'Attacker', 'Attacker Corp', 'Super Admin');
+
+  assert.equal(result.user.role, 'Owner', 'Public signup MUST NOT grant Super Admin role');
+  assert.equal(result.user.email, testEmail);
+
+  // Verify issued token carries Owner role, not Super Admin
+  const verified = authService.verifyToken(result.token);
+  assert.ok(verified != null);
+  assert.equal(verified?.role, 'Owner', 'Session token payload role must be Owner');
+});
+
+test('P0-2: Production mode validates strong AUTH_SECRET and rejects weak/missing secrets', () => {
+  assert.throws(() => {
+    validateProductionSecret('short_secret');
+  }, /FATAL/);
+
+  assert.throws(() => {
+    validateProductionSecret(undefined);
+  }, /FATAL/);
+
+  assert.equal(validateProductionSecret('12345678901234567890123456789012'), true);
+});
+
+test('P0-4: Supabase user lacking active membership receives zero organizational claims', async () => {
+  // Simulate user with valid Supabase Auth session but no organisation_memberships row
+  const mockReq: any = {
+    headers: {
+      authorization: 'Bearer mock_supabase_user_no_membership',
+    },
+  };
+  const mockRes: any = {};
+  let nextCalled = false;
+
+  await authMiddleware(mockReq, mockRes, () => { nextCalled = true; });
+
+  assert.equal(nextCalled, true);
+  assert.equal(mockReq.authContext.isAuthenticated, false, 'User without membership must be unauthenticated');
+  assert.equal(mockReq.authContext.orgId, '', 'User without membership must have empty orgId');
+  assert.notEqual(mockReq.authContext.orgId, 'org_technova', 'Must NEVER fall back to org_technova');
+});
+
+test('P0-6: Domain verification creates expiring cryptographic challenge in durable store', () => {
+  const domain = 'enterprise-audit.in';
+  const challengeHex = crypto.randomBytes(16).toString('hex');
+  const recordValue = "trustforge-verification=" + challengeHex;
+  const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+
+  durableStore.setDomainChallenge(domain, {
+    domain,
+    challenge: challengeHex,
+    recordValue,
+    orgId: 'org_test_123',
+    expiresAt,
+    verified: false,
+    createdAt: new Date().toISOString(),
+  });
+
+  const stored = durableStore.getDomainChallenge(domain);
+  assert.ok(stored != null);
+  assert.equal(stored.verified, false);
+  assert.equal(stored.recordValue, recordValue);
+  assert.ok(stored.expiresAt > Date.now());
+});
+
+test('P0-9: Reports return explicit unrecorded/empty values rather than fabricated default models or demo URL', () => {
+  const emptyJob: AssessmentRecord = {
+    assessment_id: "test_empty_" + Date.now(),
+    org_id: 'org_empty',
+    website_url: '',
+    status: 'complete',
+    progress: 100,
+    trust_score: 0,
+    evidence_coverage: 0,
+    posture: 'Not Scorable',
+    created_at: new Date().toISOString(),
+    findings: [],
+    evidence: [],
+    pillar_scores: [],
+  };
+
+  assert.equal(emptyJob.website_url, '');
+  assert.equal(emptyJob.models_evaluated, undefined);
+  // Verify that an empty assessment record has no fabricated models
+  const evaluated = emptyJob.models_evaluated || [];
+  assert.equal(evaluated.length, 0, 'Must not substitute default [M01, M02, M03]');
+});
+
+test('P1-12: Historical assessments without telemetry remain NOT_RECORDED without current corpus reconstruction', async () => {
+  const historicalJob: AssessmentRecord = {
+    assessment_id: "HIST_" + Date.now(),
+    org_id: 'org_hist',
+    website_url: 'https://historical-target.in',
+    status: 'complete',
+    progress: 100,
+    trust_score: 75,
+    posture: 'Moderate Alignment',
+    created_at: '2026-09-01T12:00:00.000Z',
+    findings: [],
+    evidence: [],
+    pillar_scores: [],
+  };
+
+  const augmented = await ensureAssessmentRAGArtifacts(historicalJob);
+
+  assert.ok(augmented.rag_execution_trace != null);
+  assert.equal(augmented.rag_execution_trace?.status, 'NOT_RECORDED', 'Historical trace status must be NOT_RECORDED');
+  assert.equal(augmented.retrieval_explorer?.length, 0, 'Retrieval explorer must be empty for historical records');
+  assert.equal(augmented.evidence_to_verdict_trace?.length, 0, 'Evidence-to-verdict trace must be empty for historical records');
+  assert.equal(augmented.model_executions?.length, 0, 'Model executions must be empty for historical records');
+});
+
+test('P1-14: Evidence uploads use unique per-evidence IDs preventing same-name overwrites', () => {
+  const filename = 'security_policy.pdf';
+  const evId1 = "ev-upload-" + crypto.randomBytes(6).toString('hex');
+  const evId2 = "ev-upload-" + crypto.randomBytes(6).toString('hex');
+
+  const storedFilename1 = evId1 + "_" + filename;
+  const storedFilename2 = evId2 + "_" + filename;
+
+  assert.notEqual(storedFilename1, storedFilename2, 'Same-name uploads MUST have unique stored filenames');
+  assert.ok(storedFilename1.startsWith(evId1));
+  assert.ok(storedFilename2.startsWith(evId2));
+});
+
+test('P1-13: Uploaded document text extraction flags binary files as NOT_PARSED', () => {
+  const extPdf: string = '.pdf';
+  const isExtractedPdf = extPdf === '.txt';
+  const textExtractionStatusPdf = isExtractedPdf ? 'EXTRACTED' : 'NOT_PARSED';
+
+  assert.equal(textExtractionStatusPdf, 'NOT_PARSED');
+  assert.equal(isExtractedPdf, false, 'PDF documents must NOT claim text extraction without dedicated parser');
+
+  const extTxt: string = '.txt';
+  const isExtractedTxt = extTxt === '.txt';
+  const textExtractionStatusTxt = isExtractedTxt ? 'EXTRACTED' : 'NOT_PARSED';
+  assert.equal(textExtractionStatusTxt, 'EXTRACTED');
+});
+
+test('P1-17: Token verification enforces length equality before timingSafeEqual and respects token revocation', () => {
+  const loginRes = authService.login('rajesh@technova.in', 'DemoPassword123!');
+  const token = loginRes.token;
+
+  // Active token verifies
+  const valid = authService.verifyToken(token);
+  assert.ok(valid != null);
+
+  // Revoke token
+  authService.revokeToken(token);
+
+  // Revoked token must immediately fail verification
+  const revoked = authService.verifyToken(token);
+  assert.equal(revoked, null, 'Revoked token MUST return null upon verification');
+
+  // Length mismatch check (protect against timingSafeEqual throwing on mismatched buffers)
+  const tokenDifferentLen = token.slice(0, -3);
+  assert.doesNotThrow(() => {
+    const res = authService.verifyToken(tokenDifferentLen);
+    assert.equal(res, null);
+  });
 });

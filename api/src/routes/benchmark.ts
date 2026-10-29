@@ -60,7 +60,7 @@ router.get('/diagnostics', (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/latest — Return the most recent benchmark evaluation run
-router.get('/latest', (req: Request, res: Response) => {
+router.get('/latest', requireAuth, (req: Request, res: Response) => {
   const latest = durableStore.getBenchmark('latest');
   if (!latest) {
     res.status(404).json({ error: 'No benchmark run recorded yet.' });
@@ -70,7 +70,7 @@ router.get('/latest', (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/export/csv — Download latest benchmark matrix as RFC 4180 CSV
-router.get('/export/csv', (req: Request, res: Response) => {
+router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
   const latest = durableStore.getBenchmark('latest');
   if (!latest) {
     res.status(404).send('No benchmark run recorded yet.');
@@ -83,7 +83,7 @@ router.get('/export/csv', (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/list — List all completed benchmark runs
-router.get('/list', (req: Request, res: Response) => {
+router.get('/list', requireAuth, (req: Request, res: Response) => {
   const benchmarks = durableStore.listBenchmarks();
   res.json({
     total_runs: benchmarks.length,
@@ -119,7 +119,7 @@ router.get('/topsis/profiles', (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/topsis/latest — Return latest TOPSIS run result
-router.get('/topsis/latest', async (req: Request, res: Response) => {
+router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) => {
   const latest = (await db.getTOPSISRun('latest')) || durableStore.getTOPSISRun('latest');
   if (!latest) {
     // If no run recorded yet, execute demonstration run on synthetic fixture
@@ -139,7 +139,7 @@ router.get('/topsis/latest', async (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/topsis/list — List all historical TOPSIS ranking runs
-router.get('/topsis/list', async (req: Request, res: Response) => {
+router.get('/topsis/list', requireAuth, async (req: Request, res: Response) => {
   const runs = (await db.listTOPSISRuns()) || durableStore.listTOPSISRuns();
   res.json({
     total_runs: runs.length,
@@ -148,7 +148,7 @@ router.get('/topsis/list', async (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/topsis/:runId/sensitivity — Get sensitivity analysis for a specific run
-router.get('/topsis/:runId/sensitivity', async (req: Request, res: Response) => {
+router.get('/topsis/:runId/sensitivity', requireAuth, async (req: Request, res: Response) => {
   const runId = Array.isArray(req.params.runId) ? req.params.runId[0] : req.params.runId;
   const run = (await db.getTOPSISRun(runId)) || durableStore.getTOPSISRun(runId);
   if (!run) {
@@ -162,7 +162,7 @@ router.get('/topsis/:runId/sensitivity', async (req: Request, res: Response) => 
 });
 
 // GET /api/benchmark/topsis/:runId — Get specific TOPSIS run by ID
-router.get('/topsis/:runId', async (req: Request, res: Response) => {
+router.get('/topsis/:runId', requireAuth, async (req: Request, res: Response) => {
   const runId = Array.isArray(req.params.runId) ? req.params.runId[0] : req.params.runId;
   const run = (await db.getTOPSISRun(runId)) || durableStore.getTOPSISRun(runId);
   if (!run) {
@@ -173,7 +173,7 @@ router.get('/topsis/:runId', async (req: Request, res: Response) => {
 });
 
 // POST /api/benchmark/topsis/run — Execute TOPSIS multi-criteria ranking and sensitivity analysis
-router.post('/topsis/run', async (req: Request, res: Response) => {
+router.post('/topsis/run', requireAuth, async (req: Request, res: Response) => {
   try {
     const {
       benchmark_id,
@@ -207,6 +207,19 @@ router.post('/topsis/run', async (req: Request, res: Response) => {
       }
     }
 
+        if (custom_weights) {
+      if (typeof custom_weights !== 'object' || Array.isArray(custom_weights)) {
+        res.status(400).json({ error: 'custom_weights must be a key-value object of numbers.', code: 'INVALID_WEIGHTS' });
+        return;
+      }
+      for (const [k, v] of Object.entries(custom_weights)) {
+        if (typeof v !== 'number' || isNaN(v) || (v as number) < 0) {
+          res.status(400).json({ error: `Invalid weight for criterion '${k}': must be a non-negative number.`, code: 'INVALID_WEIGHTS' });
+          return;
+        }
+      }
+    }
+
     let profile = TOPSIS_WEIGHT_PROFILES[profile_id] || TOPSIS_WEIGHT_PROFILES.PRIMARY_FACULTY_PROPOSED;
     if (custom_weights && typeof custom_weights === 'object') {
       profile = {
@@ -227,7 +240,7 @@ router.post('/topsis/run', async (req: Request, res: Response) => {
       }
     }
 
-    const runResult = topsisEngine.executeFullTOPSISRun(
+        const runResult = topsisEngine.executeFullTOPSISRun(
       candidateMetrics,
       {
         profile,
@@ -236,6 +249,11 @@ router.post('/topsis/run', async (req: Request, res: Response) => {
         runSensitivity: true,
       }
     );
+
+    if (mode === 'SYNTHETIC_DEMONSTRATION' || sourceId === 'SYNTHETIC_RESEARCH_FIXTURE') {
+      (runResult as any).is_synthetic = true;
+      (runResult as any).quarantine_status = 'SYNTHETIC_EXCLUDED_FROM_EMPIRICAL_METRICS';
+    }
 
     durableStore.setTOPSISRun(runResult.run_id, runResult);
     await db.saveTOPSISRun(runResult);
@@ -248,7 +266,7 @@ router.post('/topsis/run', async (req: Request, res: Response) => {
 });
 
 // GET /api/benchmark/:id/csv — Download benchmark run as CSV
-router.get('/:id/csv', async (req: Request, res: Response) => {
+router.get('/:id/csv', requireAuth, async (req: Request, res: Response) => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const benchmark = (await db.getBenchmark(id)) || durableStore.getBenchmark(id);
   if (!benchmark) {
@@ -319,11 +337,14 @@ function formatBenchmarkCsv(benchmark: any): string {
 
 // GET /api/benchmark/:id — Return a specific benchmark run by ID
 router.get('/:id', requireAuth, async (req: Request, res: Response) => {
-  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   if (id === 'latest') {
     const latest = durableStore.getBenchmark('latest');
     if (!latest) {
       res.status(404).json({ error: 'No benchmark run recorded yet.' });
+      return;
+    }
+    if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
       return;
     }
     res.json(latest);
@@ -348,8 +369,9 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
 });
 
 // POST /api/benchmark/run — Execute evaluation across candidate models for a scan/assessment
-router.post('/run', async (req: Request, res: Response): Promise<void> => {
-  const { scan_id, assessment_id, target_url, selected_models } = req.body;
+router.post('/run', requireAuth, async (req: Request, res: Response): Promise<void> => {
+    const { scan_id, assessment_id, target_url, selected_models } = req.body;
+  const callerOrg = req.authContext!.orgId;
 
   let evidence: any[] = [];
   let resolvedUrl = target_url || 'https://example.com';
@@ -357,6 +379,7 @@ router.post('/run', async (req: Request, res: Response): Promise<void> => {
   if (assessment_id) {
     const assessment = durableStore.getAssessment(assessment_id);
     if (assessment) {
+      if (!validateTenantAccess(assessment.org_id, req, res)) return;
       evidence = assessment.evidence || [];
       resolvedUrl = assessment.website_url || resolvedUrl;
     }

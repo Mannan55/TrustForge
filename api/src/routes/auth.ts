@@ -43,7 +43,7 @@ router.post('/auth/login', async (req: Request, res: Response): Promise<void> =>
  * Registers a new organization owner or auditor with server-verified credentials.
  */
 router.post('/auth/signup', async (req: Request, res: Response): Promise<void> => {
-  const { email, password, name, orgName, role } = req.body;
+  const { email, password, name, orgName } = req.body;
 
   if (!email || !password || !name) {
     res.status(400).json({ error: 'Name, email, and password are required.', code: 'MISSING_FIELDS' });
@@ -51,7 +51,7 @@ router.post('/auth/signup', async (req: Request, res: Response): Promise<void> =
   }
 
   try {
-    const result = authService.signup(email, password, name, orgName, role);
+    const result = authService.signup(email, password, name, orgName, 'Owner');
     res.status(201).json({
       token: result.token,
       user: {
@@ -89,6 +89,11 @@ router.get('/auth/me', requireAuth, async (req: Request, res: Response): Promise
  * POST /api/auth/logout
  */
 router.post('/auth/logout', async (req: Request, res: Response): Promise<void> => {
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    authService.revokeToken(token);
+  }
   res.json({ success: true, message: 'Logged out successfully.' });
 });
 

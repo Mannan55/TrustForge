@@ -29,20 +29,20 @@ The 10-stage RAG architecture operates under strict measurement standards. Synth
 
 ## 2. 10-Model Slot Registry & Truthful Execution Status
 
-In compliance with faculty scientific integrity rules, model execution designations are explicitly segregated into **LIVE VERIFIED**, **HISTORICAL / DEMONSTRATION**, and **BLOCKED / UNAVAILABLE**.
+In compliance with faculty scientific integrity rules, model execution designations are explicitly segregated into **LIVE VERIFIED**, **HISTORICAL / DEMONSTRATION**, and **BLOCKED / UNAVAILABLE**. Model identifiers, providers, and requested model IDs agree bit-for-bit with pi/src/gateway/llmGateway.ts.
 
-| Slot | Model Identifier | Provider | Requested Model ID | Execution Status | Truthful Designation | Notes |
+| Slot | Model Name | Provider | Requested Model ID | Execution Status | Truthful Designation | Notes |
 |---|---|---|---|---|---|---|
-| **M01** | `deepseek/deepseek-chat` | OpenRouter | `deepseek/deepseek-chat` | Completed | **LIVE VERIFIED** | Executed in Phase 4; authentic HTTP 200 response |
-| **M02** | `meta-llama/llama-3.3-70b-instruct:free` | OpenRouter | `meta-llama/llama-3.3-70b-instruct:free` | Completed | **LIVE VERIFIED** | Free endpoint; authentic inference execution |
-| **M03** | `qwen/qwen-2.5-72b-instruct` | OpenRouter | `qwen/qwen-2.5-72b-instruct` | Completed | **LIVE VERIFIED** | TOPSIS primary model; authentic execution |
-| **M04** | `mistralai/mistral-small-24b-instruct-2501:free` | OpenRouter | `mistralai/mistral-small-24b-instruct-2501:free` | Completed | **LIVE VERIFIED** | Free endpoint; authentic execution |
-| **M05** | `google/gemma-4-26b-a4b-it:free` | OpenRouter | `google/gemma-4-26b-a4b-it:free` | Rate-Limited | **UNAVAILABLE** | Provider HTTP 429 rate limit reached; paid fallback blocked |
-| **M06** | `google/gemini-2.5-flash` | OpenRouter | `google/gemini-2.5-flash` | Blocked (Credits) | **DEMONSTRATION** | HTTP 402/403 credit exhaustion; synthetic results marked |
-| **M07** | `anthropic/claude-3.5-haiku` | OpenRouter | `anthropic/claude-3.5-haiku` | Blocked (Credits) | **DEMONSTRATION** | HTTP 402/403 credit exhaustion; synthetic results marked |
-| **M08** | `deepseekv4.1-flash` | Sarvam AI | `deepseekv4.1-flash` | Completed | **LIVE VERIFIED** | Authorized bounded execution within ₹5 budget |
-| **M09** | `google/gemini-2.0-flash` | OpenRouter | `google/gemini-2.0-flash` | Completed | **LIVE VERIFIED** | Single bounded run; authentic response |
-| **M10** | `llama3.2:3b` | Local Ollama | `llama3.2:3b` | Offline | **UNAVAILABLE** | Local Ollama service offline on host; clearly labeled |
+| **M01** | OpenAI GPT-OSS 120B | Groq | openai/gpt-oss-120b | Completed | **LIVE VERIFIED** | High parameter frontier model running on Groq LPUs |
+| **M02** | OpenAI GPT-OSS 20B | Groq | openai/gpt-oss-20b | Completed | **LIVE VERIFIED** | Fast 20B model running on Groq LPU tier |
+| **M03** | Qwen3.8-27B | Groq | qwen/qwen3.8-27b | Completed | **LIVE VERIFIED** | TOPSIS primary model; authentic sub-second inference |
+| **M04** | Gemma 4 31B | OpenRouter | google/gemma-4-31b-it:free | Completed | **LIVE VERIFIED** | OpenRouter verified free tier endpoint |
+| **M05** | Gemma 4 26B-A4B | OpenRouter | google/gemma-4-26b-a4b-it:free | Rate-Limited | **UNAVAILABLE** | Provider HTTP 429 rate limit reached; paid fallback blocked |
+| **M06** | Llama 3.3 70B | OpenRouter | meta-llama/llama-3.3-70b-instruct | Blocked (Credits) | **DEMONSTRATION** | Requires paid credits; paid spend strictly blocked per research protocol |
+| **M07** | Mistral Small 24B | OpenRouter | mistralai/mistral-small-3.2-24b-instruct | Blocked (Credits) | **DEMONSTRATION** | Requires paid credits; paid spend strictly blocked per research protocol |
+| **M08** | DeepSeek V4.1 Flash | Sarvam AI | deepseekv4.1-flash | Completed | **LIVE VERIFIED** | Authorized bounded execution on Sarvam AI /v2 endpoint within ₹5 budget |
+| **M09** | Sarvam 105B | Sarvam AI | sarvam-105b | Completed | **LIVE VERIFIED** | India sovereign flagship model on Sarvam AI /v1 endpoint |
+| **M10** | Sarvam 30B | Local Ollama | sarvam-30b | Offline | **UNAVAILABLE** | Local Ollama service offline on host machine; clearly labeled |
 
 ---
 

@@ -54,12 +54,13 @@ function saveJsonFile(filename: string, data: any): void {
     fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
     fs.renameSync(tmpPath, filepath);
   } catch (err) {
-    console.warn(`Error saving ${filename}:`, err);
+    console.error(`[DurableStore] Error saving ${filename}:`, err);
     try {
       if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
     } catch {
       // ignore cleanup failure
     }
+    throw err;
   }
 }
 
@@ -72,6 +73,9 @@ export class DurableStore {
   private topsisRuns: Map<string, any>;
   private evaluationRuns: Map<string, any>;
   private users: Map<string, any>;
+  private revokedTokens: Set<string>;
+  private organizations: Map<string, any>;
+  private domainChallenges: Map<string, any>;
 
   constructor() {
     const loadedAssessments = loadJsonFile<Record<string, any>>('assessments.json', {});
@@ -82,6 +86,9 @@ export class DurableStore {
     const loadedTopsisRuns = loadJsonFile<Record<string, any>>('topsis_runs.json', {});
     const loadedEvaluationRuns = loadJsonFile<Record<string, any>>('evaluation_runs.json', {});
     const loadedUsers = loadJsonFile<Record<string, any>>('users.json', {});
+    const loadedRevoked = loadJsonFile<string[]>('revoked_tokens.json', []);
+    const loadedOrgs = loadJsonFile<Record<string, any>>('organizations.json', {});
+    const loadedChallenges = loadJsonFile<Record<string, any>>('domain_challenges.json', {});
 
     this.assessments = new Map(Object.entries(loadedAssessments));
     this.scans = new Map(Object.entries(loadedScans));
@@ -91,8 +98,11 @@ export class DurableStore {
     this.topsisRuns = new Map(Object.entries(loadedTopsisRuns));
     this.evaluationRuns = new Map(Object.entries(loadedEvaluationRuns));
     this.users = new Map(Object.entries(loadedUsers));
+    this.revokedTokens = new Set(Array.isArray(loadedRevoked) ? loadedRevoked : []);
+    this.organizations = new Map(Object.entries(loadedOrgs));
+    this.domainChallenges = new Map(Object.entries(loadedChallenges));
 
-    console.log(`[DurableStore] Initialized. Loaded ${this.assessments.size} assessments, ${this.scores.size} scores, ${this.benchmarks.size} benchmarks, ${this.topsisRuns.size} topsis runs, ${this.evaluationRuns.size} evaluation runs, ${this.users.size} users from disk.`);
+    console.log(`[DurableStore] Initialized. Loaded ${this.assessments.size} assessments, ${this.scores.size} scores, ${this.benchmarks.size} benchmarks, ${this.topsisRuns.size} topsis runs, ${this.evaluationRuns.size} evaluation runs, ${this.users.size} users, ${this.organizations.size} orgs, ${this.revokedTokens.size} revoked tokens from disk.`);
   }
 
   // --- Assessments ---
@@ -234,6 +244,44 @@ export class DurableStore {
 
   public listUsers(): any[] {
     return Array.from(this.users.values());
+  }
+
+  // --- Token Revocation ---
+  public revokeToken(token: string): void {
+    if (!token) return;
+    this.revokedTokens.add(token);
+    saveJsonFile('revoked_tokens.json', Array.from(this.revokedTokens));
+  }
+
+  public isTokenRevoked(token: string): boolean {
+    if (!token) return false;
+    return this.revokedTokens.has(token);
+  }
+
+  // --- Organizations ---
+  public setOrganization(id: string, org: any): void {
+    this.organizations.set(id, org);
+    saveJsonFile('organizations.json', Object.fromEntries(this.organizations));
+  }
+
+  public getOrganization(id: string): any | undefined {
+    return this.organizations.get(id);
+  }
+
+  public listOrganizations(): any[] {
+    return Array.from(this.organizations.values());
+  }
+
+  // --- Domain Verification Challenges ---
+  public setDomainChallenge(domain: string, challenge: any): void {
+    const key = domain.toLowerCase().trim();
+    this.domainChallenges.set(key, challenge);
+    saveJsonFile('domain_challenges.json', Object.fromEntries(this.domainChallenges));
+  }
+
+  public getDomainChallenge(domain: string): any | undefined {
+    const key = domain.toLowerCase().trim();
+    return this.domainChallenges.get(key);
   }
 }
 

@@ -3,7 +3,8 @@ Route / Page,Action / Element,HTTP Method,Backend Endpoint,Data Store,Auth / Ten
 /signup,Create Account Form,POST,/api/auth/signup,users.json / Supabase,Public (creates user & tenant),PASS,repair_audit.test.ts #2
 /admin/login,Operations Sign-in,POST,/api/auth/login,users.json / Supabase,Super Admin credentials required,PASS,repair_audit.test.ts #1
 /onboarding,Verify GSTIN,POST,/api/auth/me (client lookup),Local Org Cache,Format checked; requires cert if unlisted,PASS,services/index.ts:verifyGstin
-/onboarding,Verify Domain (DNS Challenge),POST,/api/auth/me (client lookup),Local Org Cache,Server-issued DNS TXT challenge,PASS,services/index.ts:verifyDomain
+/onboarding,Generate DNS TXT Challenge,POST,/api/organization/domain-challenge,domain_challenges.json,requireAuth (tenant-scoped),PASS,organization.ts:POST /domain-challenge
+/onboarding,Verify Domain DNS Resolution,POST,/api/organization/verify-domain,domain_challenges.json,requireAuth (DNS TXT verified),PASS,organization.ts:POST /verify-domain
 /onboarding,Complete Setup Button,PATCH,/api/assessments,assessments.json,Tenant owner session required,PASS,OnboardingPage.tsx:finish
 /,Run Public Scan Button,POST,/api/scans,scans.json / Supabase,Public rate-limited (SSRF protected),PASS,playwrightCrawler.ts
 /scan,Scan Progress & Posture Polling,GET,/api/scans/:id,scans.json / Supabase,Public for anonymous scan / tenant isolated,PASS,scans.ts:52
@@ -26,7 +27,8 @@ Route / Page,Action / Element,HTTP Method,Backend Endpoint,Data Store,Auth / Ten
 /rag-monitor,Load Retrieval Explorer Passages,GET,/api/assessments/:id/retrieval-explorer,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:995
 /rag-monitor,Load Evidence-to-Verdict Trace,GET,/api/assessments/:id/evidence-to-verdict,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:1015
 /rag-monitor,Load Model Execution Telemetry,GET,/api/assessments/:id/model-executions,assessments.json,requireAuth + tenant matching,PASS,assessments.ts:1040
-/settings,Save Company Profile Changes,PATCH,/api/assessments,assessments.json / OrgContext,requireAuth + tenant matching,PASS,SettingsPage.tsx:saveProfile
+/settings,Get Company Profile,GET,/api/organization,organizations.json,requireAuth + tenant matching,PASS,organization.ts:GET /organization
+/settings,Update Company Profile,PUT,/api/organization,organizations.json,requireAuth (Owner/Admin only),PASS,organization.ts:PUT /organization
 /rights,Draft DPDP Subject Request,POST,/api/rights/draft,Local state,Demonstrative / labeled mock,PASS,RightsPage.tsx:submit
 /admin/overview,Platform Metrics,GET,/api/benchmark/latest,benchmarks.json / Supabase,Super Admin role required,PASS,AdminOverviewPage.tsx
 /admin/users,List Platform Users,GET,/api/auth/me,users.json / Supabase,Super Admin role required,PASS,AdminUsersPage.tsx

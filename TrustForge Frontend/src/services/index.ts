@@ -124,31 +124,52 @@ export const identityService = {
     };
   },
 
-  /**
-   * Server-issued DNS challenge check for organization authorization.
+    /**
+   * Server-issued DNS challenge request (P0-6 FIX).
    */
-  async verifyDomain(domain: string): Promise<DomainVerificationResult> {
-    await delay(700);
-    const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
-
-    if (cleanDomain === "technova.in" || cleanDomain === "localhost") {
+  async requestDomainChallenge(domain: string): Promise<DomainVerificationResult> {
+    try {
+      const res = await apiClient.createDomainChallengeApi(domain);
       return {
-        verified: true,
+        verified: false,
+        method: res.method || "DNS TXT record",
+        challengeRecord: res.challengeRecord,
+        challengeExpiresAt: res.challengeExpiresAt,
+        note: res.note,
+      };
+    } catch (err: any) {
+      const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+      return {
+        verified: false,
         method: "DNS TXT record",
-        challengeRecord: "trustforge-verification=tn_auth_verified_2026",
+        challengeRecord: `trustforge-verification=${cleanDomain}_pending`,
         challengeExpiresAt: new Date(Date.now() + 86400000).toISOString(),
-        note: "Domain ownership and representation authority cryptographically verified via DNS TXT record.",
+        note: `Could not reach verification server (${err.message || 'Network error'}). Ensure backend is running.`,
       };
     }
+  },
 
-    const challenge = `trustforge-verification=${Math.random().toString(36).substring(2, 10)}`;
-    return {
-      verified: false,
-      method: "DNS TXT record",
-      challengeRecord: challenge,
-      challengeExpiresAt: new Date(Date.now() + 86400000).toISOString(),
-      note: `Pending verification: Please create a TXT record for ${cleanDomain} with value: "${challenge}". Authority not established until record propagates.`,
-    };
+  /**
+   * Server-issued DNS challenge check for organization authorization.
+   * Calls real backend DNS resolver endpoint (P0-6 FIX).
+   */
+  async verifyDomain(domain: string): Promise<DomainVerificationResult> {
+    try {
+      const res = await apiClient.verifyDomainApi(domain);
+      return {
+        verified: res.verified,
+        method: res.method || "DNS TXT record",
+        challengeRecord: res.challengeRecord,
+        challengeExpiresAt: res.challengeExpiresAt,
+        note: res.note,
+      };
+    } catch (err: any) {
+      return {
+        verified: false,
+        method: "DNS TXT record",
+        note: `Verification failed: ${err.message || "DNS verification service unavailable."}`,
+      };
+    }
   },
 };
 
@@ -276,7 +297,18 @@ export const orgService = {
   },
 
   async updateOrganization(patch: Partial<Organization>): Promise<Organization> {
-    await delay(300);
+    try {
+      const updated = await apiClient.updateOrganizationApi(patch);
+      if (updated && updated.id) {
+        return {
+          ...DEMO_ORG,
+          ...updated,
+          posture: updated.trustScore != null ? postureForScore(updated.trustScore) : DEMO_ORG.posture,
+        };
+      }
+    } catch {
+      /* fallback to local update if server unavailable */
+    }
     const next = { ...DEMO_ORG, ...patch };
     if (patch.trustScore != null) next.posture = postureForScore(patch.trustScore);
     return next;

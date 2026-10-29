@@ -246,7 +246,7 @@ export function OnboardingPage() {
                   </div>
                 )}
 
-                {domainState === "done" && (
+                {domainState === "done" && domainResult?.verified && (
                   <div className="rounded-xl border border-success-line bg-success-soft/50 p-4 animate-fade-in">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="h-5 w-5 text-success" />
@@ -255,6 +255,19 @@ export function OnboardingPage() {
                     <p className="mt-2 text-sm text-ink-soft">
                       Control of {form.primaryDomain} verified via DNS TXT record. You can now act for
                       this organization in TrustForge.
+                    </p>
+                  </div>
+                )}
+
+                {domainState === "done" && !domainResult?.verified && (
+                  <div className="rounded-xl border border-warning/30 bg-warning/5 p-4 animate-fade-in">
+                    <div className="flex items-center gap-2">
+                      <CircleAlert className="h-5 w-5 text-warning" />
+                      <p className="font-medium text-ink">Domain verification pending</p>
+                      <Badge tone="warning">Pending</Badge>
+                    </div>
+                    <p className="mt-2 text-sm text-ink-soft">
+                      {domainResult?.note || "DNS TXT record not yet detected. Authority not established until record propagates."}
                     </p>
                   </div>
                 )}

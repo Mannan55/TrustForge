@@ -5,7 +5,7 @@
 **Author:** TrustForge Engineering Team  
 **Date:** 2026-10-29  
 **Verified Assessment Reference:** `ASM_1793274039527_gf80n`  
-**Repository Branch:** `repair/audit-remediation-2026-10-29`  
+**Repository Branch:** `repair/audit-remediation-stage2-2026-10-29`  
 
 ---
 
