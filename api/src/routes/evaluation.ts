@@ -36,7 +36,7 @@ router.get('/latest', requireAuth, (req: Request, res: Response) => {
     res.json(freshRun);
     return;
   }
-  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+  if (!validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   res.json(latest);
@@ -54,8 +54,17 @@ router.get('/list', requireAuth, (req: Request, res: Response) => {
 });
 
 // GET /api/evaluation/consistency — Return 3-run consistency experiment results
-router.get('/consistency', (req: Request, res: Response) => {
-  const latest = durableStore.getEvaluationRun('latest') || evaluationRunner.runFullEvaluation();
+router.get('/consistency', requireAuth, (req: Request, res: Response) => {
+  const callerOrg = req.authContext?.orgId;
+  let latest = durableStore.getEvaluationRun('latest', callerOrg);
+  if (!latest) {
+    latest = evaluationRunner.runFullEvaluation();
+    (latest as any).org_id = callerOrg;
+    durableStore.setEvaluationRun(latest.evaluation_id, latest);
+  }
+  if (!validateTenantAccess(latest.org_id, req, res)) {
+    return;
+  }
   const consistencyData: Record<string, any> = {};
 
   for (const [modelId, evalData] of Object.entries(latest.model_evaluations || {})) {
@@ -71,8 +80,17 @@ router.get('/consistency', (req: Request, res: Response) => {
 });
 
 // GET /api/evaluation/ablation — Return paired RAG ablation experiment results
-router.get('/ablation', (req: Request, res: Response) => {
-  const latest = durableStore.getEvaluationRun('latest') || evaluationRunner.runFullEvaluation();
+router.get('/ablation', requireAuth, (req: Request, res: Response) => {
+  const callerOrg = req.authContext?.orgId;
+  let latest = durableStore.getEvaluationRun('latest', callerOrg);
+  if (!latest) {
+    latest = evaluationRunner.runFullEvaluation();
+    (latest as any).org_id = callerOrg;
+    durableStore.setEvaluationRun(latest.evaluation_id, latest);
+  }
+  if (!validateTenantAccess(latest.org_id, req, res)) {
+    return;
+  }
   const ablationData: Record<string, any> = {};
 
   for (const [modelId, evalData] of Object.entries(latest.model_evaluations || {})) {
@@ -113,8 +131,13 @@ router.post('/run', requireAuth, (req: Request, res: Response) => {
 // GET /api/evaluation/export/csv — Download evaluation matrix as RFC 4180 CSV
 router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
   const callerOrg = req.authContext?.orgId;
-  const latest = durableStore.getEvaluationRun('latest', callerOrg) || evaluationRunner.runFullEvaluation();
-  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+  let latest = durableStore.getEvaluationRun('latest', callerOrg);
+  if (!latest) {
+    latest = evaluationRunner.runFullEvaluation();
+    (latest as any).org_id = callerOrg;
+    durableStore.setEvaluationRun(latest.evaluation_id, latest);
+  }
+  if (!validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
 
@@ -173,12 +196,12 @@ router.get('/export/csv', requireAuth, (req: Request, res: Response) => {
 router.get('/:id', requireAuth, (req: Request, res: Response) => {
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const callerOrg = req.authContext?.orgId;
-  const run = durableStore.getEvaluationRun(id, callerOrg);
+  const run = durableStore.getEvaluationRun(id);
   if (!run) {
     res.status(404).json({ error: `Evaluation run ${id} not found.` });
     return;
   }
-  if (run.org_id && !validateTenantAccess(run.org_id, req, res)) {
+  if (!validateTenantAccess(run.org_id, req, res)) {
     return;
   }
   res.json(run);

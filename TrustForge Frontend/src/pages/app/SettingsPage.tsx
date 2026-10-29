@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Building2,
   ShieldCheck,
@@ -19,6 +19,7 @@ import { Input } from "@/components/common/Input";
 import { useAuth } from "@/context/AuthContext";
 import { useOrg } from "@/context/OrgContext";
 import { useToast } from "@/context/ToastContext";
+import { identityService } from "@/services";
 import { cn } from "@/lib/cn";
 
 export function SettingsPage() {
@@ -39,6 +40,35 @@ export function SettingsPage() {
   const [grievanceEmail, setGrievanceEmail] = useState(org.grievanceEmail || "");
   const [saving, setSaving] = useState(false);
   const [savingGrievance, setSavingGrievance] = useState(false);
+  const [dnsChallenge, setDnsChallenge] = useState<string | null>(null);
+  const [generatingChallenge, setGeneratingChallenge] = useState(false);
+
+  const handleGenerateDnsChallenge = async () => {
+    setGeneratingChallenge(true);
+    try {
+      const res = await identityService.requestDomainChallenge(org.primaryDomain || "technova.in");
+      setDnsChallenge(res.challengeRecord || null);
+      notify("DNS verification challenge generated.", "info");
+    } catch (err: any) {
+      notify(err?.message || "Failed to generate challenge", "warning");
+    } finally {
+      setGeneratingChallenge(false);
+    }
+  };
+
+  useEffect(() => {
+    if (org) {
+      setLegalName(org.legalName || "");
+      setDisplayName(org.displayName || "");
+      setCin(org.cin || "");
+      setGstin(org.gstin || "");
+      setIndustry(org.industry || "");
+      setCompanySize(org.companySize || "");
+      setRegisteredAddress(org.registeredAddress || "");
+      setGrievanceOfficer(org.grievanceOfficer || "");
+      setGrievanceEmail(org.grievanceEmail || "");
+    }
+  }, [org]);
 
   const saveProfile = async () => {
     setSaving(true);
@@ -130,6 +160,28 @@ export function SettingsPage() {
               <Info className="mt-0.5 h-4 w-4 shrink-0 text-ink-muted" />
               Verifying identity is not the same as proving authorization. A confirmed GSTIN shows the entity is
               real; it does not by itself show that you are allowed to act for it.
+            </div>
+
+            <div className="mt-5 border-t border-line pt-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-ink">DNS TXT Verification</p>
+                  <p className="text-xs text-ink-muted">Prove technical control of {org.primaryDomain || "technova.in"}</p>
+                </div>
+                <Button size="sm" variant="outline" onClick={handleGenerateDnsChallenge} disabled={generatingChallenge}>
+                  <Globe className="h-4 w-4" /> {generatingChallenge ? "Generating..." : "Generate Verification Challenge"}
+                </Button>
+              </div>
+              {dnsChallenge && (
+                <div className="rounded-lg border border-line bg-canvas p-3 text-xs font-mono text-ink">
+                  <p className="font-sans font-medium text-ink-soft mb-1">Add this DNS TXT record:</p>
+                  <code className="text-emerald-light break-all">{dnsChallenge}</code>
+                </div>
+              )}
+              <div className="flex items-start gap-2.5 rounded-lg border border-line bg-canvas p-3 text-sm text-ink-soft">
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-ink-muted" />
+                Technical DNS control confirms domain routing control; it does not substitute for corporate registration verification or legal authority to bind the entity.
+              </div>
             </div>
           </Card>
 

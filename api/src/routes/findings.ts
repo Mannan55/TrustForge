@@ -9,7 +9,12 @@ router.get('/findings/:id', requireAuth, async (req: Request, res: Response): Pr
   const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const job = (await db.getAssessment(id)) || durableStore.getAssessment(id);
 
-  if (job && !validateTenantAccess(job.org_id, req, res)) {
+  if (!job) {
+    res.status(404).json({ error: `Assessment job ${id} not found.`, code: 'NOT_FOUND' });
+    return;
+  }
+
+  if (!validateTenantAccess(job.org_id, req, res)) {
     return;
   }
 

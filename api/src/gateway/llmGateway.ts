@@ -185,6 +185,15 @@ export type LLMOutcomeStatus =
 
 export const PAID_MODEL_IDS: readonly string[] = ['M06', 'M07', 'M08', 'M09'];
 
+/**
+ * Server-controlled spending authorization check.
+ * Request bodies alone CANNOT authorize spending.
+ * Requires explicit, separately configured server-side authorization.
+ */
+export function isServerPaidInferenceAuthorized(): boolean {
+  return process.env.ALLOW_PAID_INFERENCE === 'true' && process.env.SERVER_PAID_INFERENCE_AUTHORIZED === 'true';
+}
+
 export interface ModelBatchResult {
   model_id: string;
   model_name: string;
@@ -536,10 +545,10 @@ export class LLMGateway {
       .digest('hex')
       .substring(0, 16);
 
-    // ZERO PAID SPEND GATE: Block paid models unless explicitly authorized
+    // ZERO PAID SPEND GATE: Commercial/paid models are blocked by default unless server explicitly authorized
     const isPaidModel = PAID_MODEL_IDS.includes(model.id);
-    const allowPaid = allowPaidModels || process.env.ALLOW_PAID_INFERENCE === 'true';
-    if (isPaidModel && !allowPaid) {
+    const serverAuthorized = isServerPaidInferenceAuthorized();
+    if (isPaidModel && !serverAuthorized) {
       const durationMs = Date.now() - startMs;
       return {
         model_id: model.id,
@@ -551,7 +560,7 @@ export class LLMGateway {
         end_time: new Date().toISOString(),
         findings: [],
         duration_ms: durationMs,
-        error: `Model ${model.id} (${model.name}) requires commercial credits. Call blocked by Zero-Paid-Spend budget policy (ALLOW_PAID_INFERENCE=false).`,
+        error: `Model ${model.id} (${model.name}) requires commercial credits. Call blocked by Zero-Paid-Spend server policy (server-side authorization required; client request body cannot authorize spending).`,
         is_real_inference: false,
         context_hash: contextHash,
         estimated_cost_usd: 0,
@@ -873,6 +882,12 @@ EVALUATION RUBRIC:
     completion_tokens?: number;
     total_tokens?: number;
   }> {
+    // SERVER-CONTROLLED ZERO-PAID-SPEND HARD GATE:
+    // Commercial models (M06, M07, M08, M09) must never trigger provider network calls without explicit server-side authorization
+    if (PAID_MODEL_IDS.includes(model.id) && !isServerPaidInferenceAuthorized()) {
+      throw new Error(`Model ${model.id} (${model.name}) requires commercial credits. Call blocked by Zero-Paid-Spend server policy (server-side authorization required; client request body cannot authorize spending).`);
+    }
+
     // 1. Groq Provider (M01: GPT-OSS-120B, M02: GPT-OSS-20B, M03: Qwen 3.8 27B)
     if (model.provider === 'groq') {
       const apiKey = this.getGroqApiKey();

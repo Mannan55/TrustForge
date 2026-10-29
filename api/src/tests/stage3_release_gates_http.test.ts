@@ -345,3 +345,159 @@ test('Wire HTTP - Role Enforcement: Viewer role cannot trigger benchmark, TOPSIS
   });
   assert.equal(evalRes.status, 403, 'Viewer must be forbidden from running evaluations');
 });
+
+test('Wire HTTP - Regression Test: Authenticated Owner submitting allow_paid_models: true selecting M06-M09 cannot trigger paid inference', async () => {
+  const paidAttemptRes = await fetch(`${baseUrl}/api/benchmark/run`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      selected_models: ['M06', 'M07', 'M08', 'M09'],
+      allow_paid_models: true, // Client attempts to authorize paid models via body
+      target_url: 'https://security-audit.example.com',
+    }),
+  });
+  assert.equal(paidAttemptRes.status, 200, 'Endpoint handles blocked models gracefully with 200');
+  const data = await paidAttemptRes.json();
+
+  for (const mId of ['M06', 'M07', 'M08', 'M09']) {
+    const met = data.per_model_metrics?.[mId];
+    assert.ok(met, `${mId} metrics must be reported`);
+    assert.equal(met.status, 'BLOCKED_PAID_MODEL', `${mId} must be blocked regardless of body allow_paid_models: true`);
+    assert.strictEqual(met.estimated_cost_usd, 0, `${mId} must have $0.00 estimated cost`);
+    assert.strictEqual(met.prompt_tokens, 0, `${mId} must consume 0 prompt tokens`);
+    assert.strictEqual(met.completion_tokens, 0, `${mId} must consume 0 completion tokens`);
+  }
+});
+
+test('Wire HTTP - Model Selection Validation: Unknown model ID rejected with 400 INVALID_MODEL_SELECTION', async () => {
+  const invalidRes = await fetch(`${baseUrl}/api/benchmark/run`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      selected_models: ['M01', 'M99', 'INVALID_MODEL'],
+      target_url: 'https://test.example.com',
+    }),
+  });
+  assert.equal(invalidRes.status, 400, 'Unknown model ID must be rejected with 400');
+  const data = await invalidRes.json();
+  assert.equal(data.code, 'INVALID_MODEL_SELECTION');
+  assert.ok(data.invalid_models.includes('M99'));
+  assert.ok(data.invalid_models.includes('INVALID_MODEL'));
+});
+
+test('Wire HTTP - Evaluation Tenant Isolation: Tenant Beta cannot access Tenant Alpha evaluation runs or exports', async () => {
+  const evalId = `EVAL_WIRE_ALPHA_${Date.now()}`;
+  durableStore.setEvaluationRun(evalId, {
+    evaluation_id: evalId,
+    org_id: TENANT_ALPHA,
+    rejection_policy: 'PENALIZE_AS_INCORRECT',
+    model_evaluations: {
+      M01: {
+        model_name: 'Alpha GPT-OSS',
+        consistency_experiment: { verdict_agreement_pct: 95 },
+        rag_ablation_experiment: { delta_grounding_rate_pct: 25 },
+      },
+    },
+  });
+
+  // Beta calls GET /api/evaluation/:id
+  const getByIdRes = await fetch(`${baseUrl}/api/evaluation/${evalId}`, {
+    headers: { Authorization: `Bearer ${tokenBetaOwner}` },
+  });
+  assert.equal(getByIdRes.status, 403, 'Cross-tenant evaluation GET by ID must return 403');
+
+  // Beta calls GET /api/evaluation/export/csv
+  // Alpha has evaluation, but Beta does not have its own
+  const betaCsvRes = await fetch(`${baseUrl}/api/evaluation/export/csv`, {
+    headers: { Authorization: `Bearer ${tokenBetaOwner}` },
+  });
+  assert.equal(betaCsvRes.status, 200, 'Beta gets CSV generated for its own tenant scope');
+  const betaCsv = await betaCsvRes.text();
+  assert.ok(!betaCsv.includes('Alpha GPT-OSS'), 'Beta CSV must not contain Alpha model evaluations');
+});
+
+test('Wire HTTP - Findings & Trust Score Tenant Isolation: Cross-tenant access fails closed with 403, missing fails with 404', async () => {
+  const assessId = `ASSESS_WIRE_ALPHA_${Date.now()}`;
+  durableStore.setAssessment(assessId, {
+    id: assessId,
+    org_id: TENANT_ALPHA,
+    website_url: 'https://alpha.example.com',
+    trust_score: 85,
+    posture: 'HIGH_ASSURANCE',
+    evidence_coverage: 90,
+  });
+
+  // Cross-tenant GET /api/findings/:id
+  const findingsRes = await fetch(`${baseUrl}/api/findings/${assessId}`, {
+    headers: { Authorization: `Bearer ${tokenBetaOwner}` },
+  });
+  assert.equal(findingsRes.status, 403, 'Cross-tenant findings access must return 403');
+
+  // Cross-tenant GET /api/trust-score/:id
+  const scoreRes = await fetch(`${baseUrl}/api/trust-score/${assessId}`, {
+    headers: { Authorization: `Bearer ${tokenBetaOwner}` },
+  });
+  assert.equal(scoreRes.status, 403, 'Cross-tenant trust score access must return 403');
+
+  // Missing assessment GET /api/findings/nonexistent
+  const missingFindingsRes = await fetch(`${baseUrl}/api/findings/nonexistent_id`, {
+    headers: { Authorization: `Bearer ${tokenAlphaOwner}` },
+  });
+  assert.equal(missingFindingsRes.status, 404, 'Nonexistent assessment findings must return 404');
+
+  // Missing assessment GET /api/trust-score/nonexistent
+  const missingScoreRes = await fetch(`${baseUrl}/api/trust-score/nonexistent_id`, {
+    headers: { Authorization: `Bearer ${tokenAlphaOwner}` },
+  });
+  assert.equal(missingScoreRes.status, 404, 'Nonexistent assessment trust score must return 404');
+});
+
+test('Wire HTTP - DNS Verification Security: Challenge generation, exact match, rejection of reused and wrong-domain challenges', async () => {
+  // 1. Generate challenge for Alpha domain
+  const genRes = await fetch(`${baseUrl}/api/organization/domain-challenge`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ domain: 'secure-audit.alphatech.in' }),
+  });
+  assert.equal(genRes.status, 200);
+  const genData = await genRes.json();
+  assert.ok(genData.challengeRecord.startsWith('trustforge-verification='));
+
+  // 2. Cross-tenant attempt to verify Alpha challenge by Beta returns 400 CHALLENGE_NOT_FOUND or 403
+  const crossVerifyRes = await fetch(`${baseUrl}/api/organization/verify-domain`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenBetaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ domain: 'secure-audit.alphatech.in' }),
+  });
+  assert.equal(crossVerifyRes.status, 400, 'Beta querying challenge under Beta org receives CHALLENGE_NOT_FOUND');
+
+  // 3. Reused challenge rejection: Mark challenge as verified in durable store and attempt re-verify
+  const challenge = durableStore.getDomainChallenge('secure-audit.alphatech.in', TENANT_ALPHA);
+  assert.ok(challenge, 'Challenge must exist in store');
+  challenge.verified = true;
+  durableStore.setDomainChallenge('secure-audit.alphatech.in', challenge, TENANT_ALPHA);
+
+  const reuseRes = await fetch(`${baseUrl}/api/organization/verify-domain`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenAlphaOwner}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ domain: 'secure-audit.alphatech.in' }),
+  });
+  assert.equal(reuseRes.status, 400, 'Consumed challenge must be rejected with 400');
+  const reuseData = await reuseRes.json();
+  assert.equal(reuseData.code, 'CHALLENGE_ALREADY_USED');
+});

@@ -90,15 +90,40 @@ router.post('/organization/verify-domain', requireAuth, async (req: Request, res
       verified: false,
       method: 'DNS TXT record',
       note: `No pending verification challenge found for domain '${cleanDomain}'. Please generate a challenge first.`,
+      code: 'CHALLENGE_NOT_FOUND',
     });
     return;
   }
 
+  // Check domain match
+  if (challenge.domain !== cleanDomain) {
+    res.status(400).json({
+      verified: false,
+      method: 'DNS TXT record',
+      note: `Challenge domain mismatch: expected '${challenge.domain}', got '${cleanDomain}'.`,
+      code: 'DOMAIN_MISMATCH',
+    });
+    return;
+  }
+
+  // Reject already verified / consumed challenges
+  if (challenge.verified) {
+    res.status(400).json({
+      verified: false,
+      method: 'DNS TXT record',
+      note: 'The verification challenge for this domain has already been consumed. Please generate a new challenge.',
+      code: 'CHALLENGE_ALREADY_USED',
+    });
+    return;
+  }
+
+  // Reject expired challenges
   if (Date.now() > challenge.expiresAt) {
     res.status(400).json({
       verified: false,
       method: 'DNS TXT record',
       note: 'The verification challenge for this domain has expired. Please generate a new challenge.',
+      code: 'CHALLENGE_EXPIRED',
     });
     return;
   }
@@ -116,7 +141,13 @@ router.post('/organization/verify-domain', requireAuth, async (req: Request, res
   try {
     const records = await dns.promises.resolveTxt(cleanDomain);
     const flattened = records.map(r => r.join(''));
-    const matched = flattened.some(rec => rec.includes(challenge.challenge) || rec.includes(challenge.recordValue));
+    // Strict exact match only: reject substring matches
+    const expectedValue = challenge.recordValue.trim();
+    const expectedChallenge = challenge.challenge.trim();
+    const matched = flattened.some(rec => {
+      const trimmed = rec.trim();
+      return trimmed === expectedValue || trimmed === expectedChallenge;
+    });
 
     if (matched) {
       challenge.verified = true;

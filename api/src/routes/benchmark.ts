@@ -67,7 +67,7 @@ router.get('/latest', requireAuth, async (req: Request, res: Response) => {
     res.status(404).json({ error: 'No benchmark run recorded yet.' });
     return;
   }
-  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+  if (!validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   res.json(latest);
@@ -81,7 +81,7 @@ router.get('/export/csv', requireAuth, async (req: Request, res: Response) => {
     res.status(404).send('No benchmark run recorded yet.');
     return;
   }
-  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+  if (!validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   const csv = formatBenchmarkCsv(latest);
@@ -153,7 +153,7 @@ router.get('/topsis/latest', requireAuth, async (req: Request, res: Response) =>
     res.json(syntheticRun);
     return;
   }
-  if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+  if (!validateTenantAccess(latest.org_id, req, res)) {
     return;
   }
   res.json(latest);
@@ -181,7 +181,7 @@ router.get('/topsis/:runId/sensitivity', requireAuth, async (req: Request, res: 
     res.status(404).json({ error: `TOPSIS run ${runId} not found.` });
     return;
   }
-  if (run.org_id && !validateTenantAccess(run.org_id, req, res)) {
+  if (!validateTenantAccess(run.org_id, req, res)) {
     return;
   }
   res.json({
@@ -198,7 +198,7 @@ router.get('/topsis/:runId', requireAuth, async (req: Request, res: Response) =>
     res.status(404).json({ error: `TOPSIS run ${runId} not found.` });
     return;
   }
-  if (run.org_id && !validateTenantAccess(run.org_id, req, res)) {
+  if (!validateTenantAccess(run.org_id, req, res)) {
     return;
   }
   res.json(run);
@@ -236,7 +236,7 @@ router.post('/topsis/run', requireAuth, async (req: Request, res: Response) => {
       const benchmark = bId === 'latest'
         ? ((await db.getBenchmark('latest', callerOrg)) || durableStore.getBenchmark('latest', callerOrg))
         : ((await db.getBenchmark(bId)) || durableStore.getBenchmark(bId));
-      if (benchmark && benchmark.org_id && !validateTenantAccess(benchmark.org_id, req, res)) {
+      if (benchmark && !validateTenantAccess(benchmark.org_id, req, res)) {
         return;
       }
       if (!benchmark) {
@@ -320,7 +320,7 @@ router.get('/:id/csv', requireAuth, async (req: Request, res: Response) => {
     res.status(404).send(`Benchmark run ${id} not found.`);
     return;
   }
-  if (benchmark.org_id && !validateTenantAccess(benchmark.org_id, req, res)) {
+  if (!validateTenantAccess(benchmark.org_id, req, res)) {
     return;
   }
 
@@ -395,7 +395,7 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
       res.status(404).json({ error: 'No benchmark run recorded yet.' });
       return;
     }
-    if (latest.org_id && !validateTenantAccess(latest.org_id, req, res)) {
+    if (!validateTenantAccess(latest.org_id, req, res)) {
       return;
     }
     res.json(latest);
@@ -408,7 +408,7 @@ router.get('/:id', requireAuth, async (req: Request, res: Response) => {
     return;
   }
 
-  if (benchmark.org_id && !validateTenantAccess(benchmark.org_id, req, res)) {
+  if (!validateTenantAccess(benchmark.org_id, req, res)) {
     return;
   }
 
@@ -440,7 +440,18 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
       });
       return;
     }
+    const validModelIds = new Set(RESEARCH_MODELS.map(m => m.id));
+    const invalidModels = (selected_models as string[]).filter(m => !validModelIds.has(m));
+    if (invalidModels.length > 0) {
+      res.status(400).json({
+        error: `Invalid model ID(s) specified in selected_models: ${invalidModels.join(', ')}. Allowed IDs: ${Array.from(validModelIds).join(', ')}`,
+        code: 'INVALID_MODEL_SELECTION',
+        invalid_models: invalidModels,
+      });
+      return;
+    }
   }
+
   const effectiveSelectedModels = (Array.isArray(selected_models) && selected_models.length > 0)
     ? selected_models
     : ['M01', 'M02', 'M03', 'M04'];
@@ -502,7 +513,7 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
   };
   const batchOutputs = await gateway.evaluateAllModelsBatch(batchPayload, {
     selectedModelIds: effectiveSelectedModels,
-    allowPaidModels: allow_paid_models === true,
+    allowPaidModels: false, // Server-controlled zero-paid-spend gate; client request body cannot authorize spending
   });
 
   const benchmarkId = `BENCH_${Date.now()}`;
@@ -600,6 +611,9 @@ router.post('/run', requireAuth, async (req: Request, res: Response): Promise<vo
         evidence_faithfulness_pct: 0,
         avg_latency_ms: 0,
         estimated_cost_usd: 0,
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0,
         f1_score: null,
         f1_status: 'NOT_EVALUATED',
       };
